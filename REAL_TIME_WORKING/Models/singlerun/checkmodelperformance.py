@@ -22,6 +22,8 @@ def load_model(model_path):
     model.eval()  # Set the model to evaluation mode
     return model
 
+'''The below part is just for small number of images'''
+
 '''def visualize_predictions(model, dataloader, num_images=10):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -135,13 +137,8 @@ if __name__ == "__main__":
     main(args.model_path, args.data_folder)
 
 
-
-# import torch
-# import numpy as np
-# import matplotlib.pyplot as plt
-# from torch.utils.data import DataLoader
-# from dataloader import CarlaRunDataset  # Ensure this is correct
-# from cloud1_model import CustomRegNetY002  # Ensure this matches your model definition
+###############
+## This is R2 Score part but doesnt work :(
 # from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # def load_model(model_path):
@@ -229,6 +226,8 @@ if __name__ == "__main__":
 #     visualize_predictions(model, dataloader)
 
 # if __name__ == "__main__":
-#     model_path = "/home/h2x/Desktop/NERC_IL/inference/model_run_002.pth"  # Update with the path to your trained model
-#     run_dir = "/home/h2x/Desktop/IL_DATA_COLLECTION_ADWAIT/Main_script/09-15-2024/rc_data/run_006"  # Update with the path to your new dataset
-#     main(model_path, run_dir)
+#     parser = argparse.ArgumentParser(description='Imitation Learning DataSet Checking Script')
+#     parser.add_argument('-d', '--data_folder', default="/home/h2x/Desktop/REAL_TIME_WORKING/Today's Data/multiple people/10-03-2024", type=str, help='Path to your dataset')
+#     parser.add_argument('-m', '--model_path', default="/home/h2x/Desktop/REAL_TIME_WORKING/TrainedModels/following.pth", type=str, help='Path to your Trained Model')
+#     args = parser.parse_args()
+#     main(args.model_path, args.data_folder)
