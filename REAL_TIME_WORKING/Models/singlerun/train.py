@@ -68,7 +68,7 @@ def train(run_folder, save_path):
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
-    plt.savefig(f'Loss_Plot_{os.path.basename(run_folder)}.jpg')
+    plt.savefig(f'Loss_Plot_{os.path.basename(run_folder)}.png')
     plt.show()  # Display the plot
 
 def main(data_folder, save_base_path):
