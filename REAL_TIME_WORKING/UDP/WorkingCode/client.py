@@ -1,25 +1,26 @@
 import socket
 
-class Client:
-    def __init__(self, host='128.197.164.42', port=53):  # Replace with actual server IP
-        self.client_socket = socket.socket()
-        self.client_socket.connect((host, port))
+class UDPClient:
+    def __init__(self, host='128.197.164.42', port=53):  # Connect to the specified server IP and Port
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.server_address = (host, port)
 
     def send(self, message):
-        self.client_socket.send(message.encode())
+        self.client_socket.sendto(message.encode(), self.server_address)  # Send to the server
         print(f"Sent to server: {message}")
 
     def receive(self):
-        data = self.client_socket.recv(1024).decode()
-        print(f"Received from server: {data}")
-        return data
+        data, _ = self.client_socket.recvfrom(1024)
+        message = data.decode()
+        print(f"Received from server: {message}")
+        return message
 
     def close(self):
         self.client_socket.close()
 
 
 def main():
-    client = Client()  # Change to actual server IP
+    client = UDPClient()  # Connect to the specified server
 
     try:
         while True:
