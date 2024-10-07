@@ -1,7 +1,7 @@
 import socket
 
 class UDPServer:
-    def __init__(self, host='0.0.0.0', port=8083):  # Server IP and Port
+    def __init__(self, host='192.168.0.177', port=8083):  # Server IP and Port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_socket.bind((host, port))
         print(f"UDP Server is waiting for a connection on {host}:{port}...")
