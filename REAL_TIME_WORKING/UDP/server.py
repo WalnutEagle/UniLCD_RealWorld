@@ -48,7 +48,7 @@ import os
 # Shared queue to hold received messages
 message_queue = queue.Queue()
 
-def start_server(host='0.0.0.0', port=12345):
+def start_server(host='192.168.0.177', port=8083):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((host, port))
 

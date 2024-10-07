@@ -39,18 +39,18 @@ def get_latest_message():
 
 # Usage
 if __name__ == "__main__":
-    server_ip = 'actual_server_ip_here'  # Replace with the actual server IP
-    client_sock = start_client(server_ip, 12345)
+    server_ip = '128.197.164.42'  # Replace with the actual server IP
+    client_sock = start_client(server_ip, 53)
 
     # Example of sending a text message
-    send_message(client_sock, "Hello from client!", server_ip, 12345)
+    send_message(client_sock, "Hello from client!", server_ip, 53)
 
-    # Example of sending a file
-    send_file(client_sock, 'path/to/your/file.txt', server_ip, 12345)
+    # # Example of sending a file
+    # send_file(client_sock, 'path/to/your/file.txt', server_ip, 53)
 
-    # Example of sending a NumPy tensor
-    tensor = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float32)
-    send_tensor(client_sock, tensor, server_ip, 12345)
+    # # Example of sending a NumPy tensor
+    # tensor = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float32)
+    # send_tensor(client_sock, tensor, server_ip, 53)
 
     # Example loop to process received messages
     while True:
