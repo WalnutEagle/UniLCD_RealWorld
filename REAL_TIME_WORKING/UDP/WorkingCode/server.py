@@ -30,7 +30,8 @@ def main():
     try:
         while True:
             message, address = server.receive()  # Wait for messages
-            server.send("Hello from UDP Server!", address)  # Respond to the client
+            if message:
+                server.send("Hello from UDP Server!", address)  # Respond to the client
     except KeyboardInterrupt:
         print("Server shutting down.")
     finally:
