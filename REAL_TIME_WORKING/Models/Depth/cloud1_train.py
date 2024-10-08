@@ -172,7 +172,7 @@ def train(data_folder, save_path):
         model = nn.DataParallel(model)
         model.to(device)
 
-        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-5)  # L2 regularization
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5, weight_decay=1e-5)  # L2 regularization
         criterion = nn.MSELoss()
 
         # Learning rate scheduler
