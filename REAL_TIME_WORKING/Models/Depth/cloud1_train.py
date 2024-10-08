@@ -145,7 +145,7 @@ def train(data_folder, save_path):
     device = torch.device('cuda')
     print(device)
     nr_epochs = 150
-    batch_size = 32
+    batch_size = 16
     start_time = time.time()
     l1_lambda = 0.01 
 
