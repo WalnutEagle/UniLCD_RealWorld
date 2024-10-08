@@ -131,7 +131,7 @@ def main(model_path, run_dir, batch_size=16):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Imitation Learning DataSet Checking Script')
-    parser.add_argument('-d', '--data_folder', default="/home/h2x/Desktop/REAL_TIME_WORKING/Today's Data/multiple people/10-03-2024", type=str, help='Path to your dataset')
+    parser.add_argument('-d', '--data_folder', default="/home/h2x/Desktop/REAL_TIME_WORKING/Today's Data/allrun/10-03-2024", type=str, help='Path to your dataset')
     parser.add_argument('-m', '--model_path', default="/home/h2x/Desktop/REAL_TIME_WORKING/TrainedModels/following.pth", type=str, help='Path to your Trained Model')
     args = parser.parse_args()
     main(args.model_path, args.data_folder)
