@@ -144,7 +144,7 @@ from cloud1_dataloader import CarlaDataset
 def train(data_folder, save_path):
     device = torch.device('cuda')
     print(device)
-    nr_epochs = 1000
+    nr_epochs = 1100
     batch_size = 256
     start_time = time.time()
     l1_lambda = 0.001 
