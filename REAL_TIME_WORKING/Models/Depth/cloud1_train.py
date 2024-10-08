@@ -145,9 +145,9 @@ def train(data_folder, save_path):
     device = torch.device('cuda')
     print(device)
     nr_epochs = 1100
-    batch_size = 256
+    batch_size = 300
     start_time = time.time()
-    l1_lambda = 0.004 
+    l1_lambda = 0.001 
 
     # Create the DataLoader
     try:
@@ -172,7 +172,7 @@ def train(data_folder, save_path):
         model = nn.DataParallel(model)
         model.to(device)
 
-        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-5)  # L2 regularization
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-4)  # L2 regularization
         criterion = nn.MSELoss()
 
         # Learning rate scheduler
