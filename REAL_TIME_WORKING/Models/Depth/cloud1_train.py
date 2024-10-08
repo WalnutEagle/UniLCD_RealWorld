@@ -147,7 +147,7 @@ def train(data_folder, save_path):
     nr_epochs = 1100
     batch_size = 256
     start_time = time.time()
-    l1_lambda = 0.0001 
+    l1_lambda = 0.004 
 
     # Create the DataLoader
     try:
@@ -172,7 +172,7 @@ def train(data_folder, save_path):
         model = nn.DataParallel(model)
         model.to(device)
 
-        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5, weight_decay=1e-5)  # L2 regularization
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-5)  # L2 regularization
         criterion = nn.MSELoss()
 
         # Learning rate scheduler
