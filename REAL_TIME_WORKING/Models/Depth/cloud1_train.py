@@ -144,10 +144,10 @@ from cloud1_dataloader import CarlaDataset
 def train(data_folder, save_path):
     device = torch.device('cuda')
     print(device)
-    nr_epochs = 150
-    batch_size = 16
+    nr_epochs = 1000
+    batch_size = 256
     start_time = time.time()
-    l1_lambda = 0.01 
+    l1_lambda = 0.001 
 
     # Create the DataLoader
     try:
@@ -172,7 +172,7 @@ def train(data_folder, save_path):
         model = nn.DataParallel(model)
         model.to(device)
 
-        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5, weight_decay=1e-5)  # L2 regularization
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-6, weight_decay=1e-5)  # L2 regularization
         criterion = nn.MSELoss()
 
         # Learning rate scheduler
