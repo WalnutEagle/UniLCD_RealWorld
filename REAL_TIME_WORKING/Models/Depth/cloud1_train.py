@@ -145,7 +145,7 @@ def train(data_folder, save_path):
     device = torch.device('cuda')
     print(device)
     nr_epochs = 150
-    batch_size = 64
+    batch_size = 32
     start_time = time.time()
     l1_lambda = 0.01 
 
@@ -172,11 +172,11 @@ def train(data_folder, save_path):
         model = nn.DataParallel(model)
         model.to(device)
 
-        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-5)  # L2 regularization
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5, weight_decay=1e-5)  # L2 regularization
         criterion = nn.MSELoss()
 
         # Learning rate scheduler
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.7)
 
         loss_values = []
         val_loss_values = []  # To track validation loss
