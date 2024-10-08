@@ -144,10 +144,10 @@ from cloud1_dataloader import CarlaDataset
 def train(data_folder, save_path):
     device = torch.device('cuda')
     print(device)
-    nr_epochs = 200
-    batch_size = 16
+    nr_epochs = 150
+    batch_size = 64
     start_time = time.time()
-    l1_lambda = 0.001 
+    l1_lambda = 0.01 
 
     # Create the DataLoader
     try:
@@ -155,14 +155,16 @@ def train(data_folder, save_path):
         full_size = len(full_dataset)
 
         # Split the dataset into training (70%), validation (15%), and testing (15%)
-        train_size = int(0.7 * full_size)
-        val_size = int(0.15 * full_size)
-        test_size = full_size - train_size - val_size
-        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(full_dataset, [train_size, val_size, test_size])
+        train_size = int(0.8 * full_size)
+        # val_size = int(0.15 * full_size)
+        # test_size = full_size - train_size - val_size
+        test_size = full_size - train_size
+        # train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(full_dataset, [train_size, val_size, test_size])
+        train_dataset, test_dataset = torch.utils.data.random_split(full_dataset, [train_size, test_size])
 
         # Create DataLoaders for each dataset
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-        val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+        # val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
         # Initialize the model
