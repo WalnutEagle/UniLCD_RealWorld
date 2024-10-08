@@ -226,7 +226,8 @@ def train(data_folder, save_path):
 
             time_per_epoch = (time.time() - start_time) / (epoch + 1)
             time_left = time_per_epoch * (nr_epochs - 1 - epoch)
-            logging.info(f"Epoch {epoch + 1}\t[Train]\tloss: {average_loss:.6f} \t[Val] loss: {average_val_loss:.6f} \tETA: +{time_left:.2f}s")
+            # logging.info(f"Epoch {epoch + 1}\t[Train]\tloss: {average_loss:.6f} \t[Val] loss: {average_val_loss:.6f} \tETA: +{time_left:.2f}s")
+            logging.info(f"Epoch {epoch + 1}\t[Train]\tloss: {average_loss:.6f} \tETA: +{time_left:.2f}s")
 
         # Save the final model checkpoint
         final_checkpoint = {
