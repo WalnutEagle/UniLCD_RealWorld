@@ -209,20 +209,20 @@ def train(data_folder, save_path):
             scheduler.step()
 
             # Validation phase
-            model.eval()  
-            val_total_loss = 0
-            with torch.no_grad():
-                for val_batch in val_loader:
-                    val_batch_in, val_batch_gt = val_batch
-                    val_batch_in = val_batch_in.to(device)
-                    val_batch_gt = val_batch_gt.to(device)
+            # model.eval()  
+            # val_total_loss = 0
+            # with torch.no_grad():
+            #     for val_batch in val_loader:
+            #         val_batch_in, val_batch_gt = val_batch
+            #         val_batch_in = val_batch_in.to(device)
+            #         val_batch_gt = val_batch_gt.to(device)
 
-                    val_outputs = model(val_batch_in)
-                    val_loss = criterion(val_outputs, val_batch_gt)
-                    val_total_loss += val_loss.item()
+            #         val_outputs = model(val_batch_in)
+            #         val_loss = criterion(val_outputs, val_batch_gt)
+            #         val_total_loss += val_loss.item()
 
-            average_val_loss = val_total_loss / len(val_loader)
-            val_loss_values.append(average_val_loss)
+            # average_val_loss = val_total_loss / len(val_loader)
+            # val_loss_values.append(average_val_loss)
 
             time_per_epoch = (time.time() - start_time) / (epoch + 1)
             time_left = time_per_epoch * (nr_epochs - 1 - epoch)
@@ -236,6 +236,21 @@ def train(data_folder, save_path):
             'loss': average_loss,
         }
         torch.save(final_checkpoint, save_path)
+
+        model.eval()  # Set the model to evaluation mode
+        test_loss = 0
+        with torch.no_grad():
+            for test_batch in test_loader:
+                test_batch_in, test_batch_gt = test_batch
+                test_batch_in = test_batch_in.to(device)
+                test_batch_gt = test_batch_gt.to(device)
+
+                test_outputs = model(test_batch_in)
+                loss = criterion(test_outputs, test_batch_gt)
+                test_loss += loss.item()
+
+        average_test_loss = test_loss / len(test_loader)
+        logging.info(f"Test Loss: {average_test_loss:.6f}")
 
         # Plot loss values
         plt.figure()
