@@ -24,7 +24,7 @@ def load_model(model_path):
 
 '''The below part is just for small number of images'''
 
-'''def visualize_predictions(model, dataloader, num_images=10):
+def visualize_predictions(model, dataloader, num_images=10):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
@@ -70,9 +70,9 @@ def load_model(model_path):
     plt.legend()
 
     plt.tight_layout()
-    plt.show()'''
+    plt.show()
 
-def visualize_predictions(model, dataloader):
+'''def visualize_predictions(model, dataloader):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
@@ -115,7 +115,7 @@ def visualize_predictions(model, dataloader):
     plt.legend()
 
     plt.tight_layout()
-    plt.show()
+    plt.show()'''
 
 
 def main(model_path, run_dir, batch_size=16):
