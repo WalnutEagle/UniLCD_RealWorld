@@ -1,13 +1,14 @@
 import socket
 import pickle
 import torch  # For PyTorch tensor handling
-
+import time
 # Define host and port
 HOST = '0.0.0.0'  # Listen on all available interfaces
 PORT = 8083       # Port to listen on
 
 # Function to start the server and accept a connection
 def start_server():
+    start = time.time()
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, PORT))
     server_socket.listen()
@@ -15,6 +16,7 @@ def start_server():
     
     conn, addr = server_socket.accept()
     print(f"Connected by {addr}")
+    print(f"Connection Created: {time.time()-start}seconds")
     return conn
 
 # Function to receive data from the client
@@ -45,7 +47,10 @@ def server_loop(conn):
             send_response(conn, "Text received!")
         elif isinstance(received_data, torch.Tensor):
             print(f"Received PyTorch tensor data: \n{received_data}")
+            t1 = time.time()
+            tensor_data = torch.rand(1, 4, 150, 130)
             send_response(conn, "Tensor received!")
+            print(f"Tensor Sent, {time.time()-t1}seconds")
         else:
             print(f"Received unknown data type: {type(received_data)}")
             send_response(conn, "Unknown data type received!")

@@ -1,7 +1,7 @@
 import socket
 import pickle
 import torch  # For PyTorch tensor handling
-
+import time
 # Define host and port (server address)
 HOST = '128.197.164.42'  # Server's IP address (replace with actual IP for remote)
 PORT = 8083              # Port to connect to
@@ -34,9 +34,11 @@ def client_loop(client_socket):
             print("Server response:", receive_response(client_socket))
             
         elif choice == 'n':
+            start = time.time()
             tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
             print(f"Sending PyTorch tensor: \n{tensor_data}")
             send_data(client_socket, tensor_data)
+            print(f"Data sent {time.time()-start}seconds")
             print("Server response:", receive_response(client_socket))
             
         elif choice == 'q':
