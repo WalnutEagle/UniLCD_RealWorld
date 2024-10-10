@@ -1,10 +1,10 @@
 import socket
 import pickle
-import numpy as np
+import torch  # For PyTorch tensor handling
 
 # Define host and port
 HOST = '0.0.0.0'  # Listen on all available interfaces
-PORT = 8083      # Port to listen on
+PORT = 8083       # Port to listen on
 
 # Function to start the server and accept a connection
 def start_server():
@@ -33,8 +33,9 @@ def send_response(conn, response):
 def server_loop(conn):
     while True:
         received_data = receive_data(conn)
-        
-        if not received_data:
+
+        # If received_data is None, no data was received, so break the loop
+        if received_data is None:
             print("No data received. Closing connection...")
             break
         
@@ -42,9 +43,12 @@ def server_loop(conn):
         if isinstance(received_data, str):
             print(f"Received text message: {received_data}")
             send_response(conn, "Text received!")
-        elif isinstance(received_data, np.ndarray):
-            print(f"Received tensor data: \n{received_data}")
+        elif isinstance(received_data, torch.Tensor):
+            print(f"Received PyTorch tensor data: \n{received_data}")
             send_response(conn, "Tensor received!")
+        else:
+            print(f"Received unknown data type: {type(received_data)}")
+            send_response(conn, "Unknown data type received!")
     
     conn.close()
 

@@ -1,10 +1,10 @@
 import socket
 import pickle
-import numpy as np
+import torch  # For PyTorch tensor handling
 
 # Define host and port (server address)
 HOST = '128.197.164.42'  # Server's IP address (replace with actual IP for remote)
-PORT = 8083        # Port to connect to
+PORT = 8083              # Port to connect to
 
 # Function to connect to the server
 def connect_to_server():
@@ -34,8 +34,8 @@ def client_loop(client_socket):
             print("Server response:", receive_response(client_socket))
             
         elif choice == 'n':
-            tensor_data = np.random.rand(2, 2)  # Example tensor data
-            print(f"Sending tensor: \n{tensor_data}")
+            tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
+            print(f"Sending PyTorch tensor: \n{tensor_data}")
             send_data(client_socket, tensor_data)
             print("Server response:", receive_response(client_socket))
             
