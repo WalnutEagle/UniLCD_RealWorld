@@ -32,7 +32,7 @@ def client_loop(client_socket):
             text_message = input("Enter your text message: ")
             send_data(client_socket, text_message)
             print("Server response:", receive_response(client_socket))
-            
+        
         elif choice == 'n':
             start = time.time()
             tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data

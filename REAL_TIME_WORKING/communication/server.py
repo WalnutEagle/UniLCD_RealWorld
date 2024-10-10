@@ -49,7 +49,7 @@ def server_loop(conn):
             print(f"Received PyTorch tensor data: \n{received_data}")
             t1 = time.time()
             tensor_data = torch.rand(1, 4, 150, 130)
-            send_response(conn, "Tensor received!")
+            send_response(conn, tensor_data)
             print(f"Tensor Sent, {time.time()-t1}seconds")
         else:
             print(f"Received unknown data type: {type(received_data)}")
