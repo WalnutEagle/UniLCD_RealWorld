@@ -4,7 +4,7 @@ import torch  # For PyTorch tensor handling
 
 # Define host and port
 HOST = '0.0.0.0'  # Listen on all interfaces
-PORT = 65432      # Port to listen on
+PORT = 8083      # Port to listen on
 
 # Set up the server UDP socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

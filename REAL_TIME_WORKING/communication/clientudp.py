@@ -3,8 +3,8 @@ import pickle
 import torch  # For PyTorch tensor handling
 
 # Define server address and port
-HOST = '127.0.0.1'  # Replace with actual server IP for remote
-PORT = 65432        # Server port
+HOST = '128.197.164.42'  # Replace with actual server IP for remote
+PORT = 8083        # Server port
 
 # Set up the client UDP socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

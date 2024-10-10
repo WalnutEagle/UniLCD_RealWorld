@@ -3,8 +3,8 @@ import pickle
 import numpy as np
 
 # Define host and port (server address)
-HOST = '127.0.0.1'  # Server's IP address (replace with actual IP for remote)
-PORT = 65432        # Port to connect to
+HOST = '128.197.164.42'  # Server's IP address (replace with actual IP for remote)
+PORT = 8083        # Port to connect to
 
 # Function to connect to the server
 def connect_to_server():

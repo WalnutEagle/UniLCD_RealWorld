@@ -4,7 +4,7 @@ import numpy as np
 
 # Define host and port
 HOST = '0.0.0.0'  # Listen on all available interfaces
-PORT = 65432      # Port to listen on
+PORT = 8083      # Port to listen on
 
 # Function to start the server and accept a connection
 def start_server():
