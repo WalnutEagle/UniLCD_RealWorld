@@ -4,7 +4,8 @@ import numpy as np
 from torch.utils.data import DataLoader
 from cloudsidemodel import CustomRegNetY00  # Ensure this matches your model definition
 def load_model(model_path):
-    checkpoint = torch.load(model_path)  # Load the entire checkpoint
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    checkpoint = torch.load(model_path, map_location=device)  # Load the entire checkpoint
     model = CustomRegNetY00()  # Initialize your model
     # state_dict = checkpoint
     # Strip 'module.' from the keys if the model was saved with Data Parallelism
