@@ -1,0 +1,1 @@
+Copy this code outside of this directory, and then only run sometimes depth ai messes up the pipeline.
