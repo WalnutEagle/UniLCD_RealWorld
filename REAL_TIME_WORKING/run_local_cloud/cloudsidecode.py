@@ -38,3 +38,7 @@ def main():
 
         # Optionally: Assert that data was sent successfully (depends on your send_data implementation)
         # You might need to implement a check inside send_data or confirm that the action was successful.
+
+
+if __name__=="__main__":
+    main()

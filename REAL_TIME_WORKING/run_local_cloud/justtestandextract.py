@@ -25,9 +25,7 @@ model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_clo
 full_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Main_script/10-11-2024/rc_data/run_001"
 # def run_con(conn):
 
-
-if __name__== "__main__":
-    conn = start_server()
+def get_work_done(conn):
     t1 = time.time()
 
     # Get predictions
@@ -54,6 +52,11 @@ if __name__== "__main__":
     assert total_time < 5, "Total time should be less than 5 seconds"
 
     print(f"Yay the comms worked: {serveroutput}")
+
+
+if __name__== "__main__":
+    conn = start_server()
+    get_work_done(conn)
 
     
     # conn = start_server()
