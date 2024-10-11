@@ -253,7 +253,8 @@ def main():
         while not exit_flag:
             start_time = time.time()
             start_measurement(bus)
-            distance_to_obstacle = read_distance(bus)
+            if wait_for_measurement(bus):
+                distance_to_obstacle = read_distance(bus)
             if distance_to_obstacle<=100:
                 kit.servo[0].angle = 0.0
                 kit.servo[1].angle = 0.0
