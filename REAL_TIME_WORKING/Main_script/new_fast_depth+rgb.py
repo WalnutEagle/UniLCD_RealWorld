@@ -13,6 +13,7 @@ import board
 import busio
 from pynput import keyboard as kb
 import matplotlib.pyplot as plt
+from collections import deque
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
@@ -214,8 +215,8 @@ def main():
     fig, ax = plt.subplots()
     line1, = ax.plot([], [], label='Throttle')
     line2, = ax.plot([], [], label='Steer')
-    ax.set_xlim(0, 100)  # X-axis limits
-    ax.set_ylim(-1, 1)   # Y-axis limits (adjust as necessary)
+    ax.set_xlim(0, 200)  # X-axis limits
+    ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
     ax.legend()
 
     with dai.Device(pipeline) as device:
@@ -266,9 +267,9 @@ def main():
                 mapped_steer = map_value_steer(0.0)
                 mapped_throttle = map_value_throttle(0.0)
                 print(f"steer {mapped_steer}, throttle {mapped_throttle}")
-            mapped_steer = map_value_steer(steer)
-            #print(mapped_steer)
-            mapped_throttle = map_value_throttle(throttle)
+            else :
+                mapped_steer = map_value_steer(steer)
+                mapped_throttle = map_value_throttle(throttle)
             print(f"steer {mapped_steer}, throttle {mapped_throttle}")
             throttle_values.append(mapped_throttle)
             steer_values.append(mapped_steer)
@@ -276,9 +277,9 @@ def main():
             line1.set_ydata(throttle_values)
             line2.set_xdata(range(len(steer_values)))
             line2.set_ydata(steer_values)
-
+            ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
             plt.draw()
-            plt.pause(0.01) 
+            plt.pause(0.01)
             kit.servo[0].angle = mapped_steer
             kit.servo[1].angle = mapped_throttle
 

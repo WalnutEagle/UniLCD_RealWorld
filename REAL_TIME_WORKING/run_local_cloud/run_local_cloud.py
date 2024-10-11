@@ -253,8 +253,8 @@ def main():
     fig, ax = plt.subplots()
     line1, = ax.plot([], [], label='Throttle')
     line2, = ax.plot([], [], label='Steer')
-    ax.set_xlim(0, 100)  # X-axis limits
-    ax.set_ylim(-1, 1)   # Y-axis limits (adjust as necessary)
+    ax.set_xlim(0, 200)  # X-axis limits
+    ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
     ax.legend()
     
     with dai.Device(pipeline) as device:
@@ -315,11 +315,12 @@ def main():
                     # mapped_steer = map_value_steer(steer)
                     # mapped_throttle = map_value_throttle(throttle)
                     if distance_to_obstacle<=100:
-                        serveroutput[0][0] = 0.0
-                        serveroutput[0][1] = 0.0
-                    mapped_steer = map_value_steer(serveroutput[0][0])
-                    mapped_throttle = map_value_throttle(serveroutput[0][1])
-                    print(f"Mapped Steer:{mapped_steer}", f"Mapped_Throttle:{mapped_throttle}")
+                        mapped_steer = map_value_steer(0.0)
+                        mapped_throttle = map_value_throttle(0.0)
+                    else :
+                        mapped_steer = map_value_steer(serveroutput[0][0])
+                        mapped_throttle = map_value_throttle(serveroutput[0][1])
+                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
                     throttle_values.append(mapped_throttle)
@@ -328,9 +329,10 @@ def main():
                     line1.set_ydata(throttle_values)
                     line2.set_xdata(range(len(steer_values)))
                     line2.set_ydata(steer_values)
-
+                    ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
                     plt.draw()
                     plt.pause(0.01)
+
 
                     rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
                     disparity_file = f"{data_dir_disparity}/{frame_count:09d}_disparity.png"
