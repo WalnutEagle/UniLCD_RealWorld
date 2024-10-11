@@ -192,22 +192,6 @@ def configure_depthai_pipeline():
     return pipeline, depth
 
 
-def load_model(model_path):
-    checkpoint = torch.load(model_path)  # Load the entire checkpoint
-    model = CustomRegNetY002()  # Initialize your model
-    # state_dict = checkpoint
-    # Strip 'module.' from the keys if the model was saved with Data Parallelism
-    state_dict = checkpoint["model_state_dict"]
-    # print(state_dict.keys())
-    # assert 0
-    # print(state_dict)
-    if list(state_dict.keys())[0].startswith('module.'):
-        state_dict = {k[7:]: v for k, v in state_dict.items()}  # Remove 'module.' prefix
-
-    model.load_state_dict(state_dict)  # Load only the model state dict
-    model.eval()  # Set the model to evaluation mode
-    return model
-
 # Example usage
 # rgb_tensor = preprocess_image(frame_rgb, frame_disparity)
 
@@ -258,16 +242,21 @@ def main():
     # model_path = "/home/h2x/Desktop/trainedmodels/model_run_001.pth"
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/run_local/model_run_0011.pth"
     # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
-    model = load_model(model_path)
+    
 
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
         q_disparity = device.getOutputQueue(name="disparity", maxSize=4, blocking=False)
-        start_measurement(bus)
+
         max_disparity = 255 
         while not exit_flag:
             start_time = time.time()
-            
+            start_measurement(bus)
+            if wait_for_measurement(bus):
+                distance_to_obstacle = read_distance(bus)
+            if distance_to_obstacle<=100:
+                kit.servo[0].angle = 0.0
+                kit.servo[1].angle = 0.0
             in_rgb = q_rgb.tryGet()
             if in_rgb is not None:
                 frame_rgb = in_rgb.getCvFrame()
@@ -285,7 +274,7 @@ def main():
                 if collect_data:
                     cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
                     cv2.imwrite(f"{data_dir_disparity}/{frame_count:09d}_disparity.png", frame_disparity)
-                    distance_to_obstacle = read_distance(bus)
+                    
                     sensor_data = {
                         'EpochTime': time.time(),
                         'DateTime': datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S"),
@@ -296,7 +285,7 @@ def main():
                     json_str = json.dumps(sensor_data, indent=4)
                     with open(f"{data_dir_json}/{frame_count:09d}.json", 'w') as file:
                         file.write(json_str)
-                    time.sleep(0.5)
+                    # time.sleep(0.1)
                     # check_dataset(full_path)
                     # output = get_preds(model_path, full_path)
                     # sssdddd = "/home/h2x/Desktop/REAL_TIME_WORKING/run_local/09-20-2024/rc_data/run_001"
@@ -337,9 +326,8 @@ def main():
 
                 frame_count += 1
             if exit_flag:
-                throttle = 0.0
-                mapped_throttle = map_value_throttle(throttle)
-                kit.servo[1].angle = mapped_throttle
+                kit.servo[1].angle = 0.0
+                kit.servo[0].angle = 0.0
 
             # if distance_to_obstacle<=55:
             #     mapped_steer = map_value_steer(0.0)
