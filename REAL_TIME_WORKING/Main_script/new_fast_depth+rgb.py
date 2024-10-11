@@ -209,11 +209,12 @@ def main():
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
         q_disparity = device.getOutputQueue(name="disparity", maxSize=4, blocking=False)
-        start_measurement(bus)
         max_disparity = 255 
         while not exit_flag:
             start_time = time.time()
-            
+            start_measurement(bus)
+            if wait_for_measurement(bus):
+                distance_to_obstacle = read_distance(bus)
             in_rgb = q_rgb.tryGet()
             if in_rgb is not None:
                 frame_rgb = in_rgb.getCvFrame()
