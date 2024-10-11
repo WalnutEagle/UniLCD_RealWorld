@@ -35,6 +35,7 @@ def main():
 
     # Send data back to the server
     send_data(client_socket, output)
+    print("Yay it works")
 '''    while True:
         # client_socket = connect_to_server()
         # predictions = receive_response(client_socket)
