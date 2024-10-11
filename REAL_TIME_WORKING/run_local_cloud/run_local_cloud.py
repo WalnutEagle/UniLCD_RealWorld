@@ -2,6 +2,8 @@ from depthai import camera
 from mode import calc
 import cv2
 from missing import check_dataset, find_missing_files
+import board
+import busio
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
 kit.servo[0].set_pulse_width_range(1200, 2200)
