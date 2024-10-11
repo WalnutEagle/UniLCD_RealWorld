@@ -29,7 +29,7 @@ def inference(model,predictions):
     return all_predictions
 def get_preds(model_path,predictions):
     model = load_model(model_path)
-    return print_predictions(model_path, predictions)
+    return inference(model_path, predictions)
 
 if __name__ == "__main__":
     model_path = "/home/h2x/Desktop/trainedmodels/model_run_0011.pth"  # Update with the path to your trained model
