@@ -2,10 +2,10 @@ import logging
 import torch
 import numpy as np
 from torch.utils.data import DataLoader
-from cloudsideinference import CustomRegNetY002  # Ensure this matches your model definition
+from cloudsideinference import CustomRegNetY00  # Ensure this matches your model definition
 def load_model(model_path):
     checkpoint = torch.load(model_path)  # Load the entire checkpoint
-    model = CustomRegNetY002()  # Initialize your model
+    model = CustomRegNetY00()  # Initialize your model
     # state_dict = checkpoint
     # Strip 'module.' from the keys if the model was saved with Data Parallelism
     state_dict = checkpoint['model_state_dict']

@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import timm
 
-class CustomRegNetY002(nn.Module):
+class CustomRegNetY00(nn.Module):
     def __init__(self):
         super(CustomRegNetY002, self).__init__()
         # Create the base RegNetY_002 model
