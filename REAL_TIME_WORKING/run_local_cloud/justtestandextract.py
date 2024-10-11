@@ -67,7 +67,7 @@ if __name__== "__main__":
     t2=time.time()
     # Send response
     send_response(conn, output)
-    print(f"Sending Time:{time.time()-t2)}seconds.")
+    print(f"Sending Time:{time.time()-t2}seconds.")
     # Receive data from server
     serveroutput = receive_data(conn)
 
