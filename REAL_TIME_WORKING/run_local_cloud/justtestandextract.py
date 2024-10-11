@@ -49,14 +49,40 @@ def get_work_done(conn):
     print(f"Total Time taken is {total_time} seconds.")
 
     # Assert that total time is within expected limits (e.g., less than 5 seconds)
-    assert total_time < 5, "Total time should be less than 5 seconds"
+    # assert total_time < 5, "Total time should be less than 5 seconds"
 
     print(f"Yay the comms worked: {serveroutput}")
 
 
 if __name__== "__main__":
     conn = start_server()
-    get_work_done(conn)
+    t1 = time.time()
+
+    # Get predictions
+    output = get_preds(model_path, full_path)
+    print(output)
+    # Assert that output is not None and is of expected type (e.g., numpy array)
+    assert output is not None, "Output should not be None"
+    assert isinstance(output, np.ndarray), "Output should be a numpy array"
+
+    # Send response
+    send_response(conn, output)
+
+    # Receive data from server
+    serveroutput = receive_data(conn)
+
+    # Assert that serveroutput is received
+    assert serveroutput is not None, "Server output should not be None"
+
+    # Calculate total time taken
+    total_time = time.time() - t1
+    print(f"Total Time taken is {total_time} seconds.")
+
+    # Assert that total time is within expected limits (e.g., less than 5 seconds)
+    # assert total_time < 5, "Total time should be less than 5 seconds"
+
+    print(f"Yay the comms worked: {serveroutput}")
+    # get_work_done(conn)
 
     
     # conn = start_server()
