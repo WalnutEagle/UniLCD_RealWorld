@@ -245,6 +245,17 @@ def main():
     # # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
     # model = load_model(model_path)
     conn = start_server()
+    throttle_values = deque(maxlen=100)  # Store the last 100 values
+    steer_values = deque(maxlen=100)
+
+    # Create a figure for plotting
+    plt.ion()  # Interactive mode on
+    fig, ax = plt.subplots()
+    line1, = ax.plot([], [], label='Throttle')
+    line2, = ax.plot([], [], label='Steer')
+    ax.set_xlim(0, 100)  # X-axis limits
+    ax.set_ylim(-1, 1)   # Y-axis limits (adjust as necessary)
+    ax.legend()
     
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
@@ -311,6 +322,15 @@ def main():
                     print(f"Mapped Steer:{mapped_steer}", f"Mapped_Throttle:{mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
+                    throttle_values.append(mapped_throttle)
+                    steer_values.append(mapped_steer)
+                    line1.set_xdata(range(len(throttle_values)))
+                    line1.set_ydata(throttle_values)
+                    line2.set_xdata(range(len(steer_values)))
+                    line2.set_ydata(steer_values)
+
+                    plt.draw()
+                    plt.pause(0.01)
 
                     rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
                     disparity_file = f"{data_dir_disparity}/{frame_count:09d}_disparity.png"
