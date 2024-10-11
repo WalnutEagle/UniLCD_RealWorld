@@ -69,10 +69,4 @@ class CustomRegNetY002(nn.Module):
         # Forward pass through the model
         x = self.model.stem(x)
         x = self.model.s1(x)
-        x = self.model.s2(x)
-        x = self.model.s3(x)
-        x = self.model.s4(x)
-        x = self.model.final_conv(x)
-        x = self.model.head.global_pool(x)
-        x = self.lin(x)
         return x

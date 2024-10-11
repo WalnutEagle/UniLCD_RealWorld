@@ -85,7 +85,6 @@ def distance():
             start_measurement(bus)
             if wait_for_measurement(bus):
                 distance = read_distance(bus)
-                yield distance
                 if distance is not None:
                     print(f"Distance: {distance} cm")
                 else:
