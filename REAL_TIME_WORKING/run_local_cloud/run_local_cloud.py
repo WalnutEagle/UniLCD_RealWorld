@@ -10,7 +10,7 @@ kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
 kit.servo[0].set_pulse_width_range(1200, 2200)
 kit.servo[1].set_pulse_width_range(1000, 2000)
 
-if __name__ == "__camera__":
+if __name__ == "__main__":
     camera()
     calc()
     for frame in camera():
