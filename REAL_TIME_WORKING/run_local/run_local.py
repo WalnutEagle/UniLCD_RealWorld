@@ -254,9 +254,6 @@ def main():
             start_measurement(bus)
             if wait_for_measurement(bus):
                 distance_to_obstacle = read_distance(bus)
-            if distance_to_obstacle<=100:
-                kit.servo[0].angle = 0.0
-                kit.servo[1].angle = 0.0
             in_rgb = q_rgb.tryGet()
             if in_rgb is not None:
                 frame_rgb = in_rgb.getCvFrame()
@@ -302,6 +299,9 @@ def main():
                     # steer = output[0][0]
                     # mapped_steer = map_value_steer(steer)
                     # mapped_throttle = map_value_throttle(throttle)
+                    if distance_to_obstacle<=100:
+                        output[0][0] = 0.0
+                        output[0][1] = 0.0
                     mapped_steer = map_value_steer(output[0][0])
                     mapped_throttle = map_value_throttle(output[0][1])
                     print(f"Mapped Steer:{mapped_steer}", f"Mapped_Throttle:{mapped_throttle}")
