@@ -64,10 +64,10 @@ if __name__== "__main__":
     # Assert that output is not None and is of expected type (e.g., numpy array)
     assert output is not None, "Output should not be None"
     assert isinstance(output, np.ndarray), "Output should be a numpy array"
-
+    t2=time.time()
     # Send response
     send_response(conn, output)
-
+    print(f"Sending Time:{time.time(0-t2)}seconds.")
     # Receive data from server
     serveroutput = receive_data(conn)
 
