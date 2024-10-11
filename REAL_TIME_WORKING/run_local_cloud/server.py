@@ -69,5 +69,5 @@ def server_loop(conn):
     conn.close()
 
 # Usage example:
-conn = start_server()
-server_loop(conn)
+# conn = start_server()
+# server_loop(conn)

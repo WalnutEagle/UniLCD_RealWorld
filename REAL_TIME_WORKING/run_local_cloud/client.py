@@ -59,5 +59,5 @@ def client_loop(client_socket):
     client_socket.close()
 
 # Usage example:
-client_socket = connect_to_server()
-client_loop(client_socket)
+# client_socket = connect_to_server()
+# client_loop(client_socket)
