@@ -30,6 +30,7 @@ class CustomRegNetY00(nn.Module):
 
     def forward(self, x):
         # Forward pass through the model
+        x = self.model.s1(x)
         x = self.model.s2(x)
         x = self.model.s3(x)
         x = self.model.s4(x)

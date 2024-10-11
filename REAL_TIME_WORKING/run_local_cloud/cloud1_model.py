@@ -68,5 +68,4 @@ class CustomRegNetY002(nn.Module):
     def forward(self, x):
         # Forward pass through the model
         x = self.model.stem(x)
-        x = self.model.s1(x)
         return x
