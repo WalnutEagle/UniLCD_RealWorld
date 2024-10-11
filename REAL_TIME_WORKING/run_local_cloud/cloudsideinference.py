@@ -22,8 +22,8 @@ def inference(model,predictions):
     model.to(device)
     all_predictions = []
     with torch.no_grad():
-        predictions = model(images).cpu().numpy()  # Forward pass to get predictions 
-        all_predictions.extend(predictions)
+        prediction = model(predictions).cpu().numpy()  # Forward pass to get predictions 
+        all_predictions.extend(prediction)
     all_predictions = np.array(all_predictions)
     return all_predictions
 def get_preds(model_path,predictions):
