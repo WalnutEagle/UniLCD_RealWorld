@@ -8,7 +8,7 @@ import argparse
 import numpy as np
 
 
-def main():
+def camera():
     throttle = 0.0
     steer = 0.0
     collect_data = False  # Initially not collecting data
@@ -133,4 +133,4 @@ def main():
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    main()
+    camera()

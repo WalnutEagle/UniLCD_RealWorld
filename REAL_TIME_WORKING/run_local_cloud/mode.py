@@ -70,7 +70,7 @@ def read_distance(bus):
         print(f"Error reading distance: {e}")
         return None
 
-def distance():
+def calc():
     bus_number = 1
     try:
         bus = smbus2.SMBus(bus_number)
@@ -101,4 +101,4 @@ def distance():
         bus.close()
 
 if __name__ == "__main__":
-    distance()
+    calc()
