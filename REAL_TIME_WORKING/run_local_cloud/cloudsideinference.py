@@ -4,7 +4,7 @@ import numpy as np
 from torch.utils.data import DataLoader
 from cloudsidemodel import CustomRegNetY00  # Ensure this matches your model definition
 def load_model(model_path):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda')
     checkpoint = torch.load(model_path, map_location=device)  # Load the entire checkpoint
     model = CustomRegNetY00()  # Initialize your model
     # state_dict = checkpoint
@@ -18,7 +18,7 @@ def load_model(model_path):
     return model
 
 def inference(model,predictions):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda')
     model.to(device)
     all_predictions = []
     input_tensor = torch.tensor(predictions).to(device)
