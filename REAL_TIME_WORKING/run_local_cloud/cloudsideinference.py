@@ -21,7 +21,6 @@ def inference(model,predictions):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     all_predictions = []
-    input_tensor = predictions.to(device)
     with torch.no_grad():
         predictions = model(images).cpu().numpy()  # Forward pass to get predictions 
         all_predictions.extend(predictions)
