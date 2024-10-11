@@ -31,6 +31,7 @@ from merger import get_preds
 from missing import check_dataset, find_missing_files
 from PIL import Image
 from server import start_server, receive_data, send_response
+from collections import deque
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
