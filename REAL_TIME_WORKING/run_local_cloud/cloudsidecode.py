@@ -3,6 +3,7 @@ import pickle
 import argparse
 import torch 
 import time
+import numpy as np
 from client import connect_to_server, send_data, receive_response
 from cloudsideinference import get_preds
 def main():
