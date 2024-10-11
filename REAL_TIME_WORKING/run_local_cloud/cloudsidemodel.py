@@ -5,7 +5,7 @@ import timm
 
 class CustomRegNetY00(nn.Module):
     def __init__(self):
-        super(CustomRegNetY002, self).__init__()
+        super(CustomRegNetY00, self).__init__()
         # Create the base RegNetY_002 model
         self.model = timm.create_model('regnety_002', pretrained=True)
 
