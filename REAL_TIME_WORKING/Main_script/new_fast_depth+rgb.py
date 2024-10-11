@@ -215,6 +215,7 @@ def main():
             start_measurement(bus)
             if wait_for_measurement(bus):
                 distance_to_obstacle = read_distance(bus)
+                print(distance_to_obstacle)
             in_rgb = q_rgb.tryGet()
             if in_rgb is not None:
                 frame_rgb = in_rgb.getCvFrame()
