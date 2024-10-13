@@ -58,10 +58,10 @@ class CustomRegNetY002(nn.Module):
         self.lin = nn.Sequential(
             nn.Linear(self.model.head.fc.in_features, 512),
             nn.LeakyReLU(negative_slope=0.2),
-            nn.Dropout(0.5), 
+            nn.Dropout(0.11), 
             nn.Linear(512, 256),
             nn.LeakyReLU(negative_slope=0.2),
-            nn.Dropout(0.5),  
+            nn.Dropout(0.11),  
             nn.Linear(256, 2)  # 2 outputs: steering and throttle
         )
 
