@@ -23,6 +23,7 @@ class SimpleNN(nn.Module):
         return x
 
 model = SimpleNN().to(device)
+model = nn.DataParallel(model).to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters())
 
