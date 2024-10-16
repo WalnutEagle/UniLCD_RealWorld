@@ -13,4 +13,8 @@ def get_jetson_stats():
         print(f"Power Usage: {power_usage['power'] / 1_000_000:.2f} Watts") 
 
 if __name__ == "__main__":
-    get_jetson_stats()
+    try:
+        while True:
+            get_jetson_stats()
+    except KeyboardInterrupt:
+        print("\nMonitoring Stopped by user:)")
