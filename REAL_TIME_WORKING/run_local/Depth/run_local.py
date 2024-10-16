@@ -1,3 +1,14 @@
+import torch
+import numpy as np
+import board
+import busio
+import torch.nn as nn
+import timm
+import shutil
+import matplotlib.pyplot as plt
+import time
+import argparse
+import glob
 import os
 import json
 import datetime
@@ -8,10 +19,17 @@ import depthai as dai
 import numpy as np
 import smbus2
 import threading
+from torchvision import transforms
+from torchvision.io import read_image
+from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
 from adafruit_servokit import ServoKit
-import board
-import busio
 from pynput import keyboard as kb
+from REAL_TIME_WORKING.Models.overfit.merger import get_preds
+from REAL_TIME_WORKING.Models.overfit.missing import check_dataset, find_missing_files
+from PIL import Image
+from collections import deque
+
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
@@ -96,11 +114,11 @@ def get_high_accuracy_mode(bus):
 
 def map_value_steer(x, in_min=-1, in_max=1, out_min=0, out_max=180):
     """Map values between (-1, 1) to (0, 180)"""
-    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+    return float((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
 def map_value_throttle(x, in_min=-1, in_max=1, out_min=0, out_max=99):
     """Map values between (-1, 1) to (0, 99)"""
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+    return float(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 def on_press(key):
     global throttle, steer, collect_data, exit_flag, create_new_directory
@@ -117,6 +135,9 @@ def on_press(key):
     elif key == kb.KeyCode.from_char('d'):
         steer = 1.0
     elif key == kb.KeyCode.from_char('q'):
+        throttle = 0.0
+        mapped_throttle = map_value_throttle(throttle)
+        kit.servo[1].angle = mapped_throttle
         exit_flag = True
         return False
 
@@ -169,11 +190,23 @@ def configure_depthai_pipeline():
 
     return pipeline, depth
 
+
+# Example usage
+# rgb_tensor = preprocess_image(frame_rgb, frame_disparity)
+
+
+# Example usage
+# rgb_path = 'path/to/rgb/image.jpg'
+# depth_path = 'path/to/depth/image.png'
+# preprocessed_image = preprocess_image(rgb_path, depth_path)
+
+
 def main():
     global throttle, steer, collect_data, create_new_directory, exit_flag
     bus_number = 1
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp', type=str, default="rc_data", help="Experiment name")
+    parser.add_argument('-s', '--model_path', default="/home/h2x/Desktop/IL_DATA_COLLECTION_ADWAIT/Main_script/09-15-2024/model.pth", type=str, help='Path to save your model')
     args = parser.parse_args()
     frame_count = 0
     distance_to_obstacle = 0
@@ -206,31 +239,47 @@ def main():
     power_mode = get_power_mode(bus)
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
+    throttle_values = deque(maxlen=100) 
+    steer_values = deque(maxlen=100)
+
+    # Create a figure for plotting
+    plt.ion()  # Interactive mode on
+    fig, ax = plt.subplots()
+    line1, = ax.plot([], [], label='Throttle')
+    line2, = ax.plot([], [], label='Steer')
+    ax.set_xlim(0, 200)  # X-axis limits
+    ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
+    ax.legend()
+    
+
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
         q_disparity = device.getOutputQueue(name="disparity", maxSize=4, blocking=False)
-        start_measurement(bus)
+
         max_disparity = 255 
         while not exit_flag:
             start_time = time.time()
-            
+            start_measurement(bus)
+            if wait_for_measurement(bus):
+                distance_to_obstacle = read_distance(bus)
             in_rgb = q_rgb.tryGet()
             if in_rgb is not None:
                 frame_rgb = in_rgb.getCvFrame()
                 cv2.imshow("RGB", frame_rgb)
 
-                if collect_data:
-                    cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
+                # if collect_data:
+                #     cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
 
             in_disparity = q_disparity.tryGet()
             if in_disparity is not None:
                 frame_disparity = in_disparity.getFrame()
                 frame_disparity = (frame_disparity * (255 / max_disparity)).astype(np.uint8)
-                cv2.imshow("Disparity", frame_disparity)
+                # cv2.imshow("Disparity", frame_disparity)
 
                 if collect_data:
+                    cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
                     cv2.imwrite(f"{data_dir_disparity}/{frame_count:09d}_disparity.png", frame_disparity)
-                    distance_to_obstacle = read_distance(bus)
+                    
                     sensor_data = {
                         'EpochTime': time.time(),
                         'DateTime': datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S"),
@@ -241,7 +290,67 @@ def main():
                     json_str = json.dumps(sensor_data, indent=4)
                     with open(f"{data_dir_json}/{frame_count:09d}.json", 'w') as file:
                         file.write(json_str)
+                    # time.sleep(0.1)
+                    # check_dataset(full_path)
+                    # output = get_preds(model_path, full_path)
+                    # sssdddd = "/home/h2x/Desktop/REAL_TIME_WORKING/run_local/09-20-2024/rc_data/run_001"
+                    check_dataset(full_path)
+                    find_missing_files(full_path)
+                    s = time.time()
+                    output = get_preds(args.model_path, full_path)
+                    print(f"Total Time: {time.time() - s:.5f}")
+                    # print(output)
+                    # if output[0][1]>=0.95:
+                    #     output[0][1] = 1.0
+                    # print(f"Steering:{output[0][0]}, Throttle:{output[0][1]}")
+                    # throttle = output[0][1]
+                    # steer = output[0][0]
+                    # mapped_steer = map_value_steer(steer)
+                    # mapped_throttle = map_value_throttle(throttle)
+                    if distance_to_obstacle<=100:
+                        mapped_steer = map_value_steer(0.0)
+                        mapped_throttle = map_value_throttle(0.0)
+                    else :
+                        mapped_steer = map_value_steer(output[0][0])
+                        mapped_throttle = map_value_throttle(output[0][1])
+                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
+                    kit.servo[0].angle = mapped_steer
+                    kit.servo[1].angle = mapped_throttle
+                    throttle_values.append(mapped_throttle)
+                    steer_values.append(mapped_steer)
+                    line1.set_xdata(range(len(throttle_values)))
+                    line1.set_ydata(throttle_values)
+                    line2.set_xdata(range(len(steer_values)))
+                    line2.set_ydata(steer_values)
+                    ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
+                    plt.draw()
+                    plt.pause(0.01)
+
+
+                    rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
+                    disparity_file = f"{data_dir_disparity}/{frame_count:09d}_disparity.png"
+                    json_file = f"{data_dir_json}/{frame_count:09d}.json"
+                    # show_rgb = Image.open(rgb_file)
+                    # show_rgb.show()
+                    # time.sleep(10)
+
+                    try:
+                        os.remove(rgb_file)
+                        os.remove(disparity_file)
+                        os.remove(json_file)
+                        # print(f"Deleted files: {rgb_file}, {disparity_file}, {json_file}")
+                    except OSError as e:
+                        print(f"Error deleting files: {e}")
+                        break
+
                 frame_count += 1
+            if exit_flag:
+                kit.servo[1].angle = 0.0
+                kit.servo[0].angle = 0.0
+                try:
+                    shutil.rmtree(date_exp)
+                except OSError as e:
+                    print(f"Error deleting directory: {e}")
 
             # if distance_to_obstacle<=55:
             #     mapped_steer = map_value_steer(0.0)
@@ -249,10 +358,7 @@ def main():
             # elif distance_to_obstacle>55:
             #     mapped_steer = map_value_steer(steer)
             #     mapped_throttle = map_value_throttle(throttle)
-            mapped_steer = map_value_steer(steer)
-            mapped_throttle = map_value_throttle(throttle)
-            kit.servo[0].angle = mapped_steer
-            kit.servo[1].angle = mapped_throttle
+
 
             if create_new_directory:
                 print("Creating new directory.")
