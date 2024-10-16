@@ -10,7 +10,8 @@ def get_jetson_stats():
         print(f"CPU Usage: {cpu_usage}%")
         print(f"GPU Usage: {gpu_usage}%")
         print(f"Memory Usage: {memory_usage['used'] / memory_usage['total'] * 100:.2f}%")
-        print(f"Power Usage: {power_usage['power'] / 1_000_000:.2f} Watts") 
+        print(f"Power Usage: {power_usage['power'] / 1_000_000:.2f} Watts")
+        print("-" * 40)
 
 if __name__ == "__main__":
     try:
