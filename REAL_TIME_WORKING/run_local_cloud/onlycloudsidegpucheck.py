@@ -21,6 +21,7 @@ def main():
 
     # Receive predictions from the server
     # predictions = receive_response(client_socket)
+    start = time.time()
     predictions = np.load("/opt/app-root/src/UniLCD_RealWorld/well.npy")
 
     # Assert that predictions are not None and are of expected type
@@ -30,6 +31,7 @@ def main():
     # Get model predictions based on received data
     output = get_preds(args.model_path, predictions)
     print(output)
+    print(f"Time Taken is {time.time()-start}seconds.")
     # Assert that output is not None and is of expected type
     assert output is not None, "Output from get_preds should not be None."
     assert isinstance(output, np.ndarray), "Output should be a numpy array."
