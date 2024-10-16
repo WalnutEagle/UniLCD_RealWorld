@@ -28,6 +28,7 @@ from pynput import keyboard as kb
 from REAL_TIME_WORKING.Models.ovrft.merger import get_preds
 from REAL_TIME_WORKING.Models.ovrft.missing import check_dataset, find_missing_files
 from REAL_TIME_WORKING.power_stats.get_power import get_jetson_stats
+from REAL_TIME_WORKING.communication.server import start_server, receive_data, send_response
 from PIL import Image
 from collections import deque
 
