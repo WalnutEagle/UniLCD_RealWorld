@@ -6,13 +6,16 @@ def get_jetson_stats():
         power_usage = jetson.power
         if 'tot' in power_usage and 'power' in power_usage['tot']:
             total_power = power_usage['tot']['power'] / 1000 
-            print(f"Power Usage: {total_power:.2f} Watts")
+            # print(f"Power Usage: {total_power:.2f} Watts")
         else:
             print("Power usage data not available.")
+    return total_power
 
 if __name__ == "__main__":
-    try:
-        while True:
-            get_jetson_stats()
-    except KeyboardInterrupt:
-        print("\nMonitoring stopped.")
+    # try:
+    #     while True:
+    #         get_jetson_stats()
+    # except KeyboardInterrupt:
+    #     print("\nMonitoring stopped.")
+    well = get_jetson_stats()
+    print(well)
