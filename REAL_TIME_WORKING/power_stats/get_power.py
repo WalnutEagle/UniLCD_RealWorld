@@ -31,7 +31,7 @@ def get_jetson_stats():
 
         print(f"CPU Usage: {cpu_usage}%")
         print(f"GPU Usage: {gpu_usage}%")
-        
+
         # Check memory usage structure
         if 'used' in memory_usage and 'total' in memory_usage:
             memory_used = memory_usage['used']
@@ -41,7 +41,10 @@ def get_jetson_stats():
         else:
             print("Memory usage data not available.")
 
-        # Check power usage structure
+        # Print entire power usage data for inspection
+        print("Power Usage Data:", power_usage)  # Inspect the structure
+        
+        # Access power usage if the expected key exists
         if 'power' in power_usage:
             print(f"Power Usage: {power_usage['power'] / 1_000_000:.2f} Watts")  # Convert microWatts to Watts
         else:
