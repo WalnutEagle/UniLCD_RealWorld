@@ -10,7 +10,7 @@ def get_jetson_stats():
         print(f"GPU Usage: {gpu_usage}%")
         print("Power Usage Data:", power_usage)
         if 'tot' in power_usage and 'power' in power_usage['tot']:
-            total_power = power_usage['tot']['power'] / 1_000_000 
+            total_power = power_usage['tot']['power'] / 1000 
             print(f"Power Usage: {total_power:.2f} Watts")
         else:
             print("Power usage data not available.")
