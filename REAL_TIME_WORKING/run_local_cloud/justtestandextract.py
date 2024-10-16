@@ -61,6 +61,7 @@ if __name__== "__main__":
     # Get predictions
     output = get_preds(model_path, full_path)
     print(output)
+    np.save('well.npy', output)
     # Assert that output is not None and is of expected type (e.g., numpy array)
     assert output is not None, "Output should not be None"
     assert isinstance(output, np.ndarray), "Output should be a numpy array"
