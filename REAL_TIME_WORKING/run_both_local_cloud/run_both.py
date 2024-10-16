@@ -29,6 +29,7 @@ from REAL_TIME_WORKING.Models.ovrft.merger import get_preds
 from REAL_TIME_WORKING.Models.ovrft.missing import check_dataset, find_missing_files
 from REAL_TIME_WORKING.power_stats.get_power import get_jetson_stats
 from REAL_TIME_WORKING.communication.server import start_server, receive_data, send_response
+from REAL_TIME_WORKING.power_stats.get_power import get_jetson_stats
 from PIL import Image
 from collections import deque
 
@@ -44,6 +45,7 @@ steer = 0.0
 collect_data = False
 create_new_directory = False
 exit_flag = False  
+infermode = 0
 
 LIDAR_ADDR = 0x62
 REG_SYSRANGE_START = 0x00
@@ -204,7 +206,7 @@ def configure_depthai_pipeline():
 
 
 def main():
-    global throttle, steer, collect_data, create_new_directory, exit_flag
+    global throttle, steer, collect_data, create_new_directory, exit_flag, infermode
     bus_number = 1
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp', type=str, default="rc_data", help="Experiment name")
@@ -244,6 +246,7 @@ def main():
     throttle_values = deque(maxlen=100) 
     steer_values = deque(maxlen=100)
 
+    conn = start_server()
     # Create a figure for plotting
     plt.ion()  # Interactive mode on
     fig, ax = plt.subplots()
@@ -264,6 +267,14 @@ def main():
             start_measurement(bus)
             if wait_for_measurement(bus):
                 distance_to_obstacle = read_distance(bus)
+            powerused = get_jetson_stats()
+            if powerused <=20.00:
+                infermode = 0
+            elif powerused >20.00 and powerused <=35.00:
+                infermode = 1
+            elif powerused >35.00:
+                infermode = 2
+
             in_rgb = q_rgb.tryGet()
             if in_rgb is not None:
                 frame_rgb = in_rgb.getCvFrame()
@@ -299,7 +310,12 @@ def main():
                     check_dataset(full_path)
                     find_missing_files(full_path)
                     s = time.time()
-                    output = get_preds(args.model_path, full_path)
+                    if infermode == 0:
+                        output = get_preds(args.model_path, full_path)
+                    elif infermode == 1:
+                        print("Need to make different functions so that you can use the half model on the system")
+                    elif infermode == 2:
+                        print("need to implement the send image function and then add those in this one file :()")
                     print(f"Total Time: {time.time() - s:.5f}")
                     # print(output)
                     # if output[0][1]>=0.95:
