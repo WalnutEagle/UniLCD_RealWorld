@@ -25,8 +25,8 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from adafruit_servokit import ServoKit
 from pynput import keyboard as kb
-from REAL_TIME_WORKING.Models.overfit.merger import get_preds
-from REAL_TIME_WORKING.Models.overfit.missing import check_dataset, find_missing_files
+from REAL_TIME_WORKING.Models.ovrft.merger import get_preds
+from REAL_TIME_WORKING.Models.ovrft.missing import check_dataset, find_missing_files
 from PIL import Image
 from collections import deque
 
