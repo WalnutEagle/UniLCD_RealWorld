@@ -43,6 +43,7 @@ def get_work_done(conn):
 
 
 if __name__== "__main__":
+    '''
     conn = start_server()
     t1 = time.time()
 
@@ -80,3 +81,7 @@ if __name__== "__main__":
     # serveroutput = receive_data(conn)
     # print(f"Total Time taken is {time.time(0-t1)}seconds.")
     # print(f"Yay the commms worked {serveroutput}")
+    '''
+
+    output = get_preds(model_path, full_path)
+    print(output)
