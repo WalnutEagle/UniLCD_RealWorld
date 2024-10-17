@@ -138,12 +138,6 @@ def on_press(key):
     elif key == kb.KeyCode.from_char('d'):
         steer = 1.0
     elif key == kb.KeyCode.from_char('q'):
-        throttle = 0.0
-        steer = 0.0
-        mapped_steer = map_value_steer(steer)
-        mapped_throttle = map_value_throttle(throttle)
-        kit.servo[1].angle = mapped_throttle
-        kit.servo[0].angle = mapped_steer
         exit_flag = True
         return False
 
@@ -354,6 +348,13 @@ def main():
                         break
 
                 frame_count += 1
+                if exit_flag:
+                    throttle = 0.0
+                    steer = 0.0
+                    mapped_steer = map_value_steer(steer)
+                    mapped_throttle = map_value_throttle(throttle)
+                    kit.servo[1].angle = mapped_throttle
+                    kit.servo[0].angle = mapped_steer
 
             # if distance_to_obstacle<=55:
             #     mapped_steer = map_value_steer(0.0)
