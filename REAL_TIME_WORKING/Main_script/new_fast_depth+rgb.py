@@ -263,7 +263,7 @@ def main():
             # elif distance_to_obstacle>55:
             #     mapped_steer = map_value_steer(steer)
             #     mapped_throttle = map_value_throttle(throttle)
-            if distance_to_obstacle<=20:
+            if distance_to_obstacle<=100:
                 mapped_steer = map_value_steer(0.0)
                 mapped_throttle = map_value_throttle(0.0)
                 print(f"steer {mapped_steer}, throttle {mapped_throttle}")
