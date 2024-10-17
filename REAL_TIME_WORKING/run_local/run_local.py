@@ -247,8 +247,8 @@ def main():
     # model_path = "/home/h2x/Desktop/trainedmodels/model_run_001.pth"
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
     # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
-    throttle_values = deque(maxlen=100)  # Store the last 100 values
-    steer_values = deque(maxlen=100)
+    throttle_values = deque(maxlen=10000)  # Store the last 100 values
+    steer_values = deque(maxlen=10000)
 
     # Create a figure for plotting
     plt.ion()  # Interactive mode on
