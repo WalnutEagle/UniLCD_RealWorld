@@ -353,7 +353,7 @@ def main():
                 frame_count += 1
             if exit_flag:
                 kit.servo[1].angle = 0.0
-                kit.servo[0].angle = 0.0
+                kit.servo[0].angle = 49.5
 
             # if distance_to_obstacle<=55:
             #     mapped_steer = map_value_steer(0.0)
