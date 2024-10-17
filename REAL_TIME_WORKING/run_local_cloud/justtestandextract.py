@@ -23,7 +23,7 @@ from PIL import Image
 from server import start_server, receive_data, send_response
 # model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Models/ovrft/overfit8_900.pth"
 model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"
-full_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Main_script/10-17-2024/rc_data/run_001"
+full_path = "home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Main_script/10-17-2024/rc_data/run_001"
 # def run_con(conn):
 
 def get_work_done(conn):
