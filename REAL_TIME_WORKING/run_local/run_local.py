@@ -245,13 +245,13 @@ def main():
     steer_values = deque(maxlen=10000)
 
     # Create a figure for plotting
-    plt.ion()  # Interactive mode on
-    fig, ax = plt.subplots()
-    line1, = ax.plot([], [], label='Throttle')
-    line2, = ax.plot([], [], label='Steer')
-    ax.set_xlim(0, 200)  # X-axis limits
-    ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
-    ax.legend()
+    # plt.ion()  # Interactive mode on
+    # fig, ax = plt.subplots()
+    # line1, = ax.plot([], [], label='Throttle')
+    # line2, = ax.plot([], [], label='Steer')
+    # ax.set_xlim(0, 200)  # X-axis limits
+    # ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
+    # ax.legend()
     
 
     with dai.Device(pipeline) as device:
@@ -317,18 +317,18 @@ def main():
                         mapped_throttle = map_value_throttle(output[0][1])
                     if mapped_throttle > 99.0:
                         mapped_throttle = 99.0
-                    # print(f"steer {mapped_steer}, throttle {mapped_throttle}")
+                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
-                    throttle_values.append(mapped_throttle)
-                    steer_values.append(mapped_steer)
-                    line1.set_xdata(range(len(throttle_values)))
-                    line1.set_ydata(throttle_values)
-                    line2.set_xdata(range(len(steer_values)))
-                    line2.set_ydata(steer_values)
-                    ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
-                    plt.draw()
-                    plt.pause(0.01)
+                    # throttle_values.append(mapped_throttle)
+                    # steer_values.append(mapped_steer)
+                    # line1.set_xdata(range(len(throttle_values)))
+                    # line1.set_ydata(throttle_values)
+                    # line2.set_xdata(range(len(steer_values)))
+                    # line2.set_ydata(steer_values)
+                    # ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
+                    # plt.draw()
+                    # plt.pause(0.01)
 
 
                     rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
