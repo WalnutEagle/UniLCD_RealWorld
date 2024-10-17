@@ -39,7 +39,7 @@ def print_predictions(model, dataloader):
     # for i, prediction in enumerate(all_predictions):
     #     print(f"Sample {i}: Predicted Steering: {prediction[0]}, Predicted Throttle: {prediction[1]}")
 
-def get_preds(model_path, run_dir, batch_size=16):
+def get_preds(model_path, run_dir, batch_size=1):
     # Load the model
     model = load_model(model_path)
 
