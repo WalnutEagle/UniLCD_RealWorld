@@ -318,7 +318,7 @@ def main():
                     else :
                         mapped_steer = map_value_steer(output[0][0])
                         mapped_throttle = map_value_throttle(output[0][1])
-                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
+                    # print(f"steer {mapped_steer}, throttle {mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
                     throttle_values.append(mapped_throttle)
