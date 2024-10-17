@@ -21,7 +21,8 @@ from merger import get_preds
 from missing import check_dataset, find_missing_files
 from PIL import Image
 from server import start_server, receive_data, send_response
-model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Models/ovrft/overfit8_900.pth"
+# model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Models/ovrft/overfit8_900.pth"
+model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"
 full_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Main_script/10-17-2024/rc_data/run_001"
 output = get_preds(model_path, full_path)
 print(output)
