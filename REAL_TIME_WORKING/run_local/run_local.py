@@ -242,7 +242,7 @@ def main():
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
     # model_path = "/home/h2x/Desktop/trainedmodels/model_run_001.pth"
-    model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/run_local/model_run_0011.pth"
+    model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
     # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
     throttle_values = deque(maxlen=100)  # Store the last 100 values
     steer_values = deque(maxlen=100)
