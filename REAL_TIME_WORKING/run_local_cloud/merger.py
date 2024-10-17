@@ -51,7 +51,8 @@ def get_preds(model_path, run_dir, batch_size=1):
     return print_predictions(model, dataloader)
 
 if __name__ == "__main__":
-    model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Models/ovrft/overfit8_900.pth"  # Update with the path to your trained model
+    # model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Models/ovrft/overfit8_900.pth"  # Update with the path to your trained model
+    model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"
     run_dir = "/home/h2x/Desktop/REAL_TIME_WORKING/Main_script/10-17-2024/rc_data/run_001"
     output = get_preds(model_path, run_dir)
     print(output)
