@@ -137,9 +137,6 @@ def on_press(key):
     elif key == kb.KeyCode.from_char('d'):
         steer = 1.0
     elif key == kb.KeyCode.from_char('q'):
-        throttle = 0.0
-        mapped_throttle = map_value_throttle(throttle)
-        kit.servo[1].angle = mapped_throttle
         exit_flag = True
         return False
 
@@ -241,12 +238,11 @@ def main():
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
     # model_path = "/home/h2x/Desktop/trainedmodels/model_run_001.pth"
-    model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/run_local/model_run_0011.pth"
-    # # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
-    # model = load_model(model_path)
+    model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
+    # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
     conn = start_server()
-    throttle_values = deque(maxlen=100)  # Store the last 100 values
-    steer_values = deque(maxlen=100)
+    throttle_values = deque(maxlen=10000)  # Store the last 100 values
+    steer_values = deque(maxlen=10000)
 
     # Create a figure for plotting
     plt.ion()  # Interactive mode on
@@ -318,8 +314,12 @@ def main():
                         mapped_steer = map_value_steer(0.0)
                         mapped_throttle = map_value_throttle(0.0)
                     else :
-                        mapped_steer = map_value_steer(serveroutput[0][0])
-                        mapped_throttle = map_value_throttle(serveroutput[0][1])
+                        mapped_steer = map_value_steer(output[0][0])
+                        mapped_throttle = map_value_throttle(output[0][1])
+                    if mapped_throttle > 99.0:
+                        mapped_throttle = 99.0
+                    elif mapped_throttle <0.0:
+                        mapped_throttle = 0.0
                     print(f"steer {mapped_steer}, throttle {mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
@@ -351,9 +351,13 @@ def main():
                         break
 
                 frame_count += 1
-            if exit_flag:
-                kit.servo[1].angle = 0.0
-                kit.servo[0].angle = 0.0
+                if exit_flag:
+                    throttle = 0.0
+                    steer = 0.0
+                    mapped_steer = map_value_steer(steer)
+                    mapped_throttle = map_value_throttle(throttle)
+                    kit.servo[1].angle = mapped_throttle
+                    kit.servo[0].angle = mapped_steer
 
             # if distance_to_obstacle<=55:
             #     mapped_steer = map_value_steer(0.0)
@@ -361,10 +365,7 @@ def main():
             # elif distance_to_obstacle>55:
             #     mapped_steer = map_value_steer(steer)
             #     mapped_throttle = map_value_throttle(throttle)
-            # mapped_steer = map_value_steer(steer)
-            # mapped_throttle = map_value_throttle(throttle)
-            # kit.servo[0].angle = mapped_steer
-            # kit.servo[1].angle = mapped_throttle
+
 
             if create_new_directory:
                 print("Creating new directory.")
