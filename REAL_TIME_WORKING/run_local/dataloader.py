@@ -41,14 +41,14 @@ class CarlaRunDataset(Dataset):
                 actions = torch.Tensor([data["Steer"], data["Throttle"]])
 
                 # Load the corresponding RGB image
-                img_path = self.img_list[idx]
-                img = read_image(img_path)
+                # img_path = self.img_list[idx]
+                # img = read_image(img_path)
                 
-                # Ensure the RGB image is 300x300
-                img = img[:3, :, :]  # Keep only the first 3 channels (RGB)
-                img = transforms.Resize((300, 300))(img)  # Ensure the image is 300x300
+                # # Ensure the RGB image is 300x300
+                # img = img[:3, :, :]  # Keep only the first 3 channels (RGB)
+                # img = transforms.Resize((300, 300))(img)  # Ensure the image is 300x300
                 
-                normalized_image = img.float() / 255.0  # Normalize image to [0, 1]
+                # normalized_image = img.float() / 255.0  # Normalize image to [0, 1]
 
                 # Load the corresponding depth image
                 depth_path = self.depth_list[idx]
@@ -62,9 +62,10 @@ class CarlaRunDataset(Dataset):
                 # logging.info(f"RGB image shape: {normalized_image.shape}, Depth image shape: {depth_img.shape}")
 
                 # Concatenate the images
-                combined_image = torch.cat((normalized_image, depth_img), dim=0)
+                # combined_image = torch.cat((normalized_image, depth_img), dim=0)
 
-                return combined_image, actions  # Return combined image and actions
+                # return combined_image, actions  # Return combined image and actions
+                return depth_img, actions
             except Exception as e:
                 logging.error(f"Error processing item {idx}: {str(e)}")
                 raise

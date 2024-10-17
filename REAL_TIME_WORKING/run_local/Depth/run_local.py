@@ -347,10 +347,10 @@ def main():
             if exit_flag:
                 kit.servo[1].angle = 0.0
                 kit.servo[0].angle = 0.0
-                try:
-                    shutil.rmtree(date_exp)
-                except OSError as e:
-                    print(f"Error deleting directory: {e}")
+                # try:
+                #     shutil.rmtree(date_exp)
+                # except OSError as e:
+                #     print(f"Error deleting directory: {e}")
 
             # if distance_to_obstacle<=55:
             #     mapped_steer = map_value_steer(0.0)
