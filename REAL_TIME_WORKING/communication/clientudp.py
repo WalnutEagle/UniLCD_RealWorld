@@ -21,6 +21,9 @@ def receive_response():
     return pickle.loads(response)
 
 # Function to receive large data
+import pickle
+import struct
+
 def receive_large_data():
     received_data = b""
     total_size = None
@@ -32,32 +35,34 @@ def receive_large_data():
         if len(chunk) == 0:  # If an empty chunk is received, end reception
             break
 
-        # Check if we received the header indicating total size
+        # If we haven't read the total size yet, process the header
         if total_size is None:
-            # Assume the first 4 bytes contain the total size as an integer
+            # Check if we received a valid header
             if len(chunk) >= 4:
-                total_size = struct.unpack('!I', chunk[:4])[0]  # Big-endian unsigned int
-                received_data += chunk[4:]  # Add the rest of the chunk
+                total_size = struct.unpack('!I', chunk[:4])[0]  # Read the total size
+                received_data += chunk[4:]  # Start adding data after the header
+
+                # If we already have all the data, we can break
+                if len(received_data) >= total_size:
+                    break
             else:
-                # If the chunk is smaller than 4 bytes, it's not a valid header
+                # If the chunk is smaller than 4 bytes, we ignore it
                 continue
         else:
             received_data += chunk
 
-        # If we've received enough data, we can break out
-        if len(received_data) >= total_size:
-            break
+            # Check if we have received all the data
+            if len(received_data) >= total_size:
+                break
 
     # Now attempt to unpickle the data after ensuring all chunks are received
-    if received_data:
+    if len(received_data) >= total_size:
         try:
             return pickle.loads(received_data)
         except pickle.UnpicklingError as e:
             raise ValueError(f"Failed to unpickle data: {e}")
     else:
-        raise ValueError("No data received before end of transmission")
-
-
+        raise ValueError("Data received is incomplete.")
 
 
 
