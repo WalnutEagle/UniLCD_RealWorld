@@ -99,4 +99,4 @@ def server_loop():
             send_response(addr, "Unknown data type received!")
 
 # Usage:
-# server_loop()
+server_loop()

@@ -103,4 +103,4 @@ def client_loop():
     client_socket.close()
 
 # Usage:
-# client_loop()
+client_loop()
