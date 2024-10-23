@@ -36,7 +36,7 @@ def send_tensor(addr, tensor):
     for i in range(0, len(tensor_bytes), chunk_size):
         server_socket.sendto(tensor_bytes[i:i + chunk_size], addr)
     # Indicate end of transmission
-    server_socket.sendto(b'', addr)  # Send empty bytes to signal completion
+    server_socket.sendto(b"", addr)  # Send empty bytes to signal completion
 
 
 # Main loop for server
