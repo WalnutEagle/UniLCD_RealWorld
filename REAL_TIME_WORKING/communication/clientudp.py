@@ -24,15 +24,17 @@ def receive_large_data():
     received_data = b""
     while True:
         chunk, _ = client_socket.recvfrom(4096)
-        if chunk == b"":  # Check for end of transmission
+        print(f"Received chunk of size: {len(chunk)}")  # Debugging line
+        if len(chunk) == 0:  # If an empty chunk is received, end reception
             break
         received_data += chunk
-        print(f"Received chunk of size: {len(chunk)}")
-    # Check if we received any data before unpickling
+
+    # Now attempt to unpickle the data after ensuring all chunks are received
     if received_data:
         return pickle.loads(received_data)
     else:
         raise ValueError("No data received before end of transmission")
+
 
 
 

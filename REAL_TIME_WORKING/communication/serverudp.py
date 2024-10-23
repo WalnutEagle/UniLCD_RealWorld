@@ -32,6 +32,7 @@ def send_large_data(addr, data):
 
 def send_tensor(addr, tensor):
     tensor_bytes = pickle.dumps(tensor)  # Serialize tensor
+    print(f"Sending tensor of size: {len(tensor_bytes)} bytes")
     chunk_size = 4096
     for i in range(0, len(tensor_bytes), chunk_size):
         server_socket.sendto(tensor_bytes[i:i + chunk_size], addr)
