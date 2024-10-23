@@ -102,6 +102,7 @@ def server_loop():
             tensor_data = torch.rand(1, 4, 150, 130)
             print('now sending data')
             send_tensor(addr, tensor_data)  # Send tensor as bytes
+            print('data sent')
         else:
             print(f"Received unknown data type: {type(received_data)}")
             send_response(addr, "Unknown data type received!")
