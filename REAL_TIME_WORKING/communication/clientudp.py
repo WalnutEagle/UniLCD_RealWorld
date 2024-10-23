@@ -2,6 +2,7 @@ import socket
 import pickle
 import torch  # For PyTorch tensor handling
 import time
+import struct
 
 # Define server address and port
 HOST = '128.197.164.42'  # Replace with actual server IP for remote
@@ -22,18 +23,40 @@ def receive_response():
 # Function to receive large data
 def receive_large_data():
     received_data = b""
+    total_size = None
+
     while True:
         chunk, _ = client_socket.recvfrom(4096)
         print(f"Received chunk of size: {len(chunk)}")  # Debugging line
+
         if len(chunk) == 0:  # If an empty chunk is received, end reception
             break
-        received_data += chunk
+
+        # Check if we received the header indicating total size
+        if total_size is None:
+            # Assume the first 4 bytes contain the total size as an integer
+            if len(chunk) >= 4:
+                total_size = struct.unpack('!I', chunk[:4])[0]  # Big-endian unsigned int
+                received_data += chunk[4:]  # Add the rest of the chunk
+            else:
+                # If the chunk is smaller than 4 bytes, it's not a valid header
+                continue
+        else:
+            received_data += chunk
+
+        # If we've received enough data, we can break out
+        if len(received_data) >= total_size:
+            break
 
     # Now attempt to unpickle the data after ensuring all chunks are received
     if received_data:
-        return pickle.loads(received_data)
+        try:
+            return pickle.loads(received_data)
+        except pickle.UnpicklingError as e:
+            raise ValueError(f"Failed to unpickle data: {e}")
     else:
         raise ValueError("No data received before end of transmission")
+
 
 
 

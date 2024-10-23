@@ -30,14 +30,28 @@ def send_large_data(addr, data):
     for chunk in chunks:
         server_socket.sendto(pickle.dumps(chunk), addr)
 
+import pickle
+import struct
+
 def send_tensor(addr, tensor):
     tensor_bytes = pickle.dumps(tensor)  # Serialize tensor
     print(f"Sending tensor of size: {len(tensor_bytes)} bytes")
+
+    # Pack the total size as a header
+    total_size = len(tensor_bytes)
+    size_header = struct.pack('!I', total_size)  # Big-endian unsigned int
+
+    # Send the size header first
+    server_socket.sendto(size_header, addr)
+
+    # Send the tensor data in chunks
     chunk_size = 4096
-    for i in range(0, len(tensor_bytes), chunk_size):
+    for i in range(0, total_size, chunk_size):
         server_socket.sendto(tensor_bytes[i:i + chunk_size], addr)
-    # Indicate end of transmission
-    server_socket.sendto(b"", addr)  # Send empty bytes to signal completion
+
+    # Indicate end of transmission with an empty chunk (optional)
+    server_socket.sendto(b"", addr)
+
 
 
 # Main loop for server
