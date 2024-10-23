@@ -92,7 +92,7 @@ def client_loop():
             start = time.time()
             tensor_data = torch.rand(2, 2)  # Example PyTorch tensor
             print(f"Sending PyTorch tensor: \n{tensor_data}")
-            send_data(tensor_data.numpy().tobytes())  # Send as bytes
+            send_data(tensor_data)  # Send as bytes
             print(f"Data sent in {time.time()-start} seconds")
             print("Server response:", receive_large_data())
             
