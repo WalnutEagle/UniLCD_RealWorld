@@ -100,6 +100,7 @@ def server_loop():
             print(f"Received PyTorch tensor from {addr}: \n{received_data}")
             # Example of creating a new tensor to send back
             tensor_data = torch.rand(1, 4, 150, 130)
+            print('now sending data')
             send_tensor(addr, tensor_data)  # Send tensor as bytes
         else:
             print(f"Received unknown data type: {type(received_data)}")
