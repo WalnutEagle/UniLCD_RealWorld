@@ -79,6 +79,10 @@ def send_large_data(addr, data):
     for chunk in chunks:
         server_socket.sendto(pickle.dumps(chunk), addr)
 
+def send_tensor(addr, tensor):
+    tensor_bytes = pickle.dumps(tensor)  # Serialize tensor
+    server_socket.sendto(tensor_bytes, addr)
+
 # Main loop for server
 def server_loop():
     while True:
@@ -93,7 +97,7 @@ def server_loop():
             print(f"Received PyTorch tensor from {addr}: \n{received_data}")
             # Example of creating a new tensor to send back
             tensor_data = torch.rand(1, 4, 150, 130)
-            send_large_data(addr, tensor_data.numpy().tobytes())  # Send tensor as bytes
+            send_tensor(addr, tensor_data)  # Send tensor as bytes
         else:
             print(f"Received unknown data type: {type(received_data)}")
             send_response(addr, "Unknown data type received!")

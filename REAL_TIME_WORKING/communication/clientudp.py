@@ -69,14 +69,18 @@ def receive_response():
     return pickle.loads(response)
 
 # Function to receive large data
+# def receive_large_data():
+#     received_data = b""
+#     while True:
+#         chunk, _ = client_socket.recvfrom(4096)
+#         if not chunk:
+#             break
+#         received_data += chunk
+#     return pickle.loads(received_data)
+
 def receive_large_data():
-    received_data = b""
-    while True:
-        chunk, _ = client_socket.recvfrom(4096)
-        if not chunk:
-            break
-        received_data += chunk
-    return pickle.loads(received_data)
+    response, _ = client_socket.recvfrom(65507)  # Adjusting max size for large tensors
+    return pickle.loads(response)
 
 # Example loop to send data
 def client_loop():
