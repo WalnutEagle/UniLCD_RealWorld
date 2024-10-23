@@ -27,6 +27,7 @@ def receive_large_data():
         if chunk == b"":  # Check for end of transmission
             break
         received_data += chunk
+        print(f"Received chunk of size: {len(chunk)}")
     # Check if we received any data before unpickling
     if received_data:
         return pickle.loads(received_data)
