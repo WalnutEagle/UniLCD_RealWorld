@@ -1,6 +1,7 @@
 import socket
 import msgpack
 import torch
+import io
 import time
 
 HOST = '128.197.164.42'
@@ -9,11 +10,23 @@ PORT = 8083
 def connect_to_server():
     return socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+def serialize_tensor(tensor):
+    buffer = io.BytesIO()
+    torch.save(tensor, buffer)
+    return buffer.getvalue()
+
+def deserialize_tensor(data):
+    buffer = io.BytesIO(data)
+    return torch.load(buffer)
+
 def send_data(client_socket, data):
-    serialized_data = msgpack.packb(data)  # Use MessagePack for serialization
-    data_length = len(serialized_data)
+    if isinstance(data, torch.Tensor):
+        data = serialize_tensor(data)  # Serialize tensor
+    else:
+        data = msgpack.packb(data)  # Serialize other data types
+    data_length = len(data)
     client_socket.sendto(data_length.to_bytes(4, 'big'), (HOST, PORT))
-    client_socket.sendto(serialized_data, (HOST, PORT))
+    client_socket.sendto(data, (HOST, PORT))
 
 def receive_response(client_socket):
     try:
@@ -24,7 +37,7 @@ def receive_response(client_socket):
             packet, _ = client_socket.recvfrom(4096)
             data += packet
         
-        return msgpack.unpackb(data)  # Use MessagePack for deserialization
+        return msgpack.unpackb(data) if data_length < 4096 else deserialize_tensor(data)
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
@@ -38,10 +51,10 @@ def client_loop(client_socket):
             response = receive_response(client_socket)
             print("Server response:", response if response else "No valid response received.")
         elif choice == 'n':
-            tensor_data = torch.rand(2, 2).tolist()  # Convert tensor to list for MessagePack
+            tensor_data = torch.rand(2, 2)  # Create a tensor
             start = time.time()
             print(f"Sending PyTorch tensor: \n{tensor_data}")
-            send_data(client_socket, tensor_data)
+            send_data(client_socket, tensor_data)  # Send tensor directly
             print(f"Data sent in {(time.time()-start)*1000:.2f} ms")
             response = receive_response(client_socket)
             print("Server response:", response if response else "No valid response received.")

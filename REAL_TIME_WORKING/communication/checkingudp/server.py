@@ -1,6 +1,7 @@
 import socket
 import msgpack
 import torch
+import io
 import time
 
 HOST = '0.0.0.0'
@@ -19,19 +20,35 @@ def receive_data(server_socket):
     while len(data) < data_length:
         packet, _ = server_socket.recvfrom(4096)
         data += packet
-    return msgpack.unpackb(data), addr  # Use MessagePack for deserialization
+    
+    try:
+        # Check if the received data is a serialized tensor
+        if data_length > 4096:  # Arbitrary threshold, adjust as needed
+            return deserialize_tensor(data), addr
+        else:
+            return msgpack.unpackb(data), addr
+    except Exception as e:
+        print(f"Error unpacking data: {e}")
+        return None, addr
 
 def send_response(server_socket, response, addr):
-    data = msgpack.packb(response)
-    data_length = len(data)
+    if isinstance(response, torch.Tensor):
+        response = serialize_tensor(response)  # Serialize tensor
+    else:
+        response = msgpack.packb(response)  # Serialize other data types
     
-    # Send the length of the data first
+    data_length = len(response)
     server_socket.sendto(data_length.to_bytes(4, 'big'), addr)
+    server_socket.sendto(response, addr)
 
-    # Split data into smaller chunks if it's too large
-    chunk_size = 1400  # Set an appropriate chunk size
-    for i in range(0, data_length, chunk_size):
-        server_socket.sendto(data[i:i + chunk_size], addr)
+def serialize_tensor(tensor):
+    buffer = io.BytesIO()
+    torch.save(tensor, buffer)
+    return buffer.getvalue()
+
+def deserialize_tensor(data):
+    buffer = io.BytesIO(data)
+    return torch.load(buffer)
 
 def server_loop(server_socket):
     while True:
@@ -39,11 +56,11 @@ def server_loop(server_socket):
         if isinstance(received_data, str):
             print(f"Received text message: {received_data} from {addr}")
             send_response(server_socket, "Text received!", addr)
-        elif isinstance(received_data, list):  # Expecting list from tensor conversion
-            print(f"Received tensor data: {received_data} from {addr}")
-            tensor_data = torch.rand(1, 4, 150, 130).tolist()  # Convert tensor to list
+        elif isinstance(received_data, torch.Tensor):
+            print(f"Received tensor data: \n{received_data} from {addr}")
+            tensor_data = torch.rand(1, 4, 150, 130)  # Create a tensor
             t1 = time.time()
-            send_response(server_socket, tensor_data, addr)
+            send_response(server_socket, tensor_data, addr)  # Send tensor back
             print(f"Tensor sent in {(time.time()-t1)*1000:.2f} ms")
         else:
             print(f"Received unknown data type: {type(received_data)} from {addr}")
