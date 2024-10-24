@@ -63,8 +63,6 @@ def send_tensor(addr, tensor):
     print("Tensor sent successfully.")
 
 
-
-
 # Main loop for server
 def server_loop():
     while True:
