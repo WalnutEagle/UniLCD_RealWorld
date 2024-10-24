@@ -50,8 +50,8 @@ def server_loop(server_socket):
             send_response(server_socket, "Text received!", addr)
         elif isinstance(received_data, torch.Tensor):
             print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
-            t1 = time.time()
             tensor_data = torch.rand(1, 4, 150, 130)
+            t1 = time.time()
             send_response(server_socket, tensor_data, addr)
             print(f"Tensor Sent, {time.time()-t1} seconds")
         else:
