@@ -1,5 +1,4 @@
 import socket
-import msgpack
 import torch
 import io
 import time
@@ -15,15 +14,11 @@ def serialize_tensor(tensor):
     torch.save(tensor, buffer)
     return buffer.getvalue()
 
-def deserialize_tensor(data):
-    buffer = io.BytesIO(data)
-    return torch.load(buffer)
-
 def send_data(client_socket, data):
     if isinstance(data, torch.Tensor):
         data = serialize_tensor(data)  # Serialize tensor
     else:
-        data = msgpack.packb(data)  # Serialize other data types
+        data = data.encode('utf-8')  # Ensure text is bytes
     data_length = len(data)
     client_socket.sendto(data_length.to_bytes(4, 'big'), (HOST, PORT))
     client_socket.sendto(data, (HOST, PORT))
@@ -37,10 +32,17 @@ def receive_response(client_socket):
             packet, _ = client_socket.recvfrom(4096)
             data += packet
         
-        return msgpack.unpackb(data) if data_length < 4096 else deserialize_tensor(data)
+        if data_length > 4096:  # Assuming larger data is a tensor
+            return deserialize_tensor(data)
+        else:
+            return data.decode('utf-8')  # Convert response back to string
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+
+def deserialize_tensor(data):
+    buffer = io.BytesIO(data)
+    return torch.load(buffer)
 
 def client_loop(client_socket):
     while True:
