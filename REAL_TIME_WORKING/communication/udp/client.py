@@ -50,7 +50,7 @@ def client_loop(client_socket):
             print(f"Data sent in {time.time()-start} seconds")
             t1 = time.time()
             print("Server response:", receive_response(client_socket))
-            print(f"Recived data in:{time.time-t1}seconds.")
+            print(f"Recived data in:{time.time()-t1}seconds.")
             
         elif choice == 'q':
             print("Closing connection...")
