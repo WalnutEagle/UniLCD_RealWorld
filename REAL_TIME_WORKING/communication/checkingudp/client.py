@@ -23,13 +23,14 @@ def send_data(client_socket, data):
 
 # Function to receive response from the server in chunks
 def receive_response(client_socket):
-    data_length, _ = client_socket.recvfrom(4)  # First, receive the length of the data
+    data_length, addr = client_socket.recvfrom(4)  # First, receive the length of the data
     data_length = int.from_bytes(data_length, 'big')
     data = b""
     while len(data) < data_length:
-        packet, _ = client_socket.recvfrom(4096)  # Receive data in chunks
+        packet, _ = client_socket.recvfrom(1400)  # Receive data in chunks
         data += packet
     return pickle.loads(data)
+
 
 # Main client communication loop (can be called repeatedly)
 def client_loop(client_socket):

@@ -29,8 +29,15 @@ def receive_data(server_socket):
 def send_response(server_socket, response, addr):
     data = pickle.dumps(response)
     data_length = len(data)
-    server_socket.sendto(data_length.to_bytes(4, 'big'), addr)  # Send the length of the data first
-    server_socket.sendto(data, addr)  # Then send the actual data
+    
+    # Send the length of the data first
+    server_socket.sendto(data_length.to_bytes(4, 'big'), addr)
+
+    # Split data into smaller chunks if it's too large
+    chunk_size = 1400  # Set an appropriate chunk size
+    for i in range(0, data_length, chunk_size):
+        server_socket.sendto(data[i:i + chunk_size], addr)  # Send each chunk
+
 
 # Main server loop function for processing data
 def server_loop(server_socket):
