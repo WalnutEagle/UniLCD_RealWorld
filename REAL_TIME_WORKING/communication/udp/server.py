@@ -42,7 +42,9 @@ def send_response(server_socket, response, addr):
 # Main server loop function for processing data
 def server_loop(server_socket):
     while True:
+        s=time.time()
         received_data, addr = receive_data(server_socket)
+        print(f"It took{(time.time()-s)*1000} Miliseconds.")
 
         # Handle text or tensor data
         if isinstance(received_data, str):
