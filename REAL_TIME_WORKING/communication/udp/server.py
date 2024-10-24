@@ -44,21 +44,21 @@ def server_loop(server_socket):
     while True:
         s=time.time()
         received_data, addr = receive_data(server_socket)
-
-        # Handle text or tensor data
-        if isinstance(received_data, str):
-            print(f"Received text message: {received_data} from {addr}")
-            send_response(server_socket, "Text received!", addr)
-        elif isinstance(received_data, torch.Tensor):
-            print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
-            print(f"It took{(time.time()-s)*1000} Miliseconds.")
-            tensor_data = torch.rand(1, 4, 150, 130)
-            t1 = time.time()
-            send_response(server_socket, tensor_data, addr)
-            print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
-        else:
-            print(f"Received unknown data type: {type(received_data)} from {addr}")
-            send_response(server_socket, "Unknown data type received!", addr)
+        print(f"It took{(time.time()-s)*1000} Miliseconds.")      
+        # # Handle text or tensor data
+        # if isinstance(received_data, str):
+        #     print(f"Received text message: {received_data} from {addr}")
+        #     send_response(server_socket, "Text received!", addr)
+        # elif isinstance(received_data, torch.Tensor):
+        #     print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
+        #     print(f"It took{(time.time()-s)*1000} Miliseconds.")
+        #     tensor_data = torch.rand(1, 4, 150, 130)
+        #     t1 = time.time()
+        #     send_response(server_socket, tensor_data, addr)
+        #     print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
+        # else:
+        #     print(f"Received unknown data type: {type(received_data)} from {addr}")
+        #     send_response(server_socket, "Unknown data type received!", addr)
 
 # Usage example:
 server_socket = start_server()
