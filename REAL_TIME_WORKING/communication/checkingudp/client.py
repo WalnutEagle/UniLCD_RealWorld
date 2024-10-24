@@ -1,5 +1,5 @@
 import socket
-import pickle
+import msgpack
 import torch
 import time
 
@@ -10,19 +10,24 @@ def connect_to_server():
     return socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 def send_data(client_socket, data):
-    serialized_data = pickle.dumps(data)
+    serialized_data = msgpack.packb(data)  # Use MessagePack for serialization
     data_length = len(serialized_data)
     client_socket.sendto(data_length.to_bytes(4, 'big'), (HOST, PORT))
     client_socket.sendto(serialized_data, (HOST, PORT))
 
 def receive_response(client_socket):
-    data_length, _ = client_socket.recvfrom(4)
-    data_length = int.from_bytes(data_length, 'big')
-    data = b""
-    while len(data) < data_length:
-        packet, _ = client_socket.recvfrom(4096)  # Increased buffer size for fewer packets
-        data += packet
-    return pickle.loads(data)
+    try:
+        data_length, _ = client_socket.recvfrom(4)
+        data_length = int.from_bytes(data_length, 'big')
+        data = b""
+        while len(data) < data_length:
+            packet, _ = client_socket.recvfrom(4096)
+            data += packet
+        
+        return msgpack.unpackb(data)  # Use MessagePack for deserialization
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
 def client_loop(client_socket):
     while True:
@@ -30,14 +35,16 @@ def client_loop(client_socket):
         if choice == 't':
             text_message = input("Enter your text message: ")
             send_data(client_socket, text_message)
-            print("Server response:", receive_response(client_socket))
+            response = receive_response(client_socket)
+            print("Server response:", response if response else "No valid response received.")
         elif choice == 'n':
-            tensor_data = torch.rand(2, 2)
+            tensor_data = torch.rand(2, 2).tolist()  # Convert tensor to list for MessagePack
             start = time.time()
             print(f"Sending PyTorch tensor: \n{tensor_data}")
             send_data(client_socket, tensor_data)
             print(f"Data sent in {(time.time()-start)*1000:.2f} ms")
-            print("Server response:", receive_response(client_socket))
+            response = receive_response(client_socket)
+            print("Server response:", response if response else "No valid response received.")
         elif choice == 'q':
             print("Closing connection...")
             break

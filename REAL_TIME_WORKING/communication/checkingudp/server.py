@@ -1,5 +1,5 @@
 import socket
-import pickle
+import msgpack
 import torch
 import time
 
@@ -19,14 +19,13 @@ def receive_data(server_socket):
     while len(data) < data_length:
         packet, _ = server_socket.recvfrom(4096)
         data += packet
-    return pickle.loads(data), addr
+    return msgpack.unpackb(data), addr  # Use MessagePack for deserialization
 
 def send_response(server_socket, response, addr):
-    data = pickle.dumps(response)
+    data = msgpack.packb(response)  # Use MessagePack for serialization
     data_length = len(data)
     server_socket.sendto(data_length.to_bytes(4, 'big'), addr)
-    for i in range(0, data_length, 4096):  # Increased chunk size for efficiency
-        server_socket.sendto(data[i:i + 4096], addr)
+    server_socket.sendto(data, addr)
 
 def server_loop(server_socket):
     while True:
@@ -34,9 +33,9 @@ def server_loop(server_socket):
         if isinstance(received_data, str):
             print(f"Received text message: {received_data} from {addr}")
             send_response(server_socket, "Text received!", addr)
-        elif isinstance(received_data, torch.Tensor):
-            print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
-            tensor_data = torch.rand(1, 4, 150, 130)
+        elif isinstance(received_data, list):  # Expecting list from tensor conversion
+            print(f"Received tensor data: {received_data} from {addr}")
+            tensor_data = torch.rand(1, 4, 150, 130).tolist()  # Convert tensor to list
             t1 = time.time()
             send_response(server_socket, tensor_data, addr)
             print(f"Tensor sent in {(time.time()-t1)*1000:.2f} ms")
