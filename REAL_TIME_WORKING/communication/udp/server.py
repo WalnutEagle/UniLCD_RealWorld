@@ -42,13 +42,14 @@ def send_response(server_socket, response, addr):
 # Main server loop function for processing data
 def server_loop(server_socket):
     while True:
-        s=time.time()
         received_data, addr = receive_data(server_socket)      
         # Handle text or tensor data
         if isinstance(received_data, str):
             print(f"Received text message: {received_data} from {addr}")
             send_response(server_socket, "Text received!", addr)
         elif isinstance(received_data, torch.Tensor):
+            s=time.time()
+            print(f"It took{(time.time()-s)*1000} Miliseconds.")
             print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
             print(f"It took{(time.time()-s)*1000} Miliseconds.")
             tensor_data = torch.rand(1, 4, 150, 130)
