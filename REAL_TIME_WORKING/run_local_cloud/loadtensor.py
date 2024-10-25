@@ -2,6 +2,7 @@ import logging
 import torch
 import time
 import numpy as np
+from cloudsidemodel import CustomRegNetY00
 def load_model(model_path):
     device = torch.device('cuda')
     checkpoint = torch.load(model_path, map_location=device)  # Load the entire checkpoint
