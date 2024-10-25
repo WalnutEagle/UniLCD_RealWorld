@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import threading
 import time
-from matplotlib.patches import Arc, Rectangle
+from matplotlib.patches import Arc, Circle
 
 exit_flag = False  # Control variable for the visualization loop
 local_mode = True  # Initial mode
@@ -34,14 +34,16 @@ def create_speedometer(ax, value, title, current_value):
 
     ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
 
-def draw_mode_indicator(ax):
-    # Draw a rectangle for Local Mode
-    if local_mode:
-        ax.add_patch(Rectangle((-1, 1), 0.5, 0.5, color='green', label='Local Mode'))
-        ax.text(-0.75, 1.25, 'Local Mode', fontsize=12, va='center', ha='center', color='white')
-    else:
-        ax.add_patch(Rectangle((-1, 1), 0.5, 0.5, color='red', label='Cloud Mode'))
-        ax.text(-0.75, 1.25, 'Cloud Mode', fontsize=12, va='center', ha='center', color='white')
+def draw_mode_indicators(ax):
+    # Draw Local Mode indicator
+    local_color = 'green' if local_mode else 'lightgrey'
+    ax.add_patch(Circle((-1, -1), 0.2, color=local_color))  # Light indicator
+    ax.text(-1, -1.4, 'Local Mode', fontsize=12, va='center', ha='center')
+
+    # Draw Cloud Mode indicator
+    cloud_color = 'blue' if not local_mode else 'lightgrey'
+    ax.add_patch(Circle((1, -1), 0.2, color=cloud_color))  # Light indicator
+    ax.text(1, -1.4, 'Cloud Mode', fontsize=12, va='center', ha='center')
 
 def on_key(event):
     global exit_flag, local_mode
@@ -74,9 +76,9 @@ def update_visualization():
         create_speedometer(ax1, target_throttle, 'Throttle', current_throttle)
         create_speedometer(ax2, target_steer, 'Steer', current_steer)
         
-        # Draw mode indicator
-        draw_mode_indicator(ax1)
-        draw_mode_indicator(ax2)
+        # Draw mode indicators
+        draw_mode_indicators(ax1)
+        draw_mode_indicators(ax2)
         
         plt.pause(0.05)  # Update more frequently
 
