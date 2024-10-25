@@ -17,7 +17,7 @@ import os
 import json
 import datetime
 import cv2
-from merger import get_preds
+from merger import get_preds, print_predictions
 from missing import check_dataset, find_missing_files
 from PIL import Image
 from server import start_server, receive_data, send_response
@@ -25,10 +25,26 @@ from server import start_server, receive_data, send_response
 model_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"
 full_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Main_script/10-17-2024/rc_data/run_001"
 # full_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Today's Data/allrun/10-03-2024/rc_data/run_001"
+def load_model(model_path):
+    checkpoint = torch.load(model_path)  # Load the entire checkpoint
+    model = CustomRegNetY002()  # Initialize your model
+    # state_dict = checkpoint
+    # Strip 'module.' from the keys if the model was saved with Data Parallelism
+    state_dict = checkpoint['model_state_dict']
+    if list(state_dict.keys())[0].startswith('module.'):
+        state_dict = {k[7:]: v for k, v in state_dict.items()}  # Remove 'module.' prefix
+
+    model.load_state_dict(state_dict)  # Load only the model state dict
+    model.eval()  # Set the model to evaluation mode
+    return model
+device = torch.device('cuda')
+model = load_model(model_path)
+test_dataset = CarlaRunDataset(full_path)  # Use your dataset class
+dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 t1 = time.time()
-output = get_preds(model_path, full_path)
+output = print_predictions(model, dataloader)
 print(time.time()-t1)
 print(output)
-output_tensor = torch.tensor(output)  # Ensure output is a NumPy array before this step
-torch.save(output_tensor, 'output_tensor.pt')  # Save the tensor to a file
-print("Tensor saved successfully.")
+# output_tensor = torch.tensor(output)  # Ensure output is a NumPy array before this step
+# torch.save(output_tensor, 'output_tensor.pt')  # Save the tensor to a file
+# print("Tensor saved successfully.")

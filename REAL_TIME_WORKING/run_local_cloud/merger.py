@@ -27,7 +27,7 @@ def print_predictions(model, dataloader):
     with torch.no_grad():  # Disable gradient computation
         for images, actions in dataloader:
             images = images.to(device)
-            predictions = model(images).cpu().numpy()  # Forward pass to get predictions
+            predictions = model(images)  # Forward pass to get predictions
             
             # Store predictions
             all_predictions.extend(predictions)
