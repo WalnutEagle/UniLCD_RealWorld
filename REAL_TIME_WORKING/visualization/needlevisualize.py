@@ -5,7 +5,7 @@ import time
 from matplotlib.patches import Arc, Circle
 
 exit_flag = False  # Control variable for the visualization loop
-local_mode = True  # Initial mode
+current_mode = 'Local Mode'  # Initial mode
 
 def create_speedometer(ax, value, title, current_value):
     ax.clear()
@@ -34,25 +34,22 @@ def create_speedometer(ax, value, title, current_value):
 
     ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
 
-def draw_mode_indicators(ax):
-    # Draw Local Mode indicator
-    local_color = 'green' if local_mode else 'lightgrey'
-    ax.add_patch(Circle((-1, -1), 0.2, color=local_color))  # Light indicator
-    ax.text(-1, -1.4, 'Local Mode', fontsize=12, va='center', ha='center')
+def draw_mode_indicator(fig):
+    global current_mode
+    mode_color = 'green' if current_mode == 'Local Mode' else 'blue'
+    ax_mode = fig.add_axes([0.45, 0.05, 0.1, 0.1])  # Positioning the mode indicator below the speedometers
+    ax_mode.clear()
+    ax_mode.add_patch(Circle((0.5, 0.5), 0.2, color=mode_color))  # Light indicator
+    ax_mode.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
+    ax_mode.set_xlim(0, 1)
+    ax_mode.set_ylim(0, 1)
+    ax_mode.axis('off')  # Turn off axis
 
-    # Draw Cloud Mode indicator
-    cloud_color = 'blue' if not local_mode else 'lightgrey'
-    ax.add_patch(Circle((1, -1), 0.2, color=cloud_color))  # Light indicator
-    ax.text(1, -1.4, 'Cloud Mode', fontsize=12, va='center', ha='center')
-
-def on_key(event):
-    global exit_flag, local_mode
-    if event.key == 'q':  # Check if 'q' is pressed
-        exit_flag = True
-    elif event.key == 'l':  # Toggle Local Mode
-        local_mode = True
-    elif event.key == 'c':  # Toggle Cloud Mode
-        local_mode = False
+def update_mode():
+    global current_mode
+    while not exit_flag:
+        current_mode = 'Local Mode' if np.random.rand() > 0.5 else 'Cloud Mode'
+        time.sleep(2)  # Change mode every 2 seconds
 
 def update_visualization():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
@@ -60,9 +57,6 @@ def update_visualization():
     
     current_throttle = 0
     current_steer = 0
-    
-    # Connect the key press event to the on_key function
-    fig.canvas.mpl_connect('key_press_event', on_key)
     
     while not exit_flag:
         # Simulate random target values for throttle and steer
@@ -76,18 +70,21 @@ def update_visualization():
         create_speedometer(ax1, target_throttle, 'Throttle', current_throttle)
         create_speedometer(ax2, target_steer, 'Steer', current_steer)
         
-        # Draw mode indicators
-        draw_mode_indicators(ax1)
-        draw_mode_indicators(ax2)
+        # Draw the single mode indicator
+        draw_mode_indicator(fig)
         
         plt.pause(0.05)  # Update more frequently
 
 def main():
-    # Start the visualization in a separate thread
-    visualization_thread = threading.Thread(target=update_visualization)
-    visualization_thread.start()
-
-    visualization_thread.join()  # Wait for the visualization thread to finish
+    # Start the mode updater in a separate thread
+    mode_thread = threading.Thread(target=update_mode)
+    mode_thread.start()
+    
+    # Start the visualization in the main thread
+    update_visualization()
+    
+    # Join threads
+    mode_thread.join()
 
 if __name__ == "__main__":
     main()
