@@ -6,7 +6,6 @@ from torch.utils.data import DataLoader
 from cloudsidemodel import CustomRegNetY00  # Ensure this matches your model definition
 def load_model(model_path):
     device = torch.device('cuda')
-    print(device)
     checkpoint = torch.load(model_path, map_location=device)  # Load the entire checkpoint
     model = CustomRegNetY00()  # Initialize your model
     # state_dict = checkpoint
@@ -20,9 +19,6 @@ def load_model(model_path):
     return model
 
 def inference(model,predictions):
-    device = torch.device('cuda')
-    model.to(device)
-
     with torch.no_grad():
         prediction = model(predictions)  # Forward pass to get predictions 
 
@@ -33,7 +29,11 @@ def get_preds(model_path,predictions):
 
 if __name__ == "__main__":
     tensor_path = '/opt/app-root/src/UniLCD_RealWorld/output_tensor.pt'  # Update with your actual path
+    start = time.time()
     loaded_tensor = torch.load(tensor_path, map_location='cuda')
     model_path = "/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"  # Update with the path to your trained model
-
+    model = load_model(model_path)
+    with torch.no_grad():
+        prediction = model(loaded_tensor)
+    print(f"Total Time{(time.time()-start)*1000}Miliseconds.")
 
