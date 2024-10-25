@@ -87,7 +87,7 @@ def main():
         update_mode(mode_values[i])
         
         # Sleep briefly to simulate time between updates
-        time.sleep(0.1)
+        time.sleep(0.05)
 
     # Stop the visualization thread
     global exit_flag
