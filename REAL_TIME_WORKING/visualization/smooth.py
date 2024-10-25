@@ -1,10 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import threading
 import time
 from matplotlib.patches import Arc, Circle
 
-exit_flag = False  # Control variable for the visualization loop
 current_mode = 'Local Mode'  # Initial mode
 current_throttle = 0
 current_steer = 0
@@ -12,6 +10,8 @@ smoothing_factor = 0.1  # Determines how quickly to smooth the updates
 
 def create_speedometer(ax, current_value, title):
     ax.clear()
+    
+    # Set limits and remove ticks
     ax.set_xlim(-1.5, 1.5)
     ax.set_ylim(-1.5, 1.5)
     ax.set_xticks([])
@@ -53,7 +53,13 @@ def smooth_update(target_throttle, target_steer):
     current_throttle += (target_throttle - current_throttle) * smoothing_factor
     current_steer += (target_steer - current_steer) * smoothing_factor
 
-def update_visualization():
+def main():
+    global current_throttle, current_steer
+    num_samples = 100
+    throttle_values = np.random.uniform(0, 100, num_samples)
+    steer_values = np.random.uniform(0, 100, num_samples)
+    mode_values = np.random.choice([0, 1], num_samples)
+
     fig = plt.figure(figsize=(12, 5))  # Adjust the figure size
     ax1 = fig.add_subplot(121)  # Speedometer on the left
     ax2 = fig.add_subplot(122)  # Throttle speedometer on the right
@@ -61,9 +67,13 @@ def update_visualization():
 
     plt.ion()
     
-    while not exit_flag:
+    for i in range(num_samples):
+        target_throttle = throttle_values[i]
+        target_steer = steer_values[i]
+        update_mode(mode_values[i])
+
         # Smoothly interpolate to the target value
-        smooth_update(current_throttle_target, current_steer_target)
+        smooth_update(target_throttle, target_steer)
         
         create_speedometer(ax1, current_steer, 'Steer')  # First speedometer
         create_speedometer(ax2, current_throttle, 'Throttle')  # Second speedometer
@@ -73,30 +83,8 @@ def update_visualization():
         
         plt.pause(0.05)  # Update more frequently
 
-def main():
-    global current_throttle_target, current_steer_target
-    num_samples = 100
-    throttle_values = np.random.uniform(0, 100, num_samples)
-    steer_values = np.random.uniform(0, 100, num_samples)
-    mode_values = np.random.choice([0, 1], num_samples)
-
-    # Start with the first target values
-    current_throttle_target = throttle_values[0]
-    current_steer_target = steer_values[0]
-
-    vis_thread = threading.Thread(target=update_visualization)
-    vis_thread.start()
-    
-    for i in range(num_samples):
-        current_throttle_target = throttle_values[i]
-        current_steer_target = steer_values[i]
-        update_mode(mode_values[i])
-        
-        time.sleep(0.05)
-
-    global exit_flag
-    exit_flag = True
-    vis_thread.join()
+    plt.ioff()  # Turn off interactive mode
+    plt.show()  # Keep the window open after the loop ends
 
 if __name__ == "__main__":
     main()
