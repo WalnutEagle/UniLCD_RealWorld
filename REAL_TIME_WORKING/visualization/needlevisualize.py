@@ -40,7 +40,7 @@ def draw_mode_indicator(ax):
     mode_color = 'green' if current_mode == 'Local Mode' else 'blue'
     ax.clear()
     ax.add_patch(Circle((0.5, 0.5), 2, color=mode_color))  # Light indicator
-    ax.text(0.5, 0.2, current_mode, fontsize=10, va='center', ha='center')
+    ax.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis('off')  # Turn off axis
