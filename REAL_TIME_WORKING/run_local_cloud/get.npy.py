@@ -27,4 +27,6 @@ full_path = "/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Main_script/10
 # full_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Today's Data/allrun/10-03-2024/rc_data/run_001"
 output = get_preds(model_path, full_path)
 print(output)
-np.save('well.npy', output)
+output_tensor = torch.tensor(output)  # Ensure output is a NumPy array before this step
+torch.save(output_tensor, 'output_tensor.pt')  # Save the tensor to a file
+print("Tensor saved successfully.")
