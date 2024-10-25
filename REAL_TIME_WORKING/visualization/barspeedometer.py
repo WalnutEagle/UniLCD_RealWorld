@@ -50,11 +50,13 @@ def update_mode(mode):
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
 
 def update_visualization():
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))  # Two side-by-side speedometers
+    fig = plt.figure(figsize=(10, 8))  # Adjust the figure size
+    ax1 = fig.add_subplot(211)  # Speedometer on top
+    ax2 = fig.add_subplot(212)  # Throttle speedometer below it
+    mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])  # Mode indicator at the bottom
+
     plt.ion()
     
-    mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])  # Positioning the mode indicator below the speedometers
-
     while not exit_flag:
         # Smoothly interpolate to the target value
         global current_throttle, current_steer
