@@ -17,16 +17,17 @@ def load_model(model_path):
     model.eval()  # Set the model to evaluation mode
 
     return model
-device = torch.device('cuda')
-tensor_path = '/opt/app-root/src/UniLCD_RealWorld/output_tensor.pt'  # Update with your actual path
+while True:
+    device = torch.device('cuda')
+    tensor_path = '/opt/app-root/src/UniLCD_RealWorld/output_tensor.pt'  # Update with your actual path
 
-loaded_tensor = torch.load(tensor_path, map_location=device)
-model_path = "/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"  # Update with the path to your trained model
-model = load_model(model_path)
-model.to(device)
-start = time.time()
-with torch.no_grad():
-    prediction = model(loaded_tensor)
+    loaded_tensor = torch.load(tensor_path, map_location=device)
+    model_path = "/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"  # Update with the path to your trained model
+    model = load_model(model_path)
+    model.to(device)
+    start = time.time()
+    with torch.no_grad():
+        prediction = model(loaded_tensor)
 
-print(prediction)
-print(f"Total Time{(time.time()-start)*1000}Miliseconds.")
+    print(prediction)
+    print(f"Total Time{(time.time()-start)*1000}Miliseconds.")
