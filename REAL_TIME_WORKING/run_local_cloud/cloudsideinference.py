@@ -1,5 +1,6 @@
 import logging
 import torch
+import time
 import numpy as np
 from torch.utils.data import DataLoader
 from cloudsidemodel import CustomRegNetY00  # Ensure this matches your model definition
@@ -35,6 +36,8 @@ if __name__ == "__main__":
     tensor_path = '/opt/app-root/src/UniLCD_RealWorld/output_tensor.pt'  # Update with your actual path
     loaded_tensor = torch.load(tensor_path)
     model_path = "/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"  # Update with the path to your trained model
+    start = time.time()
     output = get_preds(model_path, loaded_tensor)
+    print(f"Total Inference Time is:{(time.time()-start)*1000}Miliseconds.")
     print(output)
 
