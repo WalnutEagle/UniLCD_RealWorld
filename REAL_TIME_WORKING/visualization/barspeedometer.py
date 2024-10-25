@@ -9,7 +9,7 @@ current_mode = 'Local Mode'  # Initial mode
 current_throttle = 0
 current_steer = 0
 
-def create_speedometer(ax, value, title, current_value):
+def create_speedometer(ax, current_value, title):
     ax.clear()
     
     # Set limits and remove ticks
@@ -36,33 +36,32 @@ def create_speedometer(ax, value, title, current_value):
 
     ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
 
-def draw_mode_indicator(fig):
-    global current_mode
+def draw_mode_indicator(ax):
     mode_color = 'green' if current_mode == 'Local Mode' else 'blue'
-    ax_mode = fig.add_axes([0.45, 0.05, 0.1, 0.1])  # Positioning the mode indicator below the speedometers
-    ax_mode.clear()
-    ax_mode.add_patch(Circle((0.5, 0.5), 0.2, color=mode_color))  # Light indicator
-    ax_mode.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
-    ax_mode.set_xlim(0, 1)
-    ax_mode.set_ylim(0, 1)
-    ax_mode.axis('off')  # Turn off axis
+    ax.clear()
+    ax.add_patch(Circle((0.5, 0.5), 0.2, color=mode_color))  # Light indicator
+    ax.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')  # Turn off axis
 
 def update_mode(mode):
     global current_mode
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
 
 def update_visualization():
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 10), gridspec_kw={'height_ratios': [4, 1]})
     plt.ion()
     
     while not exit_flag:
         # Smoothly interpolate to the target value
         global current_throttle, current_steer
-        create_speedometer(ax1, current_throttle, 'Throttle', current_throttle)
-        create_speedometer(ax2, current_steer, 'Steer', current_steer)
+        create_speedometer(ax1, current_steer, 'Steer')  # First speedometer
+        create_speedometer(ax2, current_throttle, 'Throttle')  # Second speedometer
         
-        # Draw the single mode indicator
-        draw_mode_indicator(fig)
+        # Draw the mode indicator in a separate ax
+        mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])  # Adjusting position for mode indicator
+        draw_mode_indicator(mode_ax)
         
         plt.pause(0.05)  # Update more frequently
 
