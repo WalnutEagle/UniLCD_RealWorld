@@ -21,13 +21,12 @@ def load_model(model_path):
 def inference(model,predictions):
     device = torch.device('cuda')
     model.to(device)
-    all_predictions = []
-    input_tensor = torch.tensor(predictions).to(device)
+
     with torch.no_grad():
-        prediction = model(input_tensor).cpu().numpy()  # Forward pass to get predictions 
-        all_predictions.extend(prediction)
-    all_predictions = np.array(all_predictions)
-    return all_predictions
+        predictions = predictions.to(device)
+        prediction = model(predictions).cpu().numpy()  # Forward pass to get predictions 
+
+    return prediction
 def get_preds(model_path,predictions):
     model = load_model(model_path)
     return inference(model, predictions)
@@ -35,5 +34,6 @@ def get_preds(model_path,predictions):
 if __name__ == "__main__":
     model_path = "/home/h2x/Desktop/trainedmodels/model_run_0011.pth"  # Update with the path to your trained model
     run_dir = "/home/h2x/Desktop/IL_DATA_COLLECTION_ADWAIT/Main_script/09-15-2024/rc_data/run_006"
-    get_preds(model_path, run_dir)
+    output = get_preds(model_path, run_dir)
+    print(output)
 
