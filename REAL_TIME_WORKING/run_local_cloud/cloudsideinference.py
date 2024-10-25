@@ -25,7 +25,7 @@ def inference(model,predictions):
 
     with torch.no_grad():
         predictions = predictions.to(device)
-        prediction = model(predictions).cpu().numpy()  # Forward pass to get predictions 
+        prediction = model(predictions)  # Forward pass to get predictions 
 
     return prediction
 def get_preds(model_path,predictions):
