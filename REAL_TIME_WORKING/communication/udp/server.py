@@ -48,8 +48,6 @@ def server_loop(server_socket):
             print(f"Received text message: {received_data} from {addr}")
             send_response(server_socket, "Text received!", addr)
         elif isinstance(received_data, torch.Tensor):
-            s=time.time()
-            print(f"It took{(time.time()-s)*1000} Miliseconds.")
             print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
             print(f"It took{(time.time()-s)*1000} Miliseconds.")
             tensor_data = torch.rand(1, 4, 150, 130)
