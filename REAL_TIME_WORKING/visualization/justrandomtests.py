@@ -72,7 +72,6 @@ import numpy as np
 import threading
 import time
 from matplotlib.patches import Arc
-import keyboard  # Import the keyboard library
 
 exit_flag = False  # Control variable for the visualization loop
 
@@ -103,12 +102,10 @@ def create_speedometer(ax, value, title, current_value):
 
     ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
 
-def check_quit():
+def on_key(event):
     global exit_flag
-    while not exit_flag:
-        if keyboard.is_pressed('q'):  # Check if 'q' is pressed
-            exit_flag = True
-            break
+    if event.key == 'q':  # Check if 'q' is pressed
+        exit_flag = True
 
 def update_visualization():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
@@ -116,6 +113,9 @@ def update_visualization():
     
     current_throttle = 0
     current_steer = 0
+    
+    # Connect the key press event to the on_key function
+    fig.canvas.mpl_connect('key_press_event', on_key)
     
     while not exit_flag:
         # Simulate random target values for throttle and steer
@@ -132,16 +132,11 @@ def update_visualization():
         plt.pause(0.05)  # Update more frequently
 
 def main():
-    # Start the keyboard listener in a separate thread
-    quit_thread = threading.Thread(target=check_quit)
-    quit_thread.start()
-
-    # Start the visualization in another thread
+    # Start the visualization in a separate thread
     visualization_thread = threading.Thread(target=update_visualization)
     visualization_thread.start()
 
     visualization_thread.join()  # Wait for the visualization thread to finish
-    quit_thread.join()  # Wait for the quit thread to finish
 
 if __name__ == "__main__":
     main()
