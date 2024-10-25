@@ -2,33 +2,42 @@ import matplotlib.pyplot as plt
 import numpy as np
 import threading
 import time
-from matplotlib.patches import Arc  # Import Arc from patches
+from matplotlib.patches import Arc
 
 exit_flag = False  # Control variable for the visualization loop
 
 def create_speedometer(ax, value, title):
     ax.clear()
-    ax.set_xlim(0, 100)  # Assuming throttle/steer range is 0 to 100
-    ax.set_ylim(-1, 1)  # Center the speedometer
-    ax.set_xticks([])  # Remove x ticks
-    ax.set_yticks([])  # Remove y ticks
+    
+    # Set limits and remove ticks
+    ax.set_xlim(-1.5, 1.5)
+    ax.set_ylim(-1.5, 1.5)
+    ax.set_xticks([])
+    ax.set_yticks([])
 
     # Draw the speedometer arc
-    arc = Arc((0.5, 0), 1, 1, angle=0, theta1=0, theta2=180, color='black', lw=2)
+    arc = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=180, color='black', lw=2)
     ax.add_patch(arc)
+
+    # Draw the ticks
+    for i in range(0, 101, 10):
+        angle = np.radians(i * 180 / 100)
+        x = np.cos(angle)
+        y = np.sin(angle)
+        ax.text(x * 1.1, y * 1.1, str(i), ha='center', va='center', fontsize=8)
 
     # Draw the needle
     needle_angle = value * 180 / 100  # Scale value to degrees
-    needle_x = 0.5 + 0.5 * np.cos(np.radians(needle_angle))
-    needle_y = 0.5 + 0.5 * np.sin(np.radians(needle_angle))
-    ax.plot([0.5, needle_x], [0, needle_y], color='red', lw=2)
+    needle_x = np.cos(np.radians(needle_angle))
+    needle_y = np.sin(np.radians(needle_angle))
+    ax.plot([0, needle_x], [0, needle_y], color='red', lw=2)
 
-    ax.text(0.5, -0.1, title, ha='center', va='center', fontsize=12)
+    ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
 
 def update_visualization():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
     plt.ion()
-    
+
     while not exit_flag:
         # Simulate random values for throttle and steer
         mapped_throttle = np.random.uniform(0, 100)
