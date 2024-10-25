@@ -33,7 +33,6 @@ def get_preds(model_path,predictions):
 
 if __name__ == "__main__":
     model_path = "/home/h2x/Desktop/trainedmodels/model_run_0011.pth"  # Update with the path to your trained model
-    run_dir = "/home/h2x/Desktop/IL_DATA_COLLECTION_ADWAIT/Main_script/09-15-2024/rc_data/run_006"
     output = get_preds(model_path, run_dir)
     print(output)
 
