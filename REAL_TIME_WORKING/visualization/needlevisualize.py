@@ -40,7 +40,7 @@ def draw_mode_indicator(ax):
     mode_color = 'green' if current_mode == 'Local Mode' else 'blue'
     ax.clear()
     ax.add_patch(Circle((0.5, 0.5), 0.2, color=mode_color))  # Light indicator
-    ax.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
+    ax.text(0.5, 0.5, current_mode, fontsize=12, va='center', ha='center')
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis('off')  # Turn off axis
@@ -53,7 +53,7 @@ def update_visualization():
     fig = plt.figure(figsize=(12, 5))  # Adjust the figure size
     ax1 = fig.add_subplot(121)  # Speedometer on the left
     ax2 = fig.add_subplot(122)  # Throttle speedometer on the right
-    mode_ax = fig.add_axes([0.5, 0.01, 0.2, 0.2])  # Mode indicator at the bottom
+    mode_ax = fig.add_axes([0.5, 0.05, 0.2, 0.1])  # Mode indicator at the bottom
 
     plt.ion()
     
