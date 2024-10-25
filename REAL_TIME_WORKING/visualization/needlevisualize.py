@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import threading
 import time
-from matplotlib.patches import Arc, Circle, Rectangle
+from matplotlib.patches import Arc, Circle
 
 exit_flag = False  # Control variable for the visualization loop
 current_mode = 'Local Mode'  # Initial mode
 
-def create_speedometer(ax, value, title, current_value, position):
+def create_speedometer(ax, value, title, current_value):
     ax.clear()
     
     # Set limits and remove ticks
@@ -34,11 +34,16 @@ def create_speedometer(ax, value, title, current_value, position):
 
     ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
 
-def draw_mode_indicator(ax):
+def draw_mode_indicator(fig):
     global current_mode
     mode_color = 'green' if current_mode == 'Local Mode' else 'blue'
-    ax.add_patch(Circle((0, -1.4), 0.2, color=mode_color))  # Light indicator
-    ax.text(0, -1.8, current_mode, fontsize=12, va='center', ha='center')
+    ax_mode = fig.add_axes([0.45, 0.05, 0.1, 0.1])  # Positioning the mode indicator below the speedometers
+    ax_mode.clear()
+    ax_mode.add_patch(Circle((0.5, 0.5), 0.2, color=mode_color))  # Light indicator
+    ax_mode.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
+    ax_mode.set_xlim(0, 1)
+    ax_mode.set_ylim(0, 1)
+    ax_mode.axis('off')  # Turn off axis
 
 def update_mode():
     global current_mode
@@ -47,16 +52,12 @@ def update_mode():
         time.sleep(2)  # Change mode every 2 seconds
 
 def update_visualization():
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
     plt.ion()
     
     current_throttle = 0
     current_steer = 0
     
-    # Create a rectangle around everything
-    big_box = Rectangle((-1.5, -2), 3, 3.5, edgecolor='black', facecolor='none', lw=2)
-    ax.add_patch(big_box)
-
     while not exit_flag:
         # Simulate random target values for throttle and steer
         target_throttle = np.random.uniform(0, 100)
@@ -66,16 +67,11 @@ def update_visualization():
         current_throttle += (target_throttle - current_throttle) * 0.1
         current_steer += (target_steer - current_steer) * 0.1
         
-        # Create speedometers
-        create_speedometer(ax, target_throttle, 'Throttle', current_throttle, position=(-1, 0))
-        create_speedometer(ax, target_steer, 'Steer', current_steer, position=(1, 0))
+        create_speedometer(ax1, target_throttle, 'Throttle', current_throttle)
+        create_speedometer(ax2, target_steer, 'Steer', current_steer)
         
-        # Draw the single mode indicator below both speedometers
-        draw_mode_indicator(ax)
-        
-        ax.set_xlim(-1.5, 1.5)
-        ax.set_ylim(-2, 1.5)
-        ax.axis('off')  # Turn off the axis
+        # Draw the single mode indicator
+        draw_mode_indicator(fig)
         
         plt.pause(0.05)  # Update more frequently
 
