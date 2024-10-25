@@ -75,7 +75,7 @@ from matplotlib.patches import Arc
 
 exit_flag = False  # Control variable for the visualization loop
 
-def create_speedometer(ax, value, title):
+def create_speedometer(ax, value, title, current_value):
     ax.clear()
     
     # Set limits and remove ticks
@@ -89,7 +89,7 @@ def create_speedometer(ax, value, title):
     ax.add_patch(arc_background)
 
     # Draw the filled arc based on the value
-    theta2 = value * 180 / 100  # Scale value to degrees
+    theta2 = current_value * 180 / 100  # Scale value to degrees
     arc_fill = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=theta2, color='blue', lw=10)
     ax.add_patch(arc_fill)
 
@@ -105,16 +105,23 @@ def create_speedometer(ax, value, title):
 def update_visualization():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
     plt.ion()
-
+    
+    current_throttle = 0
+    current_steer = 0
+    
     while not exit_flag:
-        # Simulate random values for throttle and steer
-        mapped_throttle = np.random.uniform(0, 100)
-        mapped_steer = np.random.uniform(0, 100)
+        # Simulate random target values for throttle and steer
+        target_throttle = np.random.uniform(0, 100)
+        target_steer = np.random.uniform(0, 100)
         
-        create_speedometer(ax1, mapped_throttle, 'Throttle')
-        create_speedometer(ax2, mapped_steer, 'Steer')
+        # Smoothly interpolate to the target value
+        current_throttle += (target_throttle - current_throttle) * 0.1
+        current_steer += (target_steer - current_steer) * 0.1
         
-        plt.pause(0.5)  # Pause for a short time before the next update
+        create_speedometer(ax1, target_throttle, 'Throttle', current_throttle)
+        create_speedometer(ax2, target_steer, 'Steer', current_steer)
+        
+        plt.pause(0.05)  # Update more frequently
 
 def main():
     # Start the visualization in a separate thread
@@ -132,3 +139,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
