@@ -22,7 +22,7 @@ def print_predictions(model, dataloader):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
-    all_predictions = []
+    # all_predictions = []
 
     with torch.no_grad():  # Disable gradient computation
         for images, actions in dataloader:
@@ -30,11 +30,12 @@ def print_predictions(model, dataloader):
             predictions = model(images)  # Forward pass to get predictions
             
             # Store predictions
-            all_predictions.extend(predictions)
+            # all_predictions.extend(predictions)
 
     # Convert to numpy array for easier handling
-    all_predictions = np.array(all_predictions)
-    return all_predictions
+    # all_predictions = np.array(all_predictions)
+    # return 
+    return predictions
     # Print predictions
     # for i, prediction in enumerate(all_predictions):
     #     print(f"Sample {i}: Predicted Steering: {prediction[0]}, Predicted Throttle: {prediction[1]}")
