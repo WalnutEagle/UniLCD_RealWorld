@@ -16,6 +16,7 @@ def load_model(model_path):
 
     model.load_state_dict(state_dict)  # Load only the model state dict
     model.eval()  # Set the model to evaluation mode
+    model.to(device)
     return model
 
 def inference(model,predictions):
