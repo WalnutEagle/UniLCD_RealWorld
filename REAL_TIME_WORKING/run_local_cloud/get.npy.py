@@ -44,7 +44,7 @@ dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 t1 = time.time()
 output = print_predictions(model, dataloader)
 print(time.time()-t1)
-print(output)
+# print(output)
 # output_tensor = torch.tensor(output)  # Ensure output is a NumPy array before this step
 # torch.save(output_tensor, 'output_tensor.pt')  # Save the tensor to a file
 # print("Tensor saved successfully.")
