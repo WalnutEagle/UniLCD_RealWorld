@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import threading
 import time
+from matplotlib.patches import Arc  # Import Arc from patches
 
 exit_flag = False  # Control variable for the visualization loop
 
@@ -13,7 +14,7 @@ def create_speedometer(ax, value, title):
     ax.set_yticks([])  # Remove y ticks
 
     # Draw the speedometer arc
-    arc = plt.Arc((0.5, 0), 1, 1, angle=0, theta1=0, theta2=180, color='black', lw=2)
+    arc = Arc((0.5, 0), 1, 1, angle=0, theta1=0, theta2=180, color='black', lw=2)
     ax.add_patch(arc)
 
     # Draw the needle
