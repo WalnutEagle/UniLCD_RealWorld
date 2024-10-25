@@ -50,7 +50,7 @@ def update_mode(mode):
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
 
 def update_visualization():
-    fig = plt.figure(figsize=(10, 8))  # Adjust the figure size
+    fig = plt.figure(figsize=(12, 5))  # Adjust the figure size
     ax1 = fig.add_subplot(121)  # Speedometer on the left
     ax2 = fig.add_subplot(122)  # Throttle speedometer on the right
     mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])  # Mode indicator at the bottom
