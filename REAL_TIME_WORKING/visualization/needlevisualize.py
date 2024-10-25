@@ -37,7 +37,7 @@ def create_speedometer(ax, current_value, title):
     ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
 
 def draw_mode_indicator(ax):
-    mode_color = 'green' if current_mode == 'Local Mode' else 'blue'
+    mode_color = 'green' if current_mode == 'Local Mode' else 'yellow'
     ax.clear()
     ax.add_patch(Circle((0.5, 0.5), 2, color=mode_color))  # Light indicator
     ax.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
