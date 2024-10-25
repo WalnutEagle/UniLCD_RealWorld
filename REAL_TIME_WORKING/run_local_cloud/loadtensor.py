@@ -20,7 +20,7 @@ def load_model(model_path):
 device = torch.device('cuda')
 tensor_path = '/opt/app-root/src/UniLCD_RealWorld/output_tensor.pt'  # Update with your actual path
 
-loaded_tensor = torch.load(tensor_path, map_location='cuda')
+loaded_tensor = torch.load(tensor_path, map_location=device)
 model_path = "/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"  # Update with the path to your trained model
 model = load_model(model_path)
 model.to(device)
