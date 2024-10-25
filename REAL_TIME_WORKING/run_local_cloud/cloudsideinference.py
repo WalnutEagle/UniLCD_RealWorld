@@ -32,7 +32,9 @@ def get_preds(model_path,predictions):
     return inference(model, predictions)
 
 if __name__ == "__main__":
-    model_path = "/home/h2x/Desktop/trainedmodels/model_run_0011.pth"  # Update with the path to your trained model
-    output = get_preds(model_path, run_dir)
+    tensor_path = '/opt/app-root/src/UniLCD_RealWorld/output_tensor.pt'  # Update with your actual path
+    loaded_tensor = torch.load(tensor_path)
+    model_path = "/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"  # Update with the path to your trained model
+    output = get_preds(model_path, loaded_tensor)
     print(output)
 
