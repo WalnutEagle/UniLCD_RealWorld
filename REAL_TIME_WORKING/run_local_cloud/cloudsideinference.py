@@ -20,7 +20,7 @@ def load_model(model_path):
     return model
 
 def inference(model,predictions):
-    device = torch.device('cuda')
+    device = torch.device('cpu')
     model.to(device)
 
     with torch.no_grad():
@@ -33,7 +33,7 @@ def get_preds(model_path,predictions):
 
 if __name__ == "__main__":
     tensor_path = '/opt/app-root/src/UniLCD_RealWorld/output_tensor.pt'  # Update with your actual path
-    loaded_tensor = torch.load(tensor_path, map_location='cuda')
+    loaded_tensor = torch.load(tensor_path, map_location='cpu')
     model_path = "/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/run_local_cloud/model_run_0011.pth"  # Update with the path to your trained model
     while True:
         start = time.time()
