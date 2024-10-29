@@ -84,8 +84,8 @@ def mainvis(steer, throttle):
     # Iterate through the generated values
     for i in range(num_samples):
         global current_throttle, current_steer
-        current_throttle = throttle_values[i]
-        current_steer = steer_values[i]
+        current_throttle = throttle_values
+        current_steer = steer_values
         update_mode(mode_values[i])
         
         # Sleep briefly to simulate time between updates
