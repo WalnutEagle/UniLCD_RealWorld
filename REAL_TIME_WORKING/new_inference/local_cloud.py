@@ -27,7 +27,7 @@ from torch.utils.data import Dataset
 
 from cloud_model import CustomRegNetY002
 from missing import check_dataset, find_missing_files
-from server import start_server, receive_data, send_response
+from server_udp import start_server, receive_data, send_response
 
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
