@@ -2,8 +2,7 @@ import socket
 import pickle
 import torch  # For PyTorch tensor handling
 import time
-import select
-import numpy as np
+
 # Define host and port
 HOST = '0.0.0.0'  # Listen on all available interfaces
 PORT = 8083       # Port to listen on
@@ -41,17 +40,8 @@ def send_response(server_socket, response, addr):
 
 # Main server loop function for processing data
 def server_loop(server_socket):
-    # while True:
-    # time.sleep(1)
-    # server_socket.listen(1)
-    # receive_data, addr = server_socket.accept(1)
-    # server_socket.setblocking(0)
-    # ready = select.select([server_socket], [], [], 1)
-    # if ready[0]:
-    #     # data = mysocket.recv(4096)
-    #     received_data, addr = receive_data(server_socket)
-    while True: 
-        received_data, addr = receive_data(server_socket)  
+    while True:
+        received_data, addr = receive_data(server_socket)      
         # Handle text or tensor data
         if isinstance(received_data, str):
             print(f"Received text message: {received_data} from {addr}")
@@ -60,9 +50,10 @@ def server_loop(server_socket):
             s=time.time()
             print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
             print(f"It took{(time.time()-s)*1000} Miliseconds.")
-            # tensor_data = np.random.randn(1, 4, 150, 130).tolist()
-            # tensor_data = data
-            # print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
+            tensor_data = torch.rand(1, 4, 150, 130)
+            t1 = time.time()
+            send_response(server_socket, tensor_data, addr)
+            print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
         else:
             print(f"Received unknown data type: {type(received_data)} from {addr}")
             send_response(server_socket, "Unknown data type received!", addr)

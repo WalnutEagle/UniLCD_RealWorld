@@ -29,62 +29,36 @@ def receive_response(client_socket):
     while len(data) < data_length:
         packet, _ = client_socket.recvfrom(1400)  # Receive data in chunks
         data += packet
-    a = pickle.loads(data)
-    return a
-
+    response = pickle.loads(data)
+    return response
 
 # Main client communication loop (can be called repeatedly)
-# def client_loop(client_socket):
-#     try:
-#         # client_socket = connect_to_server()
-#         # while True:
-#         # time.sleep(1)
-#         # choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
-#         choice = 'n'
-        
-#         if choice == 't':
-#             text_message = input("Enter your text message: ")
-#             send_data(client_socket, text_message)
-#             print("Server response:", receive_response(client_socket))
-        
-#         elif choice == 'n':
-#             tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
-#             start = time.time()
-#             print(f"Sending PyTorch tensor: \n{tensor_data}")
-#             send_data(client_socket, tensor_data)
-#             print(f"Data sent in {(time.time()-start)*1000} Miliseconds")
-#             t1 = time.time()
-#             print("Server response:", receive_response(client_socket))
-#             print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
-            
-#         elif choice == 'q':
-#             print("Closing connection...")
-#                 # break
-#     except pickle.UnpicklingError as e:
-#         print(e)
-#         pass
-
-    # client_socket.close()
-
 def client_loop(client_socket):
-    try:
-        while True:
-            # time.sleep(1)
-            tensor_data = torch.rand(2, 2)
-            send_data(client_socket, tensor_data)
-        # # a = receive_response(client_socket)
-        # # print("Server response:", a)
-        # if a is not None:
-        #     tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
-        #     start = time.time()
-        #     print(f"Sending PyTorch tensor: \n{tensor_data}")
-        #     send_data(client_socket, tensor_data)
-        # print(f"Data sent in {(time.time()-start)*1000} Miliseconds")
-        # t1 = time.time()
+    while True:
+        choice = 'n'
         
-        # print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
-    except pickle.PicklingError:
-        pass
+        if choice == 't':
+            text_message = input("Enter your text message: ")
+            send_data(client_socket, text_message)
+            print("Server response:", receive_response(client_socket))
+        
+        elif choice == 'n':
+            tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
+            start = time.time()
+            print(f"Sending PyTorch tensor: \n{tensor_data}")
+            send_data(client_socket, tensor_data)
+            print(f"Data sent in {(time.time()-start)*1000} Miliseconds")
+            t1 = time.time()
+            res = receive_response(client_socket)
+            print("Server response:", res)
+
+            print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
+            
+        elif choice == 'q':
+            print("Closing connection...")
+            break
+
+    client_socket.close()
 
 # Usage example:
 client_socket = connect_to_server()
