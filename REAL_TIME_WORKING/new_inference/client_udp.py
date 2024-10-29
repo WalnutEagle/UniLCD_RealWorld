@@ -36,7 +36,7 @@ def client_loop():
     try:
         client_socket = connect_to_server()
         # while True:
-        time.sleep(1.2)
+        # time.sleep(0.2)
         # choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
         choice = 'n'
         
