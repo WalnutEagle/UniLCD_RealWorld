@@ -167,7 +167,7 @@ def update_visualization(throttle, steer):
         create_speedometer(ax1, current_steer, 'Steer')
         create_speedometer(ax2, current_throttle, 'Throttle')
         draw_mode_indicator(mode_ax)
-        plt.savefig('image.jpg')
+        plt.savefig('image.png')
         plt.pause(0.05)
 
 LIDAR_ADDR = 0x62
@@ -323,8 +323,8 @@ def main():
 
                     # update_mode_indicator(mode_circle, 'Local')
                     update_visualization(steering, throttle)
-                    cv2.imread('image.jpg')
-                    cv2.imshow('image.jpg')
+                    # cv2.imread('image.png')
+                    cv2.imshow('image.png')
                     
 
                     print(f"Total Time: {time.time() - s:.5f}")
