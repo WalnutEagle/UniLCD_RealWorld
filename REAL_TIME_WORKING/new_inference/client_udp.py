@@ -69,7 +69,7 @@ def receive_response(client_socket):
 def client_loop(client_socket):
     try:
         while True:
-            time.sleep(1)
+            # time.sleep(1)
             tensor_data = torch.rand(2, 2)
             send_data(client_socket, tensor_data)
         # # a = receive_response(client_socket)
