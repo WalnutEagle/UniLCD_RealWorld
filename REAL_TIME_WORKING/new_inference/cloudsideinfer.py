@@ -30,7 +30,9 @@ def inferr(device, client_socket):
     data.to(device)
     with torch.no_grad():
         prediction = model(data)
+    print(prediction)
     send_data(client_sock, prediction)
+    
     print('sent')
 
 
