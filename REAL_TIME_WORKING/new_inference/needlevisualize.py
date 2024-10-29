@@ -157,11 +157,15 @@ def update_visualization():
 
     plt.ion()  # Turn on interactive mode
 
-    while not exit_flag:
-        create_speedometer(ax1, current_steer, 'Steer')
-        create_speedometer(ax2, current_throttle, 'Throttle')
-        draw_mode_indicator(mode_ax)
-        plt.pause(0.05)  # Pause to allow the plot to update
+    # while not exit_flag:
+    #     create_speedometer(ax1, current_steer, 'Steer')
+    #     create_speedometer(ax2, current_throttle, 'Throttle')
+    #     draw_mode_indicator(mode_ax)
+    #     plt.pause(0.05)  # Pause to allow the plot to update
+    create_speedometer(ax1, current_steer, 'Steer')
+    create_speedometer(ax2, current_throttle, 'Throttle')
+    draw_mode_indicator(mode_ax)
+    plt.pause(0.05)
 
 if __name__ == "__main__":
     # Initial values
@@ -180,5 +184,5 @@ if __name__ == "__main__":
         # time.sleep(0.1)  # Sleep to simulate time between updates
 
     # Stop the visualization loop
-    exit_flag = True
+    # exit_flag = True
     plt.close()  # Close the plot window after exiting
