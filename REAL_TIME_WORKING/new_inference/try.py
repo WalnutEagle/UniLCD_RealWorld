@@ -160,14 +160,14 @@ def update_visualization(throttle, steer):
     ax2 = fig.add_subplot(122)
     mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])
 
-    plt.ion()
+    # plt.ion()
 
     while not exit_flag:
         global current_throttle, current_steer
         create_speedometer(ax1, current_steer, 'Steer')
         create_speedometer(ax2, current_throttle, 'Throttle')
         draw_mode_indicator(mode_ax)
-        
+        plt.savefig('image.jpg')
         plt.pause(0.05)
 
 LIDAR_ADDR = 0x62
@@ -284,6 +284,7 @@ def main():
         q_disparity = device.getOutputQueue(name="disparity", maxSize=4, blocking=False)
 
         max_disparity = 255 
+        
         while not exit_flag:
             check_keys()
             start_time = time.time()
@@ -318,10 +319,13 @@ def main():
                         prediction = model(depth_img)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
-                    update_visualization(throttle, steer)
+                    # image = cv2.imshow('image.jpg')
 
                     # update_mode_indicator(mode_circle, 'Local')
-                    # update_visualization(steering, throttle)
+                    update_visualization(steering, throttle)
+                    cv2.imread('image.jpg')
+                    cv2.imshow('image.jpg')
+                    
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=100:
