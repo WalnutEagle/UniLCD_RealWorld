@@ -173,12 +173,12 @@ if __name__ == "__main__":
     # update_visualization()
 
     # Update loop (simulate continuous updates)
-    for _ in range(100):  # Adjust the range for how many times you want to update
-        current_throttle = throttle  # Update these values as needed
-        current_steer = steer
-        update_visualization()
-        time.sleep(0.1)  # Sleep to simulate time between updates
+    # for _ in range(100):  # Adjust the range for how many times you want to update
+    current_throttle = throttle  # Update these values as needed
+    current_steer = steer
+    update_visualization()
+        # time.sleep(0.1)  # Sleep to simulate time between updates
 
     # Stop the visualization loop
-    exit_flag = True
+    # exit_flag = True
     plt.close()  # Close the plot window after exiting
