@@ -29,13 +29,12 @@ def receive_response(client_socket):
     while len(data) < data_length:
         packet, _ = client_socket.recvfrom(1400)  # Receive data in chunks
         data += packet
-    recieved_data = pickle.loads(data)
-    return recieved_data
-
+    return pickle.loads(data)
 
 # Main client communication loop (can be called repeatedly)
 def client_loop(client_socket):
     while True:
+        # choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
         choice = 'n'
         
         if choice == 't':
@@ -44,12 +43,7 @@ def client_loop(client_socket):
             print("Server response:", receive_response(client_socket))
         
         elif choice == 'n':
-            text_message = 'a'
-            send_data(client_socket, text_message)
-            data = receive_response(client_socket)
-            print("Server response:", data)
-            tensor_data = torch.rand(2, 2)
-            # tensor_data = data  # Example PyTorch tensor data
+            tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
             start = time.time()
             print(f"Sending PyTorch tensor: \n{tensor_data}")
             send_data(client_socket, tensor_data)
@@ -57,17 +51,13 @@ def client_loop(client_socket):
             t1 = time.time()
             print("Server response:", receive_response(client_socket))
             print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
-                
+            
         elif choice == 'q':
             print("Closing connection...")
-            # break
+            break
 
-        client_socket.close()
+    client_socket.close()
 
-# # Usage example:
+# Usage example:
 client_socket = connect_to_server()
-# text_message = 'a'
-# send_data(client_socket, text_message)
-# data = receive_response(client_socket)
-# print("Server response:", data)
 client_loop(client_socket)

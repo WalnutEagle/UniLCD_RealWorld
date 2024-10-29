@@ -1,5 +1,5 @@
 from cloudsidemodel import CustomRegNetY002
-from client_udp import connect_to_server, receive_response, send_data
+from client_udp import connect_to_server, client_loop
 import torch
 import numpy as np
 import torch.nn as nn
@@ -44,11 +44,12 @@ if __name__ == '__main__':
     model.to(device)
     print(device)
     client_sock = connect_to_server()
+    client_loop(client_sock)
     # inferr(device, client_sock)
     # client_sock.close()
     # client_loop(client_sock)
-    try:
-        while True:
-            inferr(device, client_sock)
-    except KeyboardInterrupt:
-        client_sock.close()
+    # try:
+    #     while True:
+    #         inferr(device, client_sock)
+    # except KeyboardInterrupt:
+    #     client_sock.close()
