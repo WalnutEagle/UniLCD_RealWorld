@@ -46,8 +46,8 @@ def client_loop(client_socket):
         text_message = 'a'
         send_data(client_socket, text_message)
         print("Server response:", receive_response(client_socket))
-        # tensor_data = torch.rand(2, 2)
-        tensor_data = data  # Example PyTorch tensor data
+        tensor_data = torch.rand(2, 2)
+        # tensor_data = data  # Example PyTorch tensor data
         start = time.time()
         print(f"Sending PyTorch tensor: \n{tensor_data}")
         send_data(client_socket, tensor_data)
