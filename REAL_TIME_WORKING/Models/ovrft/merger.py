@@ -20,7 +20,7 @@ def load_model(model_path):
 
 def print_predictions(model, dataloader):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
+
 
     all_predictions = []
 

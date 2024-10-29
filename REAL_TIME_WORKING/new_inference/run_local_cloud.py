@@ -253,6 +253,7 @@ def main():
     ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
     ax.legend()
     model = load_model(model_path)
+    model.to(device)
     
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
