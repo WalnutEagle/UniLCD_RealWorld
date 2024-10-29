@@ -38,6 +38,11 @@ def send_response(server_socket, response, addr):
     for i in range(0, data_length, chunk_size):
         server_socket.sendto(data[i:i + chunk_size], addr)  # Send each chunk
 
+def recieve_blank_response(server_socket):
+    data, addr = server_socket.recvfrom(1024)
+    if data == b'':
+        return addr
+
 
 # Main server loop function for processing data
 def server_loop(server_socket):

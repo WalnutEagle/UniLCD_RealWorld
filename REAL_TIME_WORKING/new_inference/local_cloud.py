@@ -197,7 +197,7 @@ def main():
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
-
+    server_socket = start_server()
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)

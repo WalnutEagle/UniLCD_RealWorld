@@ -31,6 +31,9 @@ def receive_response(client_socket):
         data += packet
     return pickle.loads(data)
 
+def send_blank_response(client_socket):
+    client_socket.sendto(b'', (HOST,PORT))
+
 
 # Main client communication loop (can be called repeatedly)
 def client_loop(client_socket):
