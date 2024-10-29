@@ -100,4 +100,4 @@ def mainvis(steer, throttle):
 if __name__ == "__main__":
     steer = 100
     throttle = 90
-    main(steer, throttle)
+    mainvis(steer, throttle)
