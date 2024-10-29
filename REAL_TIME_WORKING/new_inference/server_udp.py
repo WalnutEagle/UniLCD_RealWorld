@@ -57,7 +57,6 @@ def server_loop(server_socket):
         else:
             print(f"Received unknown data type: {type(received_data)} from {addr}")
             send_response(server_socket, "Unknown data type received!", addr)
-        i+=1
 
 # # Usage example:
 server_socket = start_server()
