@@ -33,7 +33,7 @@ def receive_response(client_socket):
 
 
 # Main client communication loop (can be called repeatedly)
-def client_loop(client_socket, data):
+def client_loop(client_socket):
     # while True:
     choice = 'n'
     
@@ -46,7 +46,8 @@ def client_loop(client_socket, data):
         text_message = input("Enter your text message: ")
         send_data(client_socket, text_message)
         print("Server response:", receive_response(client_socket))
-        tensor_data = data  # Example PyTorch tensor data
+        tensor_data = torch.rand(2, 2)
+        # tensor_data = data  # Example PyTorch tensor data
         start = time.time()
         print(f"Sending PyTorch tensor: \n{tensor_data}")
         send_data(client_socket, tensor_data)
