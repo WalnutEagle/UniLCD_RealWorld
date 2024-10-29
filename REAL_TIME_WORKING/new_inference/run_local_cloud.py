@@ -28,9 +28,9 @@ from torchvision import transforms
 from torchvision.io import read_image
 from torch.utils.data import Dataset
 
-from REAL_TIME_WORKING.Models.ovrft.merger import load_model, print_predictions
-from REAL_TIME_WORKING.Models.ovrft.cloud1_dataloader import CarlaDataset
-from REAL_TIME_WORKING.Models.ovrft.missing import check_dataset, find_missing_files
+from Models.ovrft.merger import load_model, print_predictions
+from Models.ovrft.cloud1_dataloader import CarlaDataset
+from Models.ovrft.missing import check_dataset, find_missing_files
 
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
