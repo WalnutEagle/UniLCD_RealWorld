@@ -198,7 +198,7 @@ def main():
     model.to(device)
     print(device)
     
-    update_visualization()
+    
 
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
@@ -231,6 +231,7 @@ def main():
                 throttle, steer = output.cpu().numpy()[0]
                 current_throttle = map_value_throttle(throttle)
                 current_steer = map_value_steer(steer)
+                update_visualization()
 
             frame_count += 1
             time.sleep(0.01)
