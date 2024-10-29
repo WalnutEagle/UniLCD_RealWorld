@@ -239,8 +239,11 @@ def main():
                     s = time.time()
                     with torch.no_grad():
                         prediction = model(depth_img)
+                    print(prediction)
                     data, addr = receive_data(server_socket)
+                    print(data, addr)
                     send_response(server_socket, prediction, addr)
+                    print('sent')
                     output, adre = receive_data(server_socket)
                     print(output)
                     # steering = prediction[0, 0].item()
