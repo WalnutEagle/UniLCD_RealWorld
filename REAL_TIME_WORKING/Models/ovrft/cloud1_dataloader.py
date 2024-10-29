@@ -10,7 +10,7 @@ import os
 import json
 import time
 import argparse
-from cloud1_model import CustomRegNetY002
+from Models.ovrft.cloud1_model import CustomRegNetY002
 import logging
 
 # Set up logging
