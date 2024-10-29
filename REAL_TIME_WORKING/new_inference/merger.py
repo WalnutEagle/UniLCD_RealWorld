@@ -2,8 +2,8 @@ import logging
 import torch
 import numpy as np
 from torch.utils.data import DataLoader
-from cloud1_dataloader import CarlaDataset  # Ensure this is correct
-from cloud1_model import CustomRegNetY002  # Ensure this matches your model definition
+from Models.ovrft.cloud1_dataloader import CarlaDataset  # Ensure this is correct
+from Models.ovrft.cloud1_model import CustomRegNetY002  # Ensure this matches your model definition
 
 def load_model(model_path):
     checkpoint = torch.load(model_path)  # Load the entire checkpoint
@@ -19,18 +19,14 @@ def load_model(model_path):
     return model
 
 def print_predictions(model, dataloader):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
-
     all_predictions = []
-
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     with torch.no_grad():  # Disable gradient computation
         for images, actions in dataloader:
-            images = images.to(device)
-            predictions = model(images).cpu().numpy()  # Forward pass to get predictions
-            
-            # Store predictions
-            all_predictions.extend(predictions)
+            images = images.to(device, non_blocking=True)
+            with torch.cuda.amp.autocast():  # Use mixed precision
+                predictions = model(images)
+            all_predictions.extend(predictions)  # Forward pass to get predictions
 
     # Convert to numpy array for easier handling
     all_predictions = np.array(all_predictions)

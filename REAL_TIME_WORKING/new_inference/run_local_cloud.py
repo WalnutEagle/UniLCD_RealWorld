@@ -28,9 +28,9 @@ from torchvision import transforms
 from torchvision.io import read_image
 from torch.utils.data import Dataset
 
-from Models.ovrft.merger import load_model, print_predictions
-from Models.ovrft.cloud1_dataloader import CarlaDataset
-from Models.ovrft.missing import check_dataset, find_missing_files
+from merger import load_model, print_predictions
+from cloud1_dataloader import CarlaDataset
+from missing import check_dataset, find_missing_files
 
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
@@ -253,7 +253,10 @@ def main():
     ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
     ax.legend()
     model = load_model(model_path)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
+    print(device)
+    
     
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
@@ -297,11 +300,12 @@ def main():
                     # check_dataset(full_path)
                     # output = get_preds(model_path, full_path)
                     sssdddd = "/home/h2x/Desktop/REAL_TIME_WORKING/Main_script/10-11-2024/rc_data/run_001"
-                    check_dataset(sssdddd)
-                    find_missing_files(sssdddd)
+                    # check_dataset(sssdddd)
+                    # find_missing_files(sssdddd)
                     s = time.time()
+                    batch_size = 1
                     test_dataset = CarlaDataset(sssdddd)
-                    dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+                    dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
                     serveroutput = print_predictions(model, dataloader)
 
 
