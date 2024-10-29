@@ -23,7 +23,7 @@ def load_model(model_path):
 
 def inferr(device):
     data = receive_response(client_sock)
-    data.to(device)
+    print(data)
     with torch.no_grad():
         prediction = model(data)
     send_data(client_sock, prediction)
