@@ -34,10 +34,10 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
-    client_socket = connect_to_server()
-    send_data(client_socket, 'a')
+    client_sock = connect_to_server()
+    send_data(client_sock, 'a')
     try:
         while True:
             inferr()
     except KeyboardInterrupt:
-        client_socket.close()
+        client_sock.close()
