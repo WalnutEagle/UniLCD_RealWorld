@@ -56,9 +56,9 @@ def client_loop(client_socket):
         print("Server response:", receive_response(client_socket))
         print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
             
-        # elif choice == 'q':
-        #     print("Closing connection...")
-        #     break
+    elif choice == 'q':
+        print("Closing connection...")
+        # break
 
     client_socket.close()
 
