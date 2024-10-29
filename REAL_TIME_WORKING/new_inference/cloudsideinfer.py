@@ -21,7 +21,7 @@ def load_model(model_path):
     model.eval()  # Set the model to evaluation mode
     return model
 
-def inferr():
+def inferr(device):
     data = receive_response(client_sock)
     data.to(device)
     with torch.no_grad():
@@ -40,6 +40,6 @@ if __name__ == '__main__':
     send_data(client_sock, 'a')
     try:
         while True:
-            inferr()
+            inferr(device)
     except KeyboardInterrupt:
         client_sock.close()
