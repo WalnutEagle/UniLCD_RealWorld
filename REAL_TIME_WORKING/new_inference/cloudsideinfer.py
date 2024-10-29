@@ -44,11 +44,11 @@ if __name__ == '__main__':
     model.to(device)
     print(device)
     client_sock = connect_to_server()
-    inferr(device, client_sock)
-    client_sock.close()
+    # inferr(device, client_sock)
+    # client_sock.close()
     # client_loop(client_sock)
-    # try:
-    #     while True:
-    #         inferr(device, client_sock)
-    # except KeyboardInterrupt:
-    #     client_sock.close()
+    try:
+        while True:
+            inferr(device, client_sock)
+    except KeyboardInterrupt:
+        client_sock.close()
