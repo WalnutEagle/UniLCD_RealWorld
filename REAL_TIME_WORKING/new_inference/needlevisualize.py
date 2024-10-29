@@ -90,12 +90,14 @@ def mainvis(steer, throttle):
     update_mode(mode_values)
     
     # Sleep briefly to simulate time between updates
-    # time.sleep(0.05)
+    time.sleep(0.05)
 
     # Stop the visualization thread
     global exit_flag
     exit_flag = True
     vis_thread.join()
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    steer = 100
+    throttle = 90
+    main(steer, throttle)
