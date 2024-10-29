@@ -181,36 +181,38 @@ def configure_depthai_pipeline():
     return pipeline, depth
 
 def main():
-    global throttle, steer, do_infer, exit_flag, current_steer, current_throttle
-
+    global throttle, steer, do_infer, create_new_directory, exit_flag
     bus_number = 1
     frame_count = 0
     distance_to_obstacle = 0
 
     pipeline, depth = configure_depthai_pipeline()
+
     bus = smbus2.SMBus(bus_number)
     print(f"Connect to I2C Bus:{bus_number}")
     initialize_lidar(bus)
 
+    power_mode = get_power_mode(bus)
+    high_accuracy_mode = get_high_accuracy_mode(bus)
+
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
+
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
-    
-    
 
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
         q_disparity = device.getOutputQueue(name="disparity", maxSize=4, blocking=False)
-        max_disparity = 255
 
+        max_disparity = 255 
         while not exit_flag:
             check_keys()
+            start_time = time.time()
             start_measurement(bus)
             if wait_for_measurement(bus):
                 distance_to_obstacle = read_distance(bus)
-
             in_rgb = q_rgb.tryGet()
             if in_rgb is not None:
                 frame_rgb = in_rgb.getCvFrame()
@@ -220,21 +222,55 @@ def main():
             if in_disparity is not None:
                 frame_disparity = in_disparity.getFrame()
                 frame_disparity = (frame_disparity * (255 / max_disparity)).astype(np.uint8)
-                frame_disparity = cv2.applyColorMap(frame_disparity, cv2.COLORMAP_JET)
+                depth_img = torch.tensor(frame_disparity).float() / 255.0  # Normalize to [0, 1]
+                depth_img = transforms.Resize((300, 300))(depth_img.unsqueeze(0))  # Resize
+                depth_img = depth_img[0, :, :].unsqueeze(0)
+                depth_img = depth_img.unsqueeze(0)
+                depth_img = depth_img.to('cuda')
+                sensor_data = {
+                    'Throttle': throttle,
+                    'Steer': steer,
+                    }
+                actions = torch.Tensor([sensor_data['Steer'],sensor_data['Throttle']])
                 cv2.imshow("Disparity", frame_disparity)
 
-            if do_infer:
-                inference_start_time = time.time()
-                input_image = transforms.ToTensor()(frame_rgb).unsqueeze(0).to(device)
-                with torch.no_grad():
-                    output = model(input_image)
-                throttle, steer = output.cpu().numpy()[0]
-                current_throttle = map_value_throttle(throttle)
-                current_steer = map_value_steer(steer)
-                update_visualization()
+                if do_infer:
 
-            frame_count += 1
-            time.sleep(0.01)
+                    s = time.time()
+                    with torch.no_grad():
+                        prediction = model(depth_img)
+                    steering = prediction[0, 0].item()
+                    throttle = prediction[0, 1].item()
+                    update_visualization()
+
+                    # update_mode_indicator(mode_circle, 'Local')
+                    # update_visualization(steering, throttle)
+
+                    print(f"Total Time: {time.time() - s:.5f}")
+                    if distance_to_obstacle<=100:
+                        mapped_steer = map_value_steer(0.0)
+                        mapped_throttle = map_value_throttle(0.0)
+                    else :
+                        mapped_steer = map_value_steer(steer)
+                        mapped_throttle = map_value_throttle(throttle)
+                    if mapped_throttle > 99.0:
+                        mapped_throttle = 99.0
+                    elif mapped_throttle <0.0:
+                        mapped_throttle = 0.0
+                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
+                    kit.servo[0].angle = mapped_steer
+                    kit.servo[1].angle = mapped_throttle
+
+                frame_count += 1
+                if exit_flag:
+                    throttle = 0.0
+                    steer = 0.0
+                    mapped_steer = map_value_steer(steer)
+                    mapped_throttle = map_value_throttle(throttle)
+                    kit.servo[1].angle = mapped_throttle
+                    kit.servo[0].angle = mapped_steer
+
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
