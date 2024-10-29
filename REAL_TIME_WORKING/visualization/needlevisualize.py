@@ -68,28 +68,31 @@ def update_visualization():
         
         plt.pause(0.05)  # Update more frequently
 
-def main():
+def main(throttle, steer):
     # Generate random values for throttle, steer, and mode
     num_samples = 100
-    throttle_values = np.random.uniform(0, 100, num_samples)
-    # throttle_values = throttle
-    steer_values = np.random.uniform(0, 100, num_samples)
-    # steer_values = steer
-    mode_values = np.random.choice([0, 1], num_samples)
-
+    # throttle_values = np.random.uniform(0, 100, num_samples)
+    throttle_values = throttle
+    # steer_values = np.random.uniform(0, 100, num_samples)
+    steer_values = steer
+    # mode_values = np.random.choice([0, 1], num_samples)
+    mode_values = 1
     # Start the visualization in the main thread
     vis_thread = threading.Thread(target=update_visualization)
     vis_thread.start()
+    current_throttle = throttle
+    current_steer = steer
+    update_mode(mode_values)
     
     # Iterate through the generated values
-    for i in range(num_samples):
-        global current_throttle, current_steer
-        current_throttle = throttle_values[i]
-        current_steer = steer_values[i]
-        update_mode(mode_values[i])
+    # for i in range(num_samples):
+    #     global current_throttle, current_steer
+    #     current_throttle = throttle_values[i]
+    #     current_steer = steer_values[i]
+    #     update_mode(mode_values[i])
         
-        # Sleep briefly to simulate time between updates
-        time.sleep(0.05)
+    #     # Sleep briefly to simulate time between updates
+    #     time.sleep(0.05)
 
     # Stop the visualization thread
     global exit_flag
