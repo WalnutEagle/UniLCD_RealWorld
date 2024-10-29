@@ -62,11 +62,7 @@ def server_loop(server_socket):
             print(f"It took{(time.time()-s)*1000} Miliseconds.")
             # tensor_data = np.random.randn(1, 4, 150, 130).tolist()
             # tensor_data = data
-            tensor_data = torch.rand(500, 500)
-            print(tensor_data)
-            t1 = time.time()
-            send_response(server_socket, tensor_data, addr)
-            print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
+            # print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
         else:
             print(f"Received unknown data type: {type(received_data)} from {addr}")
             send_response(server_socket, "Unknown data type received!", addr)
