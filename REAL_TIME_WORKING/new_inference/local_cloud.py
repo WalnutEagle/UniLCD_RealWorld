@@ -235,16 +235,17 @@ def main():
                 cv2.imshow("Disparity", frame_disparity)
 
                 if do_infer:
-                    data, addr = receive_data(server_socket)
+                    server_loop(server_socket)
+                    # data, addr = receive_data(server_socket)
                     s = time.time()
-                    with torch.no_grad():
-                        prediction = model(depth_img)
-                    print(prediction)
-                    print(data, addr)
-                    send_response(server_socket, prediction, addr)
-                    print('sent')
-                    output, adre = receive_data(server_socket)
-                    print(output)
+                    # with torch.no_grad():
+                    #     prediction = model(depth_img)
+                    # print(prediction)
+                    # print(data, addr)
+                    # send_response(server_socket, prediction, addr)
+                    # print('sent')
+                    # output, adre = receive_data(server_socket)
+                    # print(output)
                     # steering = prediction[0, 0].item()
                     # throttle = prediction[0, 1].item()
 
