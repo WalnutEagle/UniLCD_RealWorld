@@ -149,7 +149,7 @@ def update_mode(mode):
     global current_mode
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
 
-def update_visualization():
+def update_visualization(current_steer, current_throttle):
     fig = plt.figure(figsize=(12, 5))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
@@ -169,8 +169,8 @@ def update_visualization():
 
 if __name__ == "__main__":
     # Initial values
-    steer = 100
-    throttle = 90
+    # steer = 100
+    # throttle = 90
     update_mode(0)  # Set mode
 
     # Start the visualization
@@ -178,8 +178,8 @@ if __name__ == "__main__":
 
     # Update loop (simulate continuous updates)
     # for _ in range(100):  # Adjust the range for how many times you want to update
-    current_throttle = throttle  # Update these values as needed
-    current_steer = steer
+    # current_throttle = throttle  # Update these values as needed
+    # current_steer = steer
     update_visualization()
         # time.sleep(0.1)  # Sleep to simulate time between updates
 
