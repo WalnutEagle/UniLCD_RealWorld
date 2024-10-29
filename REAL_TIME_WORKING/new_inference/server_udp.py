@@ -46,6 +46,9 @@ def server_loop(server_socket):
         # Handle text or tensor data
         if isinstance(received_data, str):
             print(f"Received text message: {received_data} from {addr}")
+            tensor_data = torch.rand(1, 4, 150, 130)
+            t1 = time.time()
+            send_response(server_socket, tensor_data, addr)
             send_response(server_socket, "received!", addr)
         elif isinstance(received_data, torch.Tensor):
             s=time.time()
