@@ -67,22 +67,22 @@ def receive_response(client_socket):
     # client_socket.close()
 
 def client_loop(client_socket):
-    try:
-        while True:
-            send_data(client_socket, 'a')
-            a = receive_response(client_socket)
-            print("Server response:", a)
-            if a is not None:
-                tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
-                start = time.time()
-                print(f"Sending PyTorch tensor: \n{tensor_data}")
-                send_data(client_socket, tensor_data)
-            print(f"Data sent in {(time.time()-start)*1000} Miliseconds")
-            t1 = time.time()
-            
-            print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
-    except pickle.PicklingError:
-        pass
+    # try:
+    while True:
+        send_data(client_socket, 'a')
+        a = receive_response(client_socket)
+        print("Server response:", a)
+        if a is not None:
+            tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
+            start = time.time()
+            print(f"Sending PyTorch tensor: \n{tensor_data}")
+            send_data(client_socket, tensor_data)
+        print(f"Data sent in {(time.time()-start)*1000} Miliseconds")
+        t1 = time.time()
+        
+        print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
+    # except pickle.PicklingError:
+    #     pass
 
 # Usage example:
 client_socket = connect_to_server()
