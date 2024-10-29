@@ -33,6 +33,83 @@ kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
 kit.servo[0].set_pulse_width_range(1200, 2200)
 kit.servo[1].set_pulse_width_range(1000, 2000)
 
+
+def initialize_lidar(bus):
+    pass
+
+def start_measurement(bus):
+    try:
+        bus.write_byte_data(LIDAR_ADDR, REG_SYSRANGE_START, 0x04)
+    except Exception as e:
+        print(f"Error starting measurement: {e}")
+
+def wait_for_measurement(bus):
+    while True:
+        try:
+            status = bus.read_byte_data(LIDAR_ADDR, REG_RESULT)
+            if status is not None:
+                if (status & 0x01) == 0:
+                    return True
+        except Exception as e:
+            print(f"Error reading status: {e}")
+        time.sleep(0.01)
+
+def read_distance(bus):
+    try:
+        low_byte = bus.read_byte_data(LIDAR_ADDR, REG_RESULT_LOW_BYTE)
+        high_byte = bus.read_byte_data(LIDAR_ADDR, REG_RESULT_HIGH_BYTE)
+
+        distance = (high_byte << 8) | low_byte
+        return distance
+    except Exception as e:
+        print(f"Error reading distance: {e}")
+        return None
+
+def set_power_mode(bus, mode):
+    try:
+        bus.write_byte_data(LIDAR_ADDR, REG_POWER_MODE, mode)
+        print(f"Power mode set to: {mode:#04x}")
+    except Exception as e:
+        print(f"Error setting power mode: {e}")
+
+def set_high_accuracy_mode(bus, value):
+    try:
+        bus.write_byte_data(LIDAR_ADDR, REG_HIGH_ACCURACY_MODE, value)
+        print(f"High accuracy mode set to: {value:#04x}")
+    except Exception as e:
+        print(f"Error setting high accuracy mode: {e}")
+
+def get_power_mode(bus):
+    try:
+        power_mode = bus.read_byte_data(LIDAR_ADDR, REG_POWER_MODE)
+        return power_mode
+    except Exception as e:
+        print(f"Error reading power mode: {e}")
+        return None
+
+def get_high_accuracy_mode(bus):
+    try:
+        high_accuracy_mode = bus.read_byte_data(LIDAR_ADDR, REG_HIGH_ACCURACY_MODE)
+        return high_accuracy_mode
+    except Exception as e:
+        print(f"Error reading high accuracy mode: {e}")
+        return None
+
+def map_value_steer(x, in_min=-1, in_max=1, out_min=0, out_max=180):
+    """Map values between (-1, 1) to (0, 180)"""
+    return float((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+
+def map_value_throttle(x, in_min=-1, in_max=1, out_min=0, out_max=99):
+    """Map values between (-1, 1) to (0, 99)"""
+    return float(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+def check_keys():
+    global do_infer, exit_flag
+    key = cv2.waitKey(1)  # Wait for 1 ms
+    if key == ord(' '):  # Spacebar
+        do_infer = not do_infer
+    elif key == ord('q'):  # 'Q' key
+        exit_flag = True
 # Global variables
 throttle = 0.0
 steer = 0.0
