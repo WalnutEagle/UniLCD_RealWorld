@@ -42,9 +42,9 @@ def send_response(server_socket, response, addr):
 def server_loop(server_socket):
     # while True:
     # time.sleep(1)
-    server_socket.listen(1)
-    receive_data, addr = server_socket.accept(1)
-    server_socket.setblocking(0)
+    # server_socket.listen(1)
+    # receive_data, addr = server_socket.accept(1)
+    # server_socket.setblocking(0)
     # ready = select.select([server_socket], [], [], 1)
     # if ready[0]:
     #     # data = mysocket.recv(4096)

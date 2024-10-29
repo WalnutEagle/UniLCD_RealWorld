@@ -241,6 +241,7 @@ def main():
                     with torch.no_grad():
                         prediction = model(depth_img)
                     # print(prediction)
+                    time.sleep(0.9)
                     server_loop(server_socket)
                     # print(data, addr)
                     # send_response(server_socket, prediction, addr)

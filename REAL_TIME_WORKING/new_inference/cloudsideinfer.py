@@ -43,8 +43,10 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
+    client_sock = connect_to_server()
     while True:
-        client_sock = connect_to_server()
+        time.sleep(1)
+ 
         client_loop(client_sock)
     # inferr(device, client_sock)
     # client_sock.close()
