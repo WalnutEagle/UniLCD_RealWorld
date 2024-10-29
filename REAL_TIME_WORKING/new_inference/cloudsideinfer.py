@@ -39,7 +39,6 @@ def inferr():
     data = receive_response(client_socket)
     data.to(device)
     with torch.no_grad():
-        with torch.cuda.amp.autocast():
-            prediction = model(data)
+        prediction = model(data)
     send_data(client_socket, prediction)
 
