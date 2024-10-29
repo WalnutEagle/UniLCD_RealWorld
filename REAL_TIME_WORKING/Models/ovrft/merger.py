@@ -2,7 +2,7 @@ import logging
 import torch
 import numpy as np
 from torch.utils.data import DataLoader
-from dataloader import CarlaRunDataset  # Ensure this is correct
+from cloud1_dataloader import CarlaDataset  # Ensure this is correct
 from cloud1_model import CustomRegNetY002  # Ensure this matches your model definition
 
 def load_model(model_path):
@@ -44,7 +44,7 @@ def get_preds(model_path, run_dir, batch_size=16):
     model = load_model(model_path)
 
     # Create DataLoader for the new dataset
-    test_dataset = CarlaRunDataset(run_dir)  # Use your dataset class
+    test_dataset = CarlaDataset(run_dir)  # Use your dataset class
     dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Print predictions
