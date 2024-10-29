@@ -65,9 +65,9 @@ def client_loop(client_socket):
     client_socket.close()
 
 # # Usage example:
-client_socket = connect_to_server()
-text_message = 'a'
-send_data(client_socket, text_message)
-data = receive_response(client_socket)
-print("Server response:", data)
+# client_socket = connect_to_server()
+# text_message = 'a'
+# send_data(client_socket, text_message)
+# data = receive_response(client_socket)
+# print("Server response:", data)
 # client_loop(client_socket)
