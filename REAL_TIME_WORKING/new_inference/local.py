@@ -27,8 +27,7 @@ from torchvision import transforms
 from torchvision.io import read_image
 from torch.utils.data import Dataset
 
-from merger import load_model, print_predictions
-from cloud1_dataloader import CarlaDataset
+from merger import load_model
 from missing import check_dataset, find_missing_files
 
 
