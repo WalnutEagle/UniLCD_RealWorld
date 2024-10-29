@@ -211,28 +211,28 @@ def configure_depthai_pipeline():
 def main():
     global throttle, steer, collect_data, create_new_directory, exit_flag
     bus_number = 1
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--exp', type=str, default="rc_data", help="Experiment name")
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('--exp', type=str, default="rc_data", help="Experiment name")
+    # args = parser.parse_args()
     frame_count = 0
     distance_to_obstacle = 0
     # Create directories for data storage
-    dir_date = datetime.datetime.now().strftime("%m-%d-%Y")
-    date_exp = os.path.join(dir_date, args.exp)
-    if not os.path.exists(date_exp):
-        os.makedirs(date_exp)
-        full_path = os.path.join(date_exp, "run_001")
-    else:
-        directories = [d for d in os.listdir(date_exp) if os.path.isdir(os.path.join(date_exp, d))]
-        run_number = len(directories) + 1
-        full_path = os.path.join(date_exp, f"run_{run_number:03d}")
-    os.makedirs(full_path, exist_ok=True)
-    data_dir_rgb = os.path.join(full_path, "rgb")
-    data_dir_disparity = os.path.join(full_path, "disparity")
-    data_dir_json = os.path.join(full_path, "json")
-    os.makedirs(data_dir_rgb, exist_ok=True)
-    os.makedirs(data_dir_disparity, exist_ok=True)
-    os.makedirs(data_dir_json, exist_ok=True)
+    # dir_date = datetime.datetime.now().strftime("%m-%d-%Y")
+    # date_exp = os.path.join(dir_date, args.exp)
+    # if not os.path.exists(date_exp):
+    #     os.makedirs(date_exp)
+    #     full_path = os.path.join(date_exp, "run_001")
+    # else:
+    #     directories = [d for d in os.listdir(date_exp) if os.path.isdir(os.path.join(date_exp, d))]
+    #     run_number = len(directories) + 1
+    #     full_path = os.path.join(date_exp, f"run_{run_number:03d}")
+    # os.makedirs(full_path, exist_ok=True)
+    # data_dir_rgb = os.path.join(full_path, "rgb")
+    # data_dir_disparity = os.path.join(full_path, "disparity")
+    # data_dir_json = os.path.join(full_path, "json")
+    # os.makedirs(data_dir_rgb, exist_ok=True)
+    # os.makedirs(data_dir_disparity, exist_ok=True)
+    # os.makedirs(data_dir_json, exist_ok=True)
     
     pipeline, depth = configure_depthai_pipeline()
     # listener_thread = threading.Thread(target=start_listener)
@@ -393,20 +393,20 @@ def main():
             #     mapped_throttle = map_value_throttle(throttle)
 
 
-            if create_new_directory:
-                print("Creating new directory.")
-                directories = [d for d in os.listdir(date_exp) if os.path.isdir(os.path.join(date_exp, d))]
-                run_number = len(directories) + 1
-                full_path = os.path.join(date_exp, f"run_{run_number:03d}")
-                os.makedirs(full_path, exist_ok=True)
-                data_dir_rgb = os.path.join(full_path, "rgb")
-                data_dir_disparity = os.path.join(full_path, "disparity")
-                data_dir_json = os.path.join(full_path, "json")
-                os.makedirs(data_dir_rgb, exist_ok=True)
-                os.makedirs(data_dir_disparity, exist_ok=True)
-                os.makedirs(data_dir_json, exist_ok=True)
-                frame_count = 0
-                create_new_directory = False
+            # if create_new_directory:
+            #     print("Creating new directory.")
+            #     directories = [d for d in os.listdir(date_exp) if os.path.isdir(os.path.join(date_exp, d))]
+            #     run_number = len(directories) + 1
+            #     full_path = os.path.join(date_exp, f"run_{run_number:03d}")
+            #     os.makedirs(full_path, exist_ok=True)
+            #     data_dir_rgb = os.path.join(full_path, "rgb")
+            #     data_dir_disparity = os.path.join(full_path, "disparity")
+            #     data_dir_json = os.path.join(full_path, "json")
+            #     os.makedirs(data_dir_rgb, exist_ok=True)
+            #     os.makedirs(data_dir_disparity, exist_ok=True)
+            #     os.makedirs(data_dir_json, exist_ok=True)
+            #     frame_count = 0
+            #     create_new_directory = False
 
             # print(f"Total Time: {time.time() - start_time:.5f}")
             # print(create_new_directory)
