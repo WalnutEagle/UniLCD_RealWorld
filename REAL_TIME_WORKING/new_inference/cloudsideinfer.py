@@ -1,5 +1,5 @@
 from cloudsidemodel import CustomRegNetY002
-from client_udp import client_loop, connect_to_server
+from client_udp import connect_to_server, receive_response, send_data
 import torch
 import numpy as np
 import torch.nn as nn
@@ -21,10 +21,10 @@ def load_model(model_path):
     model.eval()  # Set the model to evaluation mode
     return model
 
-def inferr(device):
-    send_data(client_sock, 'a')
-    data = receive_response(client_sock)
-    print(data)
+def inferr(device, client_socket):
+    text_message = 'a'
+    send_data(client_socket, text_message)
+    data = receive_response(client_socket)
     print('got it')
     print(data)
     data.to(device)
@@ -42,9 +42,9 @@ if __name__ == '__main__':
     model.to(device)
     print(device)
     client_sock = connect_to_server()
-    client_loop(client_sock)
-    # try:
-    #     while True:
-    #         inferr(device)
-    # except KeyboardInterrupt:
-    #     client_sock.close()
+    # client_loop(client_sock)
+    try:
+        while True:
+            inferr(device, client_sock)
+    except KeyboardInterrupt:
+        client_sock.close()
