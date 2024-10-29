@@ -11,7 +11,7 @@ class CustomRegNetY00(nn.Module):
 
         # Modify the first convolution layer to accept 4 channels (RGB + Depth)
         self.model.stem.conv = nn.Conv2d(
-            4,  # Change input channels from 3 (RGB) to 4 (RGB + Depth)
+            1,  # Change input channels from 3 (RGB) to 4 (RGB + Depth)
             self.model.stem.conv.out_channels, 
             kernel_size=self.model.stem.conv.kernel_size, 
             stride=self.model.stem.conv.stride, 

@@ -326,6 +326,7 @@ def main():
                     image = cv2.imread('image.png')
                     cv2.imshow(image)
                     
+                    
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=100:
