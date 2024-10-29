@@ -240,6 +240,7 @@ def main():
                     s = time.time()
                     with torch.no_grad():
                         prediction = model(depth_img)
+                        print(prediction.shape)
                     try:
                         while True:
                             send_response(server_2_soc, prediction, addr)
