@@ -40,7 +40,7 @@ def send_response(server_socket, response, addr):
         server_socket.sendto(data[i:i + chunk_size], addr)  # Send each chunk
 
 # Main server loop function for processing data
-def server_loop(server_socket):
+def server_loop(server_socket, data):
     # while True:
     # time.sleep(1)
     # server_socket.listen(1)
@@ -59,7 +59,8 @@ def server_loop(server_socket):
         s=time.time()
         print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
         print(f"It took{(time.time()-s)*1000} Miliseconds.")
-        tensor_data = np.random.randn(1, 4, 150, 130).tolist()
+        # tensor_data = np.random.randn(1, 4, 150, 130).tolist()
+        tensor_data = data
         # tensor_data = torch.rand(500, 500)
         print(tensor_data)
         t1 = time.time()
