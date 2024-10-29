@@ -3,6 +3,7 @@ import pickle
 import torch  # For PyTorch tensor handling
 import time
 import select
+import numpy as np
 # Define host and port
 HOST = '0.0.0.0'  # Listen on all available interfaces
 PORT = 8083       # Port to listen on
@@ -58,7 +59,7 @@ def server_loop(server_socket):
         s=time.time()
         print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
         print(f"It took{(time.time()-s)*1000} Miliseconds.")
-        tensor_data = torch.rand(1, 4, 150, 130).to_numpy().tolist()
+        tensor_data = np.array(1, 4, 150, 130).tolist()
         # tensor_data = torch.rand(500, 500)
         print(tensor_data)
         t1 = time.time()
