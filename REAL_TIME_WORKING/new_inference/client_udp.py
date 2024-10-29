@@ -61,4 +61,4 @@ def client_loop(client_socket):
 
 # Usage example:
 client_socket = connect_to_server()
-client_loop(client_socket)
+# client_loop(client_socket)
