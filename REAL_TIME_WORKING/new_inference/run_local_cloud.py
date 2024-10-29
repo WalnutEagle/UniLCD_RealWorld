@@ -17,7 +17,6 @@ import cv2
 import depthai as dai
 import numpy as np
 import smbus2
-import threading
 
 from PIL import Image
 from collections import deque
@@ -41,7 +40,7 @@ kit.servo[1].set_pulse_width_range(1000, 2000)
 # Global variables
 throttle = 0.0
 steer = 0.0
-collect_data = False
+do_infer = False
 create_new_directory = False
 exit_flag = False  
 
@@ -123,41 +122,13 @@ def map_value_throttle(x, in_min=-1, in_max=1, out_min=0, out_max=99):
     return float(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 def check_keys():
-    global collect_data, exit_flag
+    global do_infer, exit_flag
     key = cv2.waitKey(1)  # Wait for 1 ms
     if key == ord(' '):  # Spacebar
-        collect_data = not collect_data
+        do_infer = not do_infer
     elif key == ord('q'):  # 'Q' key
         exit_flag = True
 
-# def on_press(key):
-#     global throttle, steer, collect_data, exit_flag, create_new_directory
-#     if key == kb.Key.space:
-#         collect_data = not collect_data
-#     elif key == kb.KeyCode.from_char('n'):
-#         create_new_directory = True
-#     elif key == kb.KeyCode.from_char('w'):
-#         throttle = 1.0
-#     elif key == kb.KeyCode.from_char('s'):
-#         throttle = -1.0
-#     elif key == kb.KeyCode.from_char('a'):
-#         steer = -1.0
-#     elif key == kb.KeyCode.from_char('d'):
-#         steer = 1.0
-#     elif key == kb.KeyCode.from_char('q'):
-#         exit_flag = True
-#         return False
-
-# def on_release(key):
-#     global throttle, steer
-#     if key == kb.KeyCode.from_char('w') or key == kb.KeyCode.from_char('s'):
-#         throttle = 0.0
-#     elif key == kb.KeyCode.from_char('a') or key == kb.KeyCode.from_char('d'):
-#         steer = 0.0
-
-# def start_listener():
-#     with kb.Listener(on_press=on_press, on_release=on_release) as listener:
-#         listener.join()
 
 def configure_depthai_pipeline():
     pipeline = dai.Pipeline()
@@ -197,46 +168,13 @@ def configure_depthai_pipeline():
 
     return pipeline, depth
 
-
-# Example usage
-# rgb_tensor = preprocess_image(frame_rgb, frame_disparity)
-
-
-# Example usage
-# rgb_path = 'path/to/rgb/image.jpg'
-# depth_path = 'path/to/depth/image.png'
-# preprocessed_image = preprocess_image(rgb_path, depth_path)
-
-
 def main():
-    global throttle, steer, collect_data, create_new_directory, exit_flag
+    global throttle, steer, do_infer, create_new_directory, exit_flag
     bus_number = 1
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('--exp', type=str, default="rc_data", help="Experiment name")
-    # args = parser.parse_args()
     frame_count = 0
     distance_to_obstacle = 0
-    # Create directories for data storage
-    # dir_date = datetime.datetime.now().strftime("%m-%d-%Y")
-    # date_exp = os.path.join(dir_date, args.exp)
-    # if not os.path.exists(date_exp):
-    #     os.makedirs(date_exp)
-    #     full_path = os.path.join(date_exp, "run_001")
-    # else:
-    #     directories = [d for d in os.listdir(date_exp) if os.path.isdir(os.path.join(date_exp, d))]
-    #     run_number = len(directories) + 1
-    #     full_path = os.path.join(date_exp, f"run_{run_number:03d}")
-    # os.makedirs(full_path, exist_ok=True)
-    # data_dir_rgb = os.path.join(full_path, "rgb")
-    # data_dir_disparity = os.path.join(full_path, "disparity")
-    # data_dir_json = os.path.join(full_path, "json")
-    # os.makedirs(data_dir_rgb, exist_ok=True)
-    # os.makedirs(data_dir_disparity, exist_ok=True)
-    # os.makedirs(data_dir_json, exist_ok=True)
-    
+
     pipeline, depth = configure_depthai_pipeline()
-    # listener_thread = threading.Thread(target=start_listener)
-    # listener_thread.start()
 
     bus = smbus2.SMBus(bus_number)
     print(f"Connect to I2C Bus:{bus_number}")
@@ -251,7 +189,6 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
-    
     
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
@@ -269,9 +206,6 @@ def main():
                 frame_rgb = in_rgb.getCvFrame()
                 cv2.imshow("RGB", frame_rgb)
 
-                # if collect_data:
-                #     cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
-
             in_disparity = q_disparity.tryGet()
             if in_disparity is not None:
                 frame_disparity = in_disparity.getFrame()
@@ -280,7 +214,6 @@ def main():
                 depth_img = transforms.Resize((300, 300))(depth_img.unsqueeze(0))  # Resize
                 depth_img = depth_img[0, :, :].unsqueeze(0)
                 depth_img = depth_img.unsqueeze(0)
-                # print(f"Depth Image Shape: {depth_img.shape}") 
                 depth_img = depth_img.to('cuda')
                 sensor_data = {
                     'Throttle': throttle,
@@ -289,92 +222,29 @@ def main():
                 actions = torch.Tensor([sensor_data['Steer'],sensor_data['Throttle']])
                 cv2.imshow("Disparity", frame_disparity)
 
-                if collect_data:
-                    # cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
-                    # cv2.imwrite(f"{data_dir_disparity}/{frame_count:09d}_disparity.png", frame_disparity)
-                    
-                    # sensor_data = {
-                    #     'EpochTime': time.time(),
-                    #     'DateTime': datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S"),
-                    #     'Throttle': throttle,
-                    #     'Steer': steer,
-                    #     'Distance': distance_to_obstacle,
-                    #     }
-                    # json_str = json.dumps(sensor_data, indent=4)
-                    # with open(f"{data_dir_json}/{frame_count:09d}.json", 'w') as file:
-                    #     file.write(json_str)
-                    # time.sleep(0.1)
-                    # check_dataset(full_path)
-                    # output = get_preds(model_path, full_path)
-                    sssdddd = '/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Main_script/10-17-2024'
-                    # check_dataset(sssdddd)
-                    # find_missing_files(sssdddd)
+                if do_infer:
+
                     s = time.time()
-                    # batch_size = 1
-                    # test_dataset = CarlaDataset(sssdddd)
-                    # dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-                    # serveroutput = print_predictions(model, dataloader)
                     with torch.no_grad():
                         with torch.cuda.amp.autocast():
                             prediction = model(depth_img)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
 
-                    print(f"Steering: {steering}, Throttle: {throttle}")
-                    # print(prediction)
-                    # send_response(conn, output)
-                    # serveroutput = receive_data(conn)
                     print(f"Total Time: {time.time() - s:.5f}")
-                    # print(output)
-                    # if serveroutput[0][1]>=0.95:
-                    #     serveroutput[0][1] = 1.0
-                    # print(f"Steering:{serveroutput[0][0]}, Throttle:{serveroutput[0][1]}")
-
-
-
-                    # if distance_to_obstacle<=100:
-                    #     mapped_steer = map_value_steer(0.0)
-                    #     mapped_throttle = map_value_throttle(0.0)
-                    # else :
-                    #     mapped_steer = map_value_steer(output[0][0])
-                    #     mapped_throttle = map_value_throttle(output[0][1])
-                    # if mapped_throttle > 99.0:
-                    #     mapped_throttle = 99.0
-                    # elif mapped_throttle <0.0:
-                    #     mapped_throttle = 0.0
-                    # print(f"steer {mapped_steer}, throttle {mapped_throttle}")
-                    # kit.servo[0].angle = mapped_steer
-                    # kit.servo[1].angle = mapped_throttle
-
-
-
-
-                    # throttle_values.append(mapped_throttle)
-                    # steer_values.append(mapped_steer)
-                    # line1.set_xdata(range(len(throttle_values)))
-                    # line1.set_ydata(throttle_values)
-                    # line2.set_xdata(range(len(steer_values)))
-                    # line2.set_ydata(steer_values)
-                    # ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
-                    # plt.draw()
-                    # plt.pause(0.01)
-
-
-                    # rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
-                    # disparity_file = f"{data_dir_disparity}/{frame_count:09d}_disparity.png"
-                    # json_file = f"{data_dir_json}/{frame_count:09d}.json"
-                    # # show_rgb = Image.open(rgb_file)
-                    # # show_rgb.show()
-                    # # time.sleep(10)
-
-                    # try:
-                    #     os.remove(rgb_file)
-                    #     os.remove(disparity_file)
-                    #     os.remove(json_file)
-                    #     # print(f"Deleted files: {rgb_file}, {disparity_file}, {json_file}")
-                    # except OSError as e:
-                    #     print(f"Error deleting files: {e}")
-                    #     break
+                    if distance_to_obstacle<=100:
+                        mapped_steer = map_value_steer(0.0)
+                        mapped_throttle = map_value_throttle(0.0)
+                    else :
+                        mapped_steer = map_value_steer(steer)
+                        mapped_throttle = map_value_throttle(throttle)
+                    if mapped_throttle > 99.0:
+                        mapped_throttle = 99.0
+                    elif mapped_throttle <0.0:
+                        mapped_throttle = 0.0
+                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
+                    kit.servo[0].angle = mapped_steer
+                    kit.servo[1].angle = mapped_throttle
 
                 frame_count += 1
                 if exit_flag:
@@ -385,34 +255,7 @@ def main():
                     kit.servo[1].angle = mapped_throttle
                     kit.servo[0].angle = mapped_steer
 
-            # if distance_to_obstacle<=55:
-            #     mapped_steer = map_value_steer(0.0)
-            #     mapped_throttle = map_value_throttle(0.0)
-            # elif distance_to_obstacle>55:
-            #     mapped_steer = map_value_steer(steer)
-            #     mapped_throttle = map_value_throttle(throttle)
-
-
-            # if create_new_directory:
-            #     print("Creating new directory.")
-            #     directories = [d for d in os.listdir(date_exp) if os.path.isdir(os.path.join(date_exp, d))]
-            #     run_number = len(directories) + 1
-            #     full_path = os.path.join(date_exp, f"run_{run_number:03d}")
-            #     os.makedirs(full_path, exist_ok=True)
-            #     data_dir_rgb = os.path.join(full_path, "rgb")
-            #     data_dir_disparity = os.path.join(full_path, "disparity")
-            #     data_dir_json = os.path.join(full_path, "json")
-            #     os.makedirs(data_dir_rgb, exist_ok=True)
-            #     os.makedirs(data_dir_disparity, exist_ok=True)
-            #     os.makedirs(data_dir_json, exist_ok=True)
-            #     frame_count = 0
-            #     create_new_directory = False
-
-            # print(f"Total Time: {time.time() - start_time:.5f}")
-            # print(create_new_directory)
-
     cv2.destroyAllWindows()
-    # listener_thread.join()
 
 if __name__ == "__main__":
     main()
