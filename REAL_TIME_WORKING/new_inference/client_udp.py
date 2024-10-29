@@ -29,7 +29,8 @@ def receive_response(client_socket):
     while len(data) < data_length:
         packet, _ = client_socket.recvfrom(1400)  # Receive data in chunks
         data += packet
-    return pickle.loads(data)
+    recieved_data = pickle.loads(data)
+    return recieved_data
 
 
 # Main client communication loop (can be called repeatedly)
@@ -45,7 +46,8 @@ def client_loop(client_socket):
     elif choice == 'n':
         text_message = 'a'
         send_data(client_socket, text_message)
-        print("Server response:", receive_response(client_socket))
+        data = receive_response(client_socket)
+        print("Server response:", data)
         tensor_data = torch.rand(2, 2)
         # tensor_data = data  # Example PyTorch tensor data
         start = time.time()
