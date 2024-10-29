@@ -245,12 +245,13 @@ def main():
                             send_response(server_2_soc, prediction, addr)
                             res, newaddr = receive_data(server_2_soc)
                             if res is not None:
+                                print(res)
                                 break
                     except Exception as e:
                         print('there was a error')
-                    print(res)
-                    steering = prediction[0, 0].item()
-                    throttle = prediction[0, 1].item()
+                    # print(res)
+                    steering = res[0, 0].item()
+                    throttle = res[0, 1].item()
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=100:
@@ -264,8 +265,8 @@ def main():
                     elif mapped_throttle <0.0:
                         mapped_throttle = 0.0
                     print(f"steer {mapped_steer}, throttle {mapped_throttle}")
-                    kit.servo[0].angle = mapped_steer
-                    kit.servo[1].angle = mapped_throttle
+                    # kit.servo[0].angle = mapped_steer
+                    # kit.servo[1].angle = mapped_throttle
 
                 frame_count += 1
                 if exit_flag:
