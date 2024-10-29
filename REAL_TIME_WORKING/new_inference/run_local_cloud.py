@@ -23,15 +23,13 @@ from PIL import Image
 from collections import deque
 from pynput import keyboard as kb
 from adafruit_servokit import ServoKit
-from dataloader import CarlaRunDataset
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.io import read_image
 from torch.utils.data import Dataset
 
-from cloud1_model import CustomRegNetY002 
-from dataloader import get_run_dataloader
-from merger import get_preds
+from REAL_TIME_WORKING.Models.ovrft.merger import load_model, print_predictions
+from REAL_TIME_WORKING.Models.ovrft.cloud1_dataloader import CarlaDataset
 from missing import check_dataset, find_missing_files
 from server import start_server, receive_data, send_response
 
@@ -255,6 +253,7 @@ def main():
     ax.set_xlim(0, 200)  # X-axis limits
     ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
     ax.legend()
+    model = load_model(model_path)
     
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
@@ -297,44 +296,51 @@ def main():
                     # time.sleep(0.1)
                     # check_dataset(full_path)
                     # output = get_preds(model_path, full_path)
-                    # sssdddd = "/home/h2x/Desktop/REAL_TIME_WORKING/run_local/09-20-2024/rc_data/run_001"
-                    check_dataset(full_path)
-                    find_missing_files(full_path)
+                    sssdddd = "/home/h2x/Desktop/REAL_TIME_WORKING/Main_script/10-11-2024/rc_data/run_001"
+                    check_dataset(sssdddd)
+                    find_missing_files(sssdddd)
                     s = time.time()
-                    output = get_preds(model_path, full_path)
-                    send_response(conn, output)
-                    serveroutput = receive_data(conn)
+                    test_dataset = CarlaDataset(sssdddd)
+                    dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+                    serveroutput = print_predictions(model, dataloader)
+
+
+                    # send_response(conn, output)
+                    # serveroutput = receive_data(conn)
                     print(f"Total Time: {time.time() - s:.5f}")
                     # print(output)
                     if serveroutput[0][1]>=0.95:
                         serveroutput[0][1] = 1.0
-                    # print(f"Steering:{output[0][0]}, Throttle:{output[0][1]}")
-                    # throttle = output[0][1]
-                    # steer = output[0][0]
-                    # mapped_steer = map_value_steer(steer)
-                    # mapped_throttle = map_value_throttle(throttle)
-                    if distance_to_obstacle<=100:
-                        mapped_steer = map_value_steer(0.0)
-                        mapped_throttle = map_value_throttle(0.0)
-                    else :
-                        mapped_steer = map_value_steer(output[0][0])
-                        mapped_throttle = map_value_throttle(output[0][1])
-                    if mapped_throttle > 99.0:
-                        mapped_throttle = 99.0
-                    elif mapped_throttle <0.0:
-                        mapped_throttle = 0.0
-                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
-                    kit.servo[0].angle = mapped_steer
-                    kit.servo[1].angle = mapped_throttle
-                    throttle_values.append(mapped_throttle)
-                    steer_values.append(mapped_steer)
-                    line1.set_xdata(range(len(throttle_values)))
-                    line1.set_ydata(throttle_values)
-                    line2.set_xdata(range(len(steer_values)))
-                    line2.set_ydata(steer_values)
-                    ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
-                    plt.draw()
-                    plt.pause(0.01)
+                    print(f"Steering:{serveroutput[0][0]}, Throttle:{serveroutput[0][1]}")
+
+
+
+                    # if distance_to_obstacle<=100:
+                    #     mapped_steer = map_value_steer(0.0)
+                    #     mapped_throttle = map_value_throttle(0.0)
+                    # else :
+                    #     mapped_steer = map_value_steer(output[0][0])
+                    #     mapped_throttle = map_value_throttle(output[0][1])
+                    # if mapped_throttle > 99.0:
+                    #     mapped_throttle = 99.0
+                    # elif mapped_throttle <0.0:
+                    #     mapped_throttle = 0.0
+                    # print(f"steer {mapped_steer}, throttle {mapped_throttle}")
+                    # kit.servo[0].angle = mapped_steer
+                    # kit.servo[1].angle = mapped_throttle
+
+
+
+
+                    # throttle_values.append(mapped_throttle)
+                    # steer_values.append(mapped_steer)
+                    # line1.set_xdata(range(len(throttle_values)))
+                    # line1.set_ydata(throttle_values)
+                    # line2.set_xdata(range(len(steer_values)))
+                    # line2.set_ydata(steer_values)
+                    # ax.set_xlim(0, len(throttle_values) if len(throttle_values) > 0 else 1) 
+                    # plt.draw()
+                    # plt.pause(0.01)
 
 
                     rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
