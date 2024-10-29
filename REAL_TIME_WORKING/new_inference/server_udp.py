@@ -52,6 +52,7 @@ def server_loop(server_socket):
         print(f"It took{(time.time()-s)*1000} Miliseconds.")
         # tensor_data = torch.rand(1, 4, 150, 130)
         tensor_data = torch.rand(2, 2)
+        print(tensor_data)
         t1 = time.time()
         send_response(server_socket, tensor_data, addr)
         print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
