@@ -43,6 +43,11 @@ do_infer = False
 create_new_directory = False
 exit_flag = False  
 
+fig = plt.figure(figsize=(12, 5))
+ax1 = fig.add_subplot(121)
+ax2 = fig.add_subplot(122)
+mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])
+
 LIDAR_ADDR = 0x62
 REG_SYSRANGE_START = 0x00
 REG_RESULT = 0x01

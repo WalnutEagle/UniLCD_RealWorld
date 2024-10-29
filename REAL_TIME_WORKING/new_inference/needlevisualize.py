@@ -114,6 +114,14 @@ current_mode = 'Local Mode'  # Initial mode
 current_throttle = 0
 current_steer = 0
 
+# Initialize the figure and axes
+fig = plt.figure(figsize=(12, 5))
+ax1 = fig.add_subplot(121)
+ax2 = fig.add_subplot(122)
+mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])
+
+plt.ion()  # Turn on interactive mode
+
 def create_speedometer(ax, current_value, title):
     ax.clear()
     ax.set_xlim(-1.5, 1.5)
@@ -139,7 +147,7 @@ def create_speedometer(ax, current_value, title):
 def draw_mode_indicator(ax):
     mode_color = 'green' if current_mode == 'Local Mode' else 'yellow'
     ax.clear()
-    ax.add_patch(Circle((0.5, 0.5), 2, color=mode_color))  # Light indicator
+    ax.add_patch(Circle((0.5, 0.5), 0.1, color=mode_color))  # Light indicator
     ax.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
@@ -150,22 +158,11 @@ def update_mode(mode):
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
 
 def update_visualization(current_steer, current_throttle):
-    fig = plt.figure(figsize=(12, 5))
-    ax1 = fig.add_subplot(121)
-    ax2 = fig.add_subplot(122)
-    mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])
-
-    plt.ion()  # Turn on interactive mode
-
-    # while not exit_flag:
-    #     create_speedometer(ax1, current_steer, 'Steer')
-    #     create_speedometer(ax2, current_throttle, 'Throttle')
-    #     draw_mode_indicator(mode_ax)
-    #     plt.pause(0.05)  # Pause to allow the plot to update
     create_speedometer(ax1, current_steer, 'Steer')
     create_speedometer(ax2, current_throttle, 'Throttle')
     draw_mode_indicator(mode_ax)
-    plt.pause(0.05)
+    plt.pause(0.05)  # Pause to allow the plot to update
+
 
 if __name__ == "__main__":
     # Initial values
