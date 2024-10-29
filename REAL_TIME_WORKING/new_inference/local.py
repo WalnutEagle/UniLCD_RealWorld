@@ -29,7 +29,7 @@ from torch.utils.data import Dataset
 
 from merger import load_model
 from missing import check_dataset, find_missing_files
-
+from needlevisualize import mainvis
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
@@ -228,6 +228,7 @@ def main():
                         prediction = model(depth_img)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
+                    mainvis(steering, throttle)
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=100:
