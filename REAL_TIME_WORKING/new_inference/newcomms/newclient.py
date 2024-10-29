@@ -89,6 +89,6 @@ def client_loop(client_socket):
     logging.info("Socket closed.")
 
 # Usage example:
-if __name__ == "__main__":
-    client_socket = connect_to_server()
-    client_loop(client_socket)
+# if __name__ == "__main__":
+#     client_socket = connect_to_server()
+#     client_loop(client_socket)

@@ -19,7 +19,8 @@ def start_server():
 # Function to receive data in chunks
 def receive_data(server_socket):
     try:
-        data_length, addr = server_socket.recvfrom(4)  # First, receive the length of the data
+        data_length, addr = server_socket.recvfrom(4)
+        print(addr)  # First, receive the length of the data
         data_length = int.from_bytes(data_length, 'big')
         data = b""
         while len(data) < data_length:
@@ -78,6 +79,6 @@ def server_loop(server_socket):
         logging.info("Socket closed.")
 
 # Usage example:
-if __name__ == "__main__":
-    server_socket = start_server()
-    server_loop(server_socket)
+# if __name__ == "__main__":
+#     server_socket = start_server()
+#     server_loop(server_socket)
