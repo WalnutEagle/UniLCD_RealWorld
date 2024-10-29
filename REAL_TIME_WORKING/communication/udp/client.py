@@ -31,14 +31,10 @@ def receive_response(client_socket):
         data += packet
     return pickle.loads(data)
 
-def send_blank_response(client_socket):
-    client_socket.sendto(b'', (HOST,PORT))
-
-
 # Main client communication loop (can be called repeatedly)
 def client_loop(client_socket):
     while True:
-        send_blank_response(client_socket)
+        send_data(client_socket, 'a')
         choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
         
         if choice == 't':
