@@ -1,5 +1,5 @@
 from cloudsidemodel import CustomRegNetY002
-from client_udp import connect_to_server, send_data , receive_response, client_loop
+from client_udp import client_loop, connect_to_server
 import torch
 import numpy as np
 import torch.nn as nn
