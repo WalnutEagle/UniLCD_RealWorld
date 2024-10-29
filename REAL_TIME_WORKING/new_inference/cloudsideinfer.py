@@ -41,8 +41,11 @@ if __name__ == '__main__':
     try:
         while True:
             response = receive_response(socket_1)
-            tensord = inferr(device, response)
-            send_data(socket_1, tensord)
+            if response is not None:
+                tensord = inferr(device, response)
+                send_data(socket_1, tensord)
+            else :
+                print("Not yet connected here :(")
     except KeyboardInterrupt:
         print('Bye')
         socket_1.close()
