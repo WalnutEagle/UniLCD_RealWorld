@@ -323,8 +323,8 @@ def main():
 
                     # update_mode_indicator(mode_circle, 'Local')
                     update_visualization(steering, throttle)
-                    # cv2.imread('image.png')
-                    cv2.imshow('image.png')
+                    image = cv2.imread('image.png')
+                    cv2.imshow(image)
                     
 
                     print(f"Total Time: {time.time() - s:.5f}")
