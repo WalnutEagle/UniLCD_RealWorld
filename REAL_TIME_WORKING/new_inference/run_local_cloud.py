@@ -284,7 +284,7 @@ def main():
                 depth_img = transforms.Resize((300, 300))(depth_img.unsqueeze(0))  # Resize
                 depth_img = depth_img[0, :, :].unsqueeze(0)
                 depth_img = depth_img.unsqueeze(0)
-                print(f"Depth Image Shape: {depth_img.shape}") 
+                # print(f"Depth Image Shape: {depth_img.shape}") 
                 depth_img = depth_img.to('cuda')
                 sensor_data = {
                     'Throttle': throttle,
@@ -318,11 +318,11 @@ def main():
                     # test_dataset = CarlaDataset(sssdddd)
                     # dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
                     # serveroutput = print_predictions(model, dataloader)
-                    # with torch.no_grad():
-                    #     with torch.cuda.amp.autocast():
-                    #         prediction = model(depth_img)
+                    with torch.no_grad():
+                        with torch.cuda.amp.autocast():
+                            prediction = model(depth_img)
 
-                    # print(prediction)
+                    print(prediction)
                     # send_response(conn, output)
                     # serveroutput = receive_data(conn)
                     print(f"Total Time: {time.time() - s:.5f}")
