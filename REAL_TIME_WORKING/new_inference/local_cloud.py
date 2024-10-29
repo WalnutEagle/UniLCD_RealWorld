@@ -196,7 +196,7 @@ def main():
 
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
     server_socket = start_server()
-    print(addr)
+    # print(addr)
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
