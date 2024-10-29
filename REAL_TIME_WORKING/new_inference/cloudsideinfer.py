@@ -25,6 +25,7 @@ def inferr(device):
     send_data(client_sock, 'a')
     data = receive_response(client_sock)
     print(data)
+    data.to(device)
     with torch.no_grad():
         prediction = model(data)
     send_data(client_sock, prediction)
@@ -38,7 +39,6 @@ if __name__ == '__main__':
     model.to(device)
     print(device)
     client_sock = connect_to_server()
-    send_data(client_sock, 'a')
     try:
         while True:
             inferr(device)
