@@ -180,7 +180,7 @@ if __name__ == "__main__":
     # for _ in range(100):  # Adjust the range for how many times you want to update
     # current_throttle = throttle  # Update these values as needed
     # current_steer = steer
-    update_visualization()
+    # update_visualization()
         # time.sleep(0.1)  # Sleep to simulate time between updates
 
     # Stop the visualization loop
