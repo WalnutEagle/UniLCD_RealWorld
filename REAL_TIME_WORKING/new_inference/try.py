@@ -154,7 +154,7 @@ def update_mode(mode):
     global current_mode
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
 
-def update_visualization():
+def update_visualization(throttle, steer):
     fig = plt.figure(figsize=(12, 5))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
@@ -318,7 +318,7 @@ def main():
                         prediction = model(depth_img)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
-                    update_visualization()
+                    update_visualization(throttle, steer)
 
                     # update_mode_indicator(mode_circle, 'Local')
                     # update_visualization(steering, throttle)
