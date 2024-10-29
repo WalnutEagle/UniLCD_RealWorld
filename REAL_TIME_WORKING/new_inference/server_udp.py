@@ -46,7 +46,8 @@ def server_loop(server_socket):
     ready = select.select([server_socket], [], [], 1)
     if ready[0]:
         # data = mysocket.recv(4096)
-        received_data, addr = receive_data(server_socket)      
+        received_data, addr = receive_data(server_socket) 
+    received_data, addr = receive_data(server_socket)  
     # Handle text or tensor data
     if isinstance(received_data, str):
         print(f"Received text message: {received_data} from {addr}")
