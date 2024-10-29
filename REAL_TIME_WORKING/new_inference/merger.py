@@ -29,7 +29,7 @@ def print_predictions(model, dataloader):
             all_predictions.extend(predictions)  # Forward pass to get predictions
 
     # Convert to numpy array for easier handling
-    all_predictions = np.array(all_predictions)
+    # all_predictions = np.array(all_predictions)
     return all_predictions
     # Print predictions
     # for i, prediction in enumerate(all_predictions):
