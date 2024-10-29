@@ -1,5 +1,5 @@
 from cloudsidemodel import CustomRegNetY002
-from client_udp import connect_to_server, client_loop
+from newcomms.newclient import connect_to_server, send_data, receive_response
 import torch
 import numpy as np
 import torch.nn as nn
@@ -43,21 +43,14 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
-    client_sock = connect_to_server()
-    while True:
-# time.sleep(1)
-        try:
-            client_socket = connect_to_server()
-            client_loop(client_socket)
-        except pickle.UnpicklingError:
-            pass
+    socket_1 = connect_to_server()
+    send_data(socket_1, '', timeout=5)
+    try:
+        while True:
+            tensord = torch.rand(2, 2)
+            send_data(socket_1, tensord)
+            response = receive_response(socket_1)
+    except KeyboardInterrupt:
+        print('Bye')
+        socket_1.close()
 
-    # client_loop(client_sock)
-    # inferr(device, client_sock)
-    # client_sock.close()
-    # client_loop(client_sock)
-    # try:
-    #     while True:
-    #         inferr(device, client_sock)
-    # except KeyboardInterrupt:
-    #     client_sock.close()

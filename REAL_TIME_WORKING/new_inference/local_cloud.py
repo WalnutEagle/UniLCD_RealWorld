@@ -27,7 +27,7 @@ from torch.utils.data import Dataset
 
 from cloud_model import CustomRegNetY002
 from missing import check_dataset, find_missing_files
-from server_udp import start_server, server_loop
+from newcomms.newserver import start_server, send_response, receive_data
 
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
@@ -190,12 +190,14 @@ def main():
     bus = smbus2.SMBus(bus_number)
     print(f"Connect to I2C Bus:{bus_number}")
     initialize_lidar(bus)
-
+    server_2_soc = start_server()
+    received_data, addr = receive_data(server_2_soc)
+    print(addr)
     power_mode = get_power_mode(bus)
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
-    server_socket = start_server()
+    
     # print(addr)
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -235,29 +237,21 @@ def main():
                 cv2.imshow("Disparity", frame_disparity)
 
                 if do_infer:
-                    
-                    # data, addr = receive_data(server_socket)
                     s = time.time()
                     with torch.no_grad():
                         prediction = model(depth_img)
-                    # prediction = prediction.detach().cpu().numpy().tolist()
-                    # print(prediction)
-                    # time.sleep(0.5)
-                    server_loop(server_socket, prediction)
-                    # print(data, addr)
-                    # send_response(server_socket, prediction, addr)
-                    # print('sent')
-                    # output, adre = receive_data(server_socket)
-                    # print(output)
-                    # steering = prediction[0, 0].item()
-                    # throttle = prediction[0, 1].item()
+                    send_response(server_2_soc, prediction, addr)
+                    res, newaddr = receive_data(server_2_soc)
+                    print(res)
+                    steering = prediction[0, 0].item()
+                    throttle = prediction[0, 1].item()
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=100:
                         mapped_steer = map_value_steer(0.0)
                         mapped_throttle = map_value_throttle(0.0)
                     else :
-                        mapped_steer = map_value_steer(steer)
+                        mapped_steer = map_value_steer(steering)
                         mapped_throttle = map_value_throttle(throttle)
                     if mapped_throttle > 99.0:
                         mapped_throttle = 99.0
