@@ -33,30 +33,33 @@ def receive_response(client_socket):
 
 # Main client communication loop (can be called repeatedly)
 def client_loop():
-    client_socket = connect_to_server()
-    # while True:
-    time.sleep(1.2)
-    # choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
-    choice = 'n'
-    
-    if choice == 't':
-        text_message = input("Enter your text message: ")
-        send_data(client_socket, text_message)
-        print("Server response:", receive_response(client_socket))
-    
-    elif choice == 'n':
-        tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
-        start = time.time()
-        print(f"Sending PyTorch tensor: \n{tensor_data}")
-        send_data(client_socket, tensor_data)
-        print(f"Data sent in {(time.time()-start)*1000} Miliseconds")
-        t1 = time.time()
-        print("Server response:", receive_response(client_socket))
-        print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
+    try:
+        client_socket = connect_to_server()
+        # while True:
+        time.sleep(1.2)
+        # choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
+        choice = 'n'
         
-    elif choice == 'q':
-        print("Closing connection...")
-            # break
+        if choice == 't':
+            text_message = input("Enter your text message: ")
+            send_data(client_socket, text_message)
+            print("Server response:", receive_response(client_socket))
+        
+        elif choice == 'n':
+            tensor_data = torch.rand(2, 2)  # Example PyTorch tensor data
+            start = time.time()
+            print(f"Sending PyTorch tensor: \n{tensor_data}")
+            send_data(client_socket, tensor_data)
+            print(f"Data sent in {(time.time()-start)*1000} Miliseconds")
+            t1 = time.time()
+            print("Server response:", receive_response(client_socket))
+            print(f"Recived data in:{(time.time()-t1)*1000}Miliseconds.")
+            
+        elif choice == 'q':
+            print("Closing connection...")
+                # break
+    except RuntimeError:
+        pass
 
     # client_socket.close()
 

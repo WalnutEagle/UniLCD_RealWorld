@@ -49,7 +49,7 @@ if __name__ == '__main__':
         try:
             client_loop()
         except RuntimeError:
-            continue
+            pass
 
     # client_loop(client_sock)
     # inferr(device, client_sock)
