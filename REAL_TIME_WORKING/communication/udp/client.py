@@ -34,7 +34,6 @@ def receive_response(client_socket):
 # Main client communication loop (can be called repeatedly)
 def client_loop(client_socket):
     while True:
-        send_data(client_socket, 'a')
         choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
         
         if choice == 't':

@@ -11,11 +11,9 @@ import busio
 import os
 import json
 import datetime
-import time
 import argparse
 import cv2
 import depthai as dai
-import numpy as np
 import smbus2
 
 from PIL import Image
@@ -198,6 +196,7 @@ def main():
 
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
     server_socket = start_server()
+    data, addr = receive_data(server_socket)
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -239,10 +238,12 @@ def main():
 
                     s = time.time()
                     with torch.no_grad():
-                        with torch.cuda.amp.autocast():
-                            prediction = model(depth_img)
-                    steering = prediction[0, 0].item()
-                    throttle = prediction[0, 1].item()
+                        prediction = model(depth_img)
+                    send_response(server_socket, prediction, addr)
+                    output, adre = receive_data(server_socket)
+                    print(output)
+                    # steering = prediction[0, 0].item()
+                    # throttle = prediction[0, 1].item()
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=100:
