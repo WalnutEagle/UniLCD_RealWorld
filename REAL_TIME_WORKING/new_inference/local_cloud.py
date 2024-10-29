@@ -209,7 +209,6 @@ def main():
         max_disparity = 255 
         while not exit_flag:
             check_keys()
-            data, addr = receive_data(server_socket)
             start_time = time.time()
             start_measurement(bus)
             if wait_for_measurement(bus):
