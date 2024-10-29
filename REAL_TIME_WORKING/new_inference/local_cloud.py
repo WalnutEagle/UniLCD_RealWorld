@@ -238,7 +238,8 @@ def main():
 
                     s = time.time()
                     with torch.no_grad():
-                        prediction = model(depth_img)
+                        with torch.cuda.amp.autocast():
+                            prediction = model(depth_img)
                     send_response(server_socket, prediction, addr)
                     output, adre = receive_data(server_socket)
                     print(output)

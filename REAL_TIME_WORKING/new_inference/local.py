@@ -225,8 +225,7 @@ def main():
 
                     s = time.time()
                     with torch.no_grad():
-                        with torch.cuda.amp.autocast():
-                            prediction = model(depth_img)
+                        prediction = model(depth_img)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
 
