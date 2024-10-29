@@ -180,5 +180,5 @@ if __name__ == "__main__":
         # time.sleep(0.1)  # Sleep to simulate time between updates
 
     # Stop the visualization loop
-    # exit_flag = True
+    exit_flag = True
     plt.close()  # Close the plot window after exiting
