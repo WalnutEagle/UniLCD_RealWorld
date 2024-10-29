@@ -58,7 +58,7 @@ def client_loop(client_socket):
         elif choice == 'q':
             print("Closing connection...")
                 # break
-    except RuntimeError:
+    except pickle.UnpicklingError:
         pass
 
     # client_socket.close()

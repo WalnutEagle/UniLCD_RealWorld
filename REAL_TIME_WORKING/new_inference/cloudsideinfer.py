@@ -7,7 +7,7 @@ import timm
 import time
 import glob
 import os
-
+import pickle
 def load_model(model_path):
     checkpoint = torch.load(model_path)  # Load the entire checkpoint
     model = CustomRegNetY002()  # Initialize your model
@@ -49,7 +49,7 @@ if __name__ == '__main__':
         try:
             client_socket = connect_to_server()
             client_loop(client_socket)
-        except RuntimeError:
+        except pickle.UnpicklingError:
             pass
 
     # client_loop(client_sock)
