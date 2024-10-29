@@ -2,7 +2,7 @@ import socket
 import pickle
 import torch  # For PyTorch tensor handling
 import time
-
+import select
 # Define host and port
 HOST = '0.0.0.0'  # Listen on all available interfaces
 PORT = 8083       # Port to listen on
@@ -41,8 +41,12 @@ def send_response(server_socket, response, addr):
 # Main server loop function for processing data
 def server_loop(server_socket):
     # while True:
-    time.sleep(1)
-    received_data, addr = receive_data(server_socket)      
+    # time.sleep(1)
+    server_socket.setblocking(0)
+    ready = select.select([server_socket], [], [], 1)
+    if ready[0]:
+        # data = mysocket.recv(4096)
+        received_data, addr = receive_data(server_socket)      
     # Handle text or tensor data
     if isinstance(received_data, str):
         print(f"Received text message: {received_data} from {addr}")
