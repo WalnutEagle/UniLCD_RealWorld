@@ -68,11 +68,13 @@ def update_visualization():
         
         plt.pause(0.05)  # Update more frequently
 
-def main():
+def main(steer, throttle):
     # Generate random values for throttle, steer, and mode
     num_samples = 100
-    throttle_values = np.random.uniform(0, 100, num_samples)
-    steer_values = np.random.uniform(0, 100, num_samples)
+    # throttle_values = np.random.uniform(0, 100, num_samples)
+    throttle_values = throttle
+    # steer_values = np.random.uniform(0, 100, num_samples)
+    steer_values = steer
     mode_values = np.random.choice([0, 1], num_samples)
 
     # Start the visualization in the main thread
