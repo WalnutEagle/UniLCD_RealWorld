@@ -40,8 +40,7 @@ def send_response(server_socket, response, addr):
 
 # Main server loop function for processing data
 def server_loop(server_socket):
-    i=0
-    while i<2:
+    while True:
         received_data, addr = receive_data(server_socket)      
         # Handle text or tensor data
         if isinstance(received_data, torch.Tensor):
