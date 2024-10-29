@@ -284,7 +284,7 @@ def main():
                         prediction = model(depth_img)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
-                    update_mode(0)
+                    # update_mode_indicator(mode_circle, 'Local')
                     update_visualization(steering, throttle)
 
                     print(f"Total Time: {time.time() - s:.5f}")
