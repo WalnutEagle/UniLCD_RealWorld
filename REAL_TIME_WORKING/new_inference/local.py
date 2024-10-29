@@ -29,7 +29,7 @@ from torch.utils.data import Dataset
 
 from merger import load_model
 from missing import check_dataset, find_missing_files
-from needlevisualize import update_mode, update_visualization
+# from needlevisualize import update_mode, update_visualization
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
@@ -40,13 +40,63 @@ kit.servo[1].set_pulse_width_range(1000, 2000)
 throttle = 0.0
 steer = 0.0
 do_infer = False
-create_new_directory = False
 exit_flag = False  
 
+current_mode = 'Local Mode'  # Initial mode
+current_throttle = 0
+current_steer = 0
+
+# Initialize the figure and axes
 fig = plt.figure(figsize=(12, 5))
 ax1 = fig.add_subplot(121)
 ax2 = fig.add_subplot(122)
 mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])
+
+plt.ion()  # Turn on interactive mode
+
+# Initialize speedometer arcs and texts
+arc_background1 = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=180, color='lightgrey', lw=10)
+arc_fill1 = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=0, color='blue', lw=10)
+text1 = ax1.text(0, -0.2, 'Steer', ha='center', va='center', fontsize=12)
+arc_background2 = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=180, color='lightgrey', lw=10)
+arc_fill2 = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=0, color='blue', lw=10)
+text2 = ax2.text(0, -0.2, 'Throttle', ha='center', va='center', fontsize=12)
+
+ax1.add_patch(arc_background1)
+ax1.add_patch(arc_fill1)
+ax2.add_patch(arc_background2)
+ax2.add_patch(arc_fill2)
+
+# Initialize mode indicator
+mode_circle = Circle((0.5, 0.5), 0.1, color='green')
+mode_text = mode_ax.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
+mode_ax.add_patch(mode_circle)
+mode_ax.axis('off')
+
+def update_speedometer(ax, arc_fill, value):
+    theta2 = value * 180 / 100  # Scale value to degrees
+    arc_fill.set_theta2(theta2)
+
+    for i in range(0, 101, 10):
+        angle = np.radians(i * 180 / 100)
+        x = np.cos(angle)
+        y = np.sin(angle)
+        if ax.texts[i // 10]:
+            ax.texts[i // 10].set_position((x * 1.1, y * 1.1))
+            ax.texts[i // 10].set_text(str(i))
+        else:
+            ax.text(x * 1.1, y * 1.1, str(i), ha='center', va='center', fontsize=8)
+
+def update_mode_indicator(mode_circle, mode_text):
+    mode_color = 'green' if current_mode == 'Local Mode' else 'yellow'
+    mode_circle.set_color(mode_color)
+    mode_text.set_text(current_mode)
+
+def update_visualization(steer, throttle):
+    update_speedometer(ax1, arc_fill1, steer)
+    update_speedometer(ax2, arc_fill2, throttle)
+    update_mode_indicator(mode_circle, mode_text)
+    plt.pause(0.05)
 
 LIDAR_ADDR = 0x62
 REG_SYSRANGE_START = 0x00
