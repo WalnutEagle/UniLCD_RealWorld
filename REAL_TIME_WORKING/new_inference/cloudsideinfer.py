@@ -25,13 +25,13 @@ def inferr(device):
     send_data(client_sock, 'a')
     data = receive_response(client_sock)
     print(data)
-    if data is not None:
-        print('got it')
-        print(data)
-        data.to(device)
-        with torch.no_grad():
-            prediction = model(data)
-        send_data(client_sock, prediction)
+    print('got it')
+    print(data)
+    data.to(device)
+    with torch.no_grad():
+        prediction = model(data)
+    send_data(client_sock, prediction)
+    print('sent')
 
 
 
