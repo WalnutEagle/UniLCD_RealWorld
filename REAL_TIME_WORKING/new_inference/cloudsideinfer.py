@@ -25,6 +25,7 @@ def inferr(device, data):
     data.to(device)
     with torch.no_grad():
         prediction = model(data)
+    return prediction
     
 
 
@@ -39,9 +40,9 @@ if __name__ == '__main__':
     send_data(socket_1, '', timeout=5)
     try:
         while True:
-            tensord = torch.rand(2, 2)
-            send_data(socket_1, tensord)
             response = receive_response(socket_1)
+            tensord = inferr(device, response)
+            send_data(socket_1, tensord)
     except KeyboardInterrupt:
         print('Bye')
         socket_1.close()

@@ -10,7 +10,7 @@ try:
     while True:
         send_response(server_2_soc, data, addr)
         res, addr = receive_data(server_2_soc)
-        print(res)
+        print(res.type)
         
 except KeyboardInterrupt:
     print("Server shutting down...")
