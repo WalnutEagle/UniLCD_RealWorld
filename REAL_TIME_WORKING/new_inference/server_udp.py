@@ -39,7 +39,7 @@ def send_response(server_socket, response, addr):
         server_socket.sendto(data[i:i + chunk_size], addr)  # Send each chunk
 
 # Main server loop function for processing data
-def server_loop(server_socket, data):
+def server_loop(server_socket):
     # while True:
     received_data, addr = receive_data(server_socket)      
     # Handle text or tensor data
@@ -50,8 +50,8 @@ def server_loop(server_socket, data):
         s=time.time()
         print(f"Received PyTorch tensor data: \n{received_data} from {addr}")
         print(f"It took{(time.time()-s)*1000} Miliseconds.")
-        tensor_data = data
-        # tensor_data = torch.rand(1, 4, 150, 130)
+        # tensor_data = data
+        tensor_data = torch.rand(1, 4, 150, 130)
         t1 = time.time()
         send_response(server_socket, tensor_data, addr)
         print(f"Tensor Sent, {(time.time()-t1)*1000} Miliseconds")
@@ -60,5 +60,5 @@ def server_loop(server_socket, data):
         send_response(server_socket, "Unknown data type received!", addr)
 
 # # Usage example:
-# server_socket = start_server()
-# server_loop(server_socket)
+server_socket = start_server()
+server_loop(server_socket)
