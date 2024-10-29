@@ -358,21 +358,21 @@ def main():
                     # plt.pause(0.01)
 
 
-                    rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
-                    disparity_file = f"{data_dir_disparity}/{frame_count:09d}_disparity.png"
-                    json_file = f"{data_dir_json}/{frame_count:09d}.json"
-                    # show_rgb = Image.open(rgb_file)
-                    # show_rgb.show()
-                    # time.sleep(10)
+                    # rgb_file = f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg"
+                    # disparity_file = f"{data_dir_disparity}/{frame_count:09d}_disparity.png"
+                    # json_file = f"{data_dir_json}/{frame_count:09d}.json"
+                    # # show_rgb = Image.open(rgb_file)
+                    # # show_rgb.show()
+                    # # time.sleep(10)
 
-                    try:
-                        os.remove(rgb_file)
-                        os.remove(disparity_file)
-                        os.remove(json_file)
-                        # print(f"Deleted files: {rgb_file}, {disparity_file}, {json_file}")
-                    except OSError as e:
-                        print(f"Error deleting files: {e}")
-                        break
+                    # try:
+                    #     os.remove(rgb_file)
+                    #     os.remove(disparity_file)
+                    #     os.remove(json_file)
+                    #     # print(f"Deleted files: {rgb_file}, {disparity_file}, {json_file}")
+                    # except OSError as e:
+                    #     print(f"Error deleting files: {e}")
+                    #     break
 
                 frame_count += 1
                 if exit_flag:
