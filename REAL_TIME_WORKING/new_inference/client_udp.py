@@ -15,6 +15,7 @@ def connect_to_server():
 # Function to send data (text or tensor) to the server
 def send_data(client_socket, data):
     serialized_data = pickle.dumps(data)
+    serialized_data.seek(0)
     data_length = len(serialized_data)
     # Send the length of the data first
     client_socket.sendto(data_length.to_bytes(4, 'big'), (HOST, PORT))
@@ -59,5 +60,5 @@ def client_loop(client_socket):
     # client_socket.close()
 
 # Usage example:
-# client_socket = connect_to_server()
-# client_loop(client_socket)
+client_socket = connect_to_server()
+client_loop(client_socket)
