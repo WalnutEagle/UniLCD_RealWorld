@@ -82,14 +82,14 @@ def mainvis(steer, throttle):
     vis_thread.start()
     
     # Iterate through the generated values
-    for i in range(num_samples):
-        global current_throttle, current_steer
-        current_throttle = throttle_values
-        current_steer = steer_values
-        update_mode(mode_values[i])
-        
-        # Sleep briefly to simulate time between updates
-        time.sleep(0.05)
+    # for i in range(num_samples):
+    global current_throttle, current_steer
+    current_throttle = throttle_values
+    current_steer = steer_values
+    update_mode(mode_values[i])
+    
+    # Sleep briefly to simulate time between updates
+    # time.sleep(0.05)
 
     # Stop the visualization thread
     global exit_flag
