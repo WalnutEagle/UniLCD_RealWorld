@@ -21,19 +21,11 @@ def load_model(model_path):
     model.eval()  # Set the model to evaluation mode
     return model
 
-# def inferr(device, client_socket):
-#     text_message = 'a'
-#     send_data(client_socket, text_message)
-#     data = receive_response(client_socket)
-#     print('got it')
-#     print(data)
-#     data.to(device)
-#     with torch.no_grad():
-#         prediction = model(data)
-#     print(prediction)
-#     send_data(client_sock, prediction)
+def inferr(device, data):
+    data.to(device)
+    with torch.no_grad():
+        prediction = model(data)
     
-#     print('sent')
 
 
 

@@ -6,8 +6,9 @@ send_data(socket_1, '', timeout=5)
 try:
     while True:
         tensord = torch.rand(2, 2)
-        send_data(socket_1, tensord)
+
         response = receive_response(socket_1)
+        send_data(socket_1, tensord)
 except KeyboardInterrupt:
     print('Bye')
     socket_1.close()
