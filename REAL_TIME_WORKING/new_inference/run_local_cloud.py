@@ -280,22 +280,30 @@ def main():
             if in_disparity is not None:
                 frame_disparity = in_disparity.getFrame()
                 frame_disparity = (frame_disparity * (255 / max_disparity)).astype(np.uint8)
-                # cv2.imshow("Disparity", frame_disparity)
+                depth_img = torch.tensor(frame_disparity).float() / 255.0  # Normalize to [0, 1]
+                depth_img = transforms.Resize((300, 300))(depth_img.unsqueeze(0))  # Resize
+                depth_img = depth_img[0, :, :].unsqueeze(0)
+                sensor_data = {
+                    'Throttle': throttle,
+                    'Steer': steer,
+                    }
+                actions = torch.Tensor([sensor_data['Steer'],sensor_data['Throttle']])
+                cv2.imshow("Disparity", frame_disparity)
 
                 if collect_data:
-                    cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
-                    cv2.imwrite(f"{data_dir_disparity}/{frame_count:09d}_disparity.png", frame_disparity)
+                    # cv2.imwrite(f"{data_dir_rgb}/{frame_count:09d}_rgb.jpg", frame_rgb)
+                    # cv2.imwrite(f"{data_dir_disparity}/{frame_count:09d}_disparity.png", frame_disparity)
                     
-                    sensor_data = {
-                        'EpochTime': time.time(),
-                        'DateTime': datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S"),
-                        'Throttle': throttle,
-                        'Steer': steer,
-                        'Distance': distance_to_obstacle,
-                        }
-                    json_str = json.dumps(sensor_data, indent=4)
-                    with open(f"{data_dir_json}/{frame_count:09d}.json", 'w') as file:
-                        file.write(json_str)
+                    # sensor_data = {
+                    #     'EpochTime': time.time(),
+                    #     'DateTime': datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S"),
+                    #     'Throttle': throttle,
+                    #     'Steer': steer,
+                    #     'Distance': distance_to_obstacle,
+                    #     }
+                    # json_str = json.dumps(sensor_data, indent=4)
+                    # with open(f"{data_dir_json}/{frame_count:09d}.json", 'w') as file:
+                    #     file.write(json_str)
                     # time.sleep(0.1)
                     # check_dataset(full_path)
                     # output = get_preds(model_path, full_path)
@@ -304,18 +312,21 @@ def main():
                     # find_missing_files(sssdddd)
                     s = time.time()
                     batch_size = 1
-                    test_dataset = CarlaDataset(sssdddd)
-                    dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-                    serveroutput = print_predictions(model, dataloader)
+                    # test_dataset = CarlaDataset(sssdddd)
+                    # dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+                    # serveroutput = print_predictions(model, dataloader)
+                    with torch.no_grad():
+                        with torch.cuda.amp.autocast():
+                            prediction = model(depth_img)
 
-
+                    print(prediction)
                     # send_response(conn, output)
                     # serveroutput = receive_data(conn)
                     print(f"Total Time: {time.time() - s:.5f}")
                     # print(output)
-                    if serveroutput[0][1]>=0.95:
-                        serveroutput[0][1] = 1.0
-                    print(f"Steering:{serveroutput[0][0]}, Throttle:{serveroutput[0][1]}")
+                    # if serveroutput[0][1]>=0.95:
+                    #     serveroutput[0][1] = 1.0
+                    # print(f"Steering:{serveroutput[0][0]}, Throttle:{serveroutput[0][1]}")
 
 
 
