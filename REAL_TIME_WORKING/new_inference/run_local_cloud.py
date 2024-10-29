@@ -283,7 +283,7 @@ def main():
                 depth_img = torch.tensor(frame_disparity).float() / 255.0  # Normalize to [0, 1]
                 depth_img = transforms.Resize((300, 300))(depth_img.unsqueeze(0))  # Resize
                 depth_img = depth_img[0, :, :].unsqueeze(0)
-                depth_img = depth_img.to(device)
+                depth_img = depth_img.to('cuda')
                 sensor_data = {
                     'Throttle': throttle,
                     'Steer': steer,
