@@ -71,5 +71,5 @@ def server_loop(server_socket, data):
         send_response(server_socket, "Unknown data type received!", addr)
 
 # Usage example:
-server_socket = start_server()
-server_loop(server_socket)
+# server_socket = start_server()
+# server_loop(server_socket)
