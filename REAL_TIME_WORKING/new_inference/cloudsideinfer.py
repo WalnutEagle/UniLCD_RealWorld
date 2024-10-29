@@ -25,16 +25,6 @@ def load_model(model_path):
     model.eval()  # Set the model to evaluation mode
     return model
 
-
-
-model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
-model = load_model(model_path)
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model.to(device)
-print(device)
-client_socket = connect_to_server()
-send_data(client_socket, 'a')
-
 def inferr():
     data = receive_response(client_socket)
     data.to(device)
@@ -42,3 +32,16 @@ def inferr():
         prediction = model(data)
     send_data(client_socket, prediction)
 
+if __name__ == '__main__': 
+    model_path = '/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/Models/ovrft/overfit8_900.pth'
+    model = load_model(model_path)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
+    print(device)
+    client_socket = connect_to_server()
+    send_data(client_socket, 'a')
+    try:
+        while True:
+            inferr()
+    except KeyboardInterrupt:
+        print("Connection Closed")
