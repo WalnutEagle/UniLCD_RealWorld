@@ -75,7 +75,8 @@ def mainvis(steer, throttle):
     throttle_values = throttle
     # steer_values = np.random.uniform(0, 100, num_samples)
     steer_values = steer
-    mode_values = np.random.choice([0, 1], num_samples)
+    # mode_values = np.random.choice([0, 1], num_samples)
+    mode_values = 0
 
     # Start the visualization in the main thread
     vis_thread = threading.Thread(target=update_visualization)
@@ -86,7 +87,7 @@ def mainvis(steer, throttle):
     global current_throttle, current_steer
     current_throttle = throttle_values
     current_steer = steer_values
-    update_mode(mode_values[i])
+    update_mode(mode_values)
     
     # Sleep briefly to simulate time between updates
     # time.sleep(0.05)
