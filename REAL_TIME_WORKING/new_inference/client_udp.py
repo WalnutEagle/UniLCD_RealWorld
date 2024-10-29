@@ -69,6 +69,7 @@ def receive_response(client_socket):
 def client_loop(client_socket):
     try:
         while True:
+            send_data(client_socket, 'a')
             a = receive_response(client_socket)
             print("Server response:", a)
             if a is not None:
