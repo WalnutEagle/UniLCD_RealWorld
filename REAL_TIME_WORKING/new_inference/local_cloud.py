@@ -197,6 +197,7 @@ def main():
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
     server_socket = start_server()
     data, addr = receive_data(server_socket)
+    print(addr)
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -235,7 +236,7 @@ def main():
                 cv2.imshow("Disparity", frame_disparity)
 
                 if do_infer:
-
+                    data, addr = receive_data(server_socket)
                     s = time.time()
                     with torch.no_grad():
                         prediction = model(depth_img)
