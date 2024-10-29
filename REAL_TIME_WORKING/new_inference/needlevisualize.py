@@ -68,7 +68,7 @@ def update_visualization():
         
         plt.pause(0.05)  # Update more frequently
 
-def mainvis(steer, throttle):
+def main(steer, throttle):
     # Generate random values for throttle, steer, and mode
     num_samples = 100
     # throttle_values = np.random.uniform(0, 100, num_samples)
@@ -100,4 +100,4 @@ def mainvis(steer, throttle):
 if __name__ == "__main__":
     steer = 100
     throttle = 90
-    mainvis(steer, throttle)
+    main(steer, throttle)
