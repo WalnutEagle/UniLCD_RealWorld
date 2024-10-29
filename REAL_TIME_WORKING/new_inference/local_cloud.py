@@ -240,8 +240,14 @@ def main():
                     s = time.time()
                     with torch.no_grad():
                         prediction = model(depth_img)
-                    send_response(server_2_soc, prediction, addr)
-                    res, newaddr = receive_data(server_2_soc)
+                    try:
+                        while True:
+                            send_response(server_2_soc, prediction, addr)
+                            res, newaddr = receive_data(server_2_soc)
+                            if res is not None:
+                                break
+                    except Exception as e:
+                        print('there was a error')
                     print(res)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
