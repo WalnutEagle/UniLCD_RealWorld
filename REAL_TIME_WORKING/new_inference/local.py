@@ -291,7 +291,7 @@ def main():
                         prediction = model(depth_img)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
-                    main(throttle, steer)
+                    update_visualization()
                     # update_mode_indicator(mode_circle, 'Local')
                     # update_visualization(steering, throttle)
 
