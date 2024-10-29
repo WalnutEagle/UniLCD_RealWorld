@@ -32,7 +32,8 @@ def receive_response(client_socket):
     return pickle.loads(data)
 
 # Main client communication loop (can be called repeatedly)
-def client_loop(client_socket):
+def client_loop():
+    client_socket = connect_to_server()
     # while True:
     time.sleep(1.2)
     # choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
