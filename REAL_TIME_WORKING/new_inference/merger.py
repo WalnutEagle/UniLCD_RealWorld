@@ -2,8 +2,8 @@ import logging
 import torch
 import numpy as np
 from torch.utils.data import DataLoader
-from Models.ovrft.cloud1_dataloader import CarlaDataset  # Ensure this is correct
-from Models.ovrft.cloud1_model import CustomRegNetY002  # Ensure this matches your model definition
+from cloud1_dataloader import CarlaDataset  # Ensure this is correct
+from cloud1_model import CustomRegNetY002  # Ensure this matches your model definition
 
 def load_model(model_path):
     checkpoint = torch.load(model_path)  # Load the entire checkpoint
