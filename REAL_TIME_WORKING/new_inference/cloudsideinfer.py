@@ -45,7 +45,7 @@ if __name__ == '__main__':
                 tensord = inferr(device, response)
                 send_data(socket_1, tensord)
             else :
-                print("Not yet connected here :(")
+                send_data(socket_1, None, timeout=5 )
     except KeyboardInterrupt:
         print('Bye')
         socket_1.close()
