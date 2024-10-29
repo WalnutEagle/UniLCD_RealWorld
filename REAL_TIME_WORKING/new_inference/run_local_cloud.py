@@ -241,17 +241,6 @@ def main():
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
     # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
     # conn = start_server()
-    throttle_values = deque(maxlen=10000)  # Store the last 100 values
-    steer_values = deque(maxlen=10000)
-
-    # Create a figure for plotting
-    plt.ion()  # Interactive mode on
-    fig, ax = plt.subplots()
-    line1, = ax.plot([], [], label='Throttle')
-    line2, = ax.plot([], [], label='Steer')
-    ax.set_xlim(0, 200)  # X-axis limits
-    ax.set_ylim(-200, 200)   # Y-axis limits (adjust as necessary)
-    ax.legend()
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -321,8 +310,11 @@ def main():
                     with torch.no_grad():
                         with torch.cuda.amp.autocast():
                             prediction = model(depth_img)
+                    steering = prediction[0, 0].item()
+                    throttle = prediction[0, 1].item()
 
-                    print(prediction)
+                    print(f"Steering: {steering}, Throttle: {throttle}")
+                    # print(prediction)
                     # send_response(conn, output)
                     # serveroutput = receive_data(conn)
                     print(f"Total Time: {time.time() - s:.5f}")
