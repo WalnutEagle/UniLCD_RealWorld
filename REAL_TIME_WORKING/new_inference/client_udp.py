@@ -45,8 +45,7 @@ def client_loop(client_socket):
     elif choice == 'n':
         text_message = 'a'
         send_data(client_socket, text_message)
-        ten = receive_response(client_socket)
-        print("Server response:", ten)
+        print("Server response:", receive_response(client_socket))
         tensor_data = torch.rand(2, 2)
         # tensor_data = data  # Example PyTorch tensor data
         start = time.time()
