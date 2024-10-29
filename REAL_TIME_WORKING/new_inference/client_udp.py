@@ -33,7 +33,7 @@ def receive_response(client_socket):
 
 
 # Main client communication loop (can be called repeatedly)
-def client_loop(client_socket, data):
+def client_loop(client_socket):
     # while True:
     choice = 'n'
     
