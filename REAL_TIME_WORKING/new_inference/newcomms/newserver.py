@@ -6,18 +6,14 @@ import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Function to get configuration for host and port
-def get_server_config():
-    host = input("Enter server IP address (default: '0.0.0.0'): ") or '0.0.0.0'
-    port = input("Enter server port (default: 8083): ") or '8083'
-    return host, int(port)
+HOST = '0.0.0.0'  
+PORT = 8083  
 
 # Function to start the server
-def start_server(host, port):
+def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    server_socket.bind((host, port))
-    logging.info(f"Server listening on {host}:{port}...")
+    server_socket.bind((HOST, PORT))
+    logging.info(f"Server listening on {HOST}:{PORT}...")
     return server_socket
 
 # Function to receive data in chunks
@@ -83,6 +79,5 @@ def server_loop(server_socket):
 
 # Usage example:
 if __name__ == "__main__":
-    host, port = get_server_config()
-    server_socket = start_server(host, port)
+    server_socket = start_server()
     server_loop(server_socket)
