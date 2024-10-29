@@ -122,34 +122,42 @@ def map_value_throttle(x, in_min=-1, in_max=1, out_min=0, out_max=99):
     """Map values between (-1, 1) to (0, 99)"""
     return float(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
-def on_press(key):
-    global throttle, steer, collect_data, exit_flag, create_new_directory
-    if key == kb.Key.space:
+def check_keys():
+    global collect_data, exit_flag
+    key = cv2.waitKey(1)  # Wait for 1 ms
+    if key == ord(' '):  # Spacebar
         collect_data = not collect_data
-    elif key == kb.KeyCode.from_char('n'):
-        create_new_directory = True
-    elif key == kb.KeyCode.from_char('w'):
-        throttle = 1.0
-    elif key == kb.KeyCode.from_char('s'):
-        throttle = -1.0
-    elif key == kb.KeyCode.from_char('a'):
-        steer = -1.0
-    elif key == kb.KeyCode.from_char('d'):
-        steer = 1.0
-    elif key == kb.KeyCode.from_char('q'):
+    elif key == ord('q'):  # 'Q' key
         exit_flag = True
-        return False
 
-def on_release(key):
-    global throttle, steer
-    if key == kb.KeyCode.from_char('w') or key == kb.KeyCode.from_char('s'):
-        throttle = 0.0
-    elif key == kb.KeyCode.from_char('a') or key == kb.KeyCode.from_char('d'):
-        steer = 0.0
+# def on_press(key):
+#     global throttle, steer, collect_data, exit_flag, create_new_directory
+#     if key == kb.Key.space:
+#         collect_data = not collect_data
+#     elif key == kb.KeyCode.from_char('n'):
+#         create_new_directory = True
+#     elif key == kb.KeyCode.from_char('w'):
+#         throttle = 1.0
+#     elif key == kb.KeyCode.from_char('s'):
+#         throttle = -1.0
+#     elif key == kb.KeyCode.from_char('a'):
+#         steer = -1.0
+#     elif key == kb.KeyCode.from_char('d'):
+#         steer = 1.0
+#     elif key == kb.KeyCode.from_char('q'):
+#         exit_flag = True
+#         return False
 
-def start_listener():
-    with kb.Listener(on_press=on_press, on_release=on_release) as listener:
-        listener.join()
+# def on_release(key):
+#     global throttle, steer
+#     if key == kb.KeyCode.from_char('w') or key == kb.KeyCode.from_char('s'):
+#         throttle = 0.0
+#     elif key == kb.KeyCode.from_char('a') or key == kb.KeyCode.from_char('d'):
+#         steer = 0.0
+
+# def start_listener():
+#     with kb.Listener(on_press=on_press, on_release=on_release) as listener:
+#         listener.join()
 
 def configure_depthai_pipeline():
     pipeline = dai.Pipeline()
@@ -227,8 +235,8 @@ def main():
     os.makedirs(data_dir_json, exist_ok=True)
     
     pipeline, depth = configure_depthai_pipeline()
-    listener_thread = threading.Thread(target=start_listener)
-    listener_thread.start()
+    # listener_thread = threading.Thread(target=start_listener)
+    # listener_thread.start()
 
     bus = smbus2.SMBus(bus_number)
     print(f"Connect to I2C Bus:{bus_number}")
@@ -237,10 +245,8 @@ def main():
     power_mode = get_power_mode(bus)
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
-    # model_path = "/home/h2x/Desktop/trainedmodels/model_run_001.pth"
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
-    # model_path = "/home/h2x/Desktop/NERC_IL/inference/best.pth"
-    # conn = start_server()
+
     model = load_model(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -253,6 +259,7 @@ def main():
 
         max_disparity = 255 
         while not exit_flag:
+            check_keys()
             start_time = time.time()
             start_measurement(bus)
             if wait_for_measurement(bus):
@@ -405,7 +412,7 @@ def main():
             # print(create_new_directory)
 
     cv2.destroyAllWindows()
-    listener_thread.join()
+    # listener_thread.join()
 
 if __name__ == "__main__":
     main()
