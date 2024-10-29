@@ -44,9 +44,9 @@ if __name__ == '__main__':
     model.to(device)
     print(device)
     client_sock = connect_to_server()
-    while True:
-        time.sleep(1)
-        client_loop(client_sock)
+    # while True:
+    time.sleep(1)
+    client_loop(client_sock)
     # inferr(device, client_sock)
     # client_sock.close()
     # client_loop(client_sock)
