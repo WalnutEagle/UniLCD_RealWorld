@@ -230,7 +230,7 @@ def main():
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
                     # update_mode_indicator(mode_circle, 'Local')
-                    update_visualization(steering, throttle)
+                    # update_visualization(steering, throttle)
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=100:
