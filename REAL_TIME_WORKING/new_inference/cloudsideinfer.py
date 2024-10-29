@@ -47,7 +47,8 @@ if __name__ == '__main__':
     while True:
 # time.sleep(1)
         try:
-            client_loop()
+            client_socket = connect_to_server()
+            client_loop(client_socket)
         except RuntimeError:
             pass
 

@@ -32,7 +32,7 @@ def receive_response(client_socket):
     return pickle.loads(data)
 
 # Main client communication loop (can be called repeatedly)
-def client_loop():
+def client_loop(client_socket):
     try:
         # client_socket = connect_to_server()
         # while True:
