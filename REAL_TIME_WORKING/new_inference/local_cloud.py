@@ -240,9 +240,9 @@ def main():
                     s = time.time()
                     with torch.no_grad():
                         prediction = model(depth_img)
-                    prediction = prediction.detach().cpu().numpy().tolist()
+                    # prediction = prediction.detach().cpu().numpy().tolist()
                     # print(prediction)
-                    time.sleep(0.5)
+                    # time.sleep(0.5)
                     server_loop(server_socket, prediction)
                     # print(data, addr)
                     # send_response(server_socket, prediction, addr)
