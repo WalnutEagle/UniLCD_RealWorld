@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+'''import matplotlib.pyplot as plt
 import numpy as np
 import threading
 import time
@@ -101,3 +101,83 @@ if __name__ == "__main__":
     steer = 100
     throttle = 90
     main(steer, throttle)
+'''
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+from matplotlib.patches import Arc, Circle
+
+exit_flag = False  # Control variable for the visualization loop
+current_mode = 'Local Mode'  # Initial mode
+current_throttle = 0
+current_steer = 0
+
+def create_speedometer(ax, current_value, title):
+    ax.clear()
+    ax.set_xlim(-1.5, 1.5)
+    ax.set_ylim(-1.5, 1.5)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    arc_background = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=180, color='lightgrey', lw=10)
+    ax.add_patch(arc_background)
+
+    theta2 = current_value * 180 / 100  # Scale value to degrees
+    arc_fill = Arc((0, 0), 2, 2, angle=0, theta1=0, theta2=theta2, color='blue', lw=10)
+    ax.add_patch(arc_fill)
+
+    for i in range(0, 101, 10):
+        angle = np.radians(i * 180 / 100)
+        x = np.cos(angle)
+        y = np.sin(angle)
+        ax.text(x * 1.1, y * 1.1, str(i), ha='center', va='center', fontsize=8)
+
+    ax.text(0, -0.2, title, ha='center', va='center', fontsize=12)
+
+def draw_mode_indicator(ax):
+    mode_color = 'green' if current_mode == 'Local Mode' else 'yellow'
+    ax.clear()
+    ax.add_patch(Circle((0.5, 0.5), 2, color=mode_color))  # Light indicator
+    ax.text(0.5, 0.2, current_mode, fontsize=12, va='center', ha='center')
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')  # Turn off axis
+
+def update_mode(mode):
+    global current_mode
+    current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
+
+def update_visualization():
+    fig = plt.figure(figsize=(12, 5))
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
+    mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])
+
+    plt.ion()  # Turn on interactive mode
+
+    while not exit_flag:
+        create_speedometer(ax1, current_steer, 'Steer')
+        create_speedometer(ax2, current_throttle, 'Throttle')
+        draw_mode_indicator(mode_ax)
+        plt.pause(0.05)  # Pause to allow the plot to update
+
+if __name__ == "__main__":
+    # Initial values
+    steer = 100
+    throttle = 90
+    update_mode(0)  # Set mode
+
+    # Start the visualization
+    update_visualization()
+
+    # Update loop (simulate continuous updates)
+    for _ in range(100):  # Adjust the range for how many times you want to update
+        current_throttle = throttle  # Update these values as needed
+        current_steer = steer
+        time.sleep(0.1)  # Sleep to simulate time between updates
+
+    # Stop the visualization loop
+    exit_flag = True
+    plt.close()  # Close the plot window after exiting
