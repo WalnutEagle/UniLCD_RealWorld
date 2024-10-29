@@ -7,7 +7,7 @@ import timm
 import time
 import glob
 import os
-
+client_sock = connect_to_server()
 def load_model(model_path):
     checkpoint = torch.load(model_path)  # Load the entire checkpoint
     model = CustomRegNetY002()  # Initialize your model
@@ -22,11 +22,13 @@ def load_model(model_path):
     return model
 
 def inferr():
-    data = receive_response(client_socket)
+    data = receive_response(client_sock)
     data.to(device)
     with torch.no_grad():
         prediction = model(data)
-    send_data(client_socket, prediction)
+    send_data(client_sock, prediction)
+
+
 
 if __name__ == '__main__': 
     model_path = '/opt/app-root/src/UniLCD_RealWorld/REAL_TIME_WORKING/Models/ovrft/overfit8_900.pth'
@@ -34,7 +36,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
-    client_sock = connect_to_server()
+
     send_data(client_sock, 'a')
     try:
         while True:
