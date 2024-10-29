@@ -40,4 +40,4 @@ if __name__ == '__main__':
         while True:
             inferr()
     except KeyboardInterrupt:
-        print("Connection Closed")
+        client_socket.close()
