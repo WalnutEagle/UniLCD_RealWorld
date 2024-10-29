@@ -43,6 +43,7 @@ if __name__ == '__main__':
             response = receive_response(socket_1)
             if response is not None:
                 tensord = inferr(device, response)
+                print(tensord)
                 send_data(socket_1, tensord)
             else :
                 send_data(socket_1, None, timeout=5 )
