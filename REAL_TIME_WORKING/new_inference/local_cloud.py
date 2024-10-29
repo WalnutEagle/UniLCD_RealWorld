@@ -209,6 +209,7 @@ def main():
         max_disparity = 255 
         while not exit_flag:
             check_keys()
+            data, addr = receive_data(server_socket)
             start_time = time.time()
             start_measurement(bus)
             if wait_for_measurement(bus):
@@ -240,7 +241,6 @@ def main():
                     with torch.no_grad():
                         prediction = model(depth_img)
                     print(prediction)
-                    data, addr = receive_data(server_socket)
                     print(data, addr)
                     send_response(server_socket, prediction, addr)
                     print('sent')

@@ -22,14 +22,16 @@ def load_model(model_path):
     return model
 
 def inferr(device):
-    send_data(client_sock, 'a')
+    send_data(client_sock, '')
     data = receive_response(client_sock)
-    print('got it')
-    print(data)
-    data.to(device)
-    with torch.no_grad():
-        prediction = model(data)
-    send_data(client_sock, prediction)
+
+    if data is not None:
+        print('got it')
+        print(data)
+        data.to(device)
+        with torch.no_grad():
+            prediction = model(data)
+        send_data(client_sock, prediction)
 
 
 
