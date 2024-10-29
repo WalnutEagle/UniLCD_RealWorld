@@ -41,7 +41,9 @@ kit.servo[1].set_pulse_width_range(1000, 2000)
 throttle = 0.0
 steer = 0.0
 do_infer = False
-exit_flag = False  
+exit_flag = False 
+current_steer = 0
+current_throttle = 0 
 
 def create_speedometer(ax, current_value, title):
     ax.clear()
