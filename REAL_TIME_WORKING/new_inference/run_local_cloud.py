@@ -299,7 +299,7 @@ def main():
                     # time.sleep(0.1)
                     # check_dataset(full_path)
                     # output = get_preds(model_path, full_path)
-                    sssdddd = "/home/h2x/Desktop/REAL_TIME_WORKING/Main_script/10-11-2024/rc_data/run_001"
+                    sssdddd = '/home/h2x/Desktop/UniLCD_RealWorld/REAL_TIME_WORKING/Main_script/10-17-2024/rc_data/run_001'
                     # check_dataset(sssdddd)
                     # find_missing_files(sssdddd)
                     s = time.time()
