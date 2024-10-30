@@ -241,8 +241,7 @@ def main():
                         prediction = model(depth_img)
                         print(prediction.shape)
                     output = server_loop(server_2_soc, prediction)
-                    if isinstance(output, torch.Tensor):
-                        print("Output is a tensor.")
+                    print(type(output))
                     # # print(res)
                     # steering = res[0, 0].item()
                     # throttle = res[0, 1].item()
