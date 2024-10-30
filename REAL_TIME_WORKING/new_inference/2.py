@@ -64,16 +64,15 @@ def server_loop(server_socket, conn, addr, data):
         while True:
               # Accept a new connection
             logging.info(f"Connection from {addr}")
-
-            # Send initial data to the client first
-            # tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor to send
-            tensor_data = data
-            send_response(conn, tensor_data)
+            start = time.time()
+            # tensor_data = torch.rand(1, 32, 150, 150) 
+            send_response(conn, data)
             # logging.info("Initial tensor data sent to client.")
 
             # Now receive data from the client
             received_data = receive_data(conn)
-            print(receive_data)
+            print(f"Total Time is equal to {(time.time()-start)*1000}Miliseconds.")
+            print(received_data)
 
             # conn.close()
     except Exception as e:
