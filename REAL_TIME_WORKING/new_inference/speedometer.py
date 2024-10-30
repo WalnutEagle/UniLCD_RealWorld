@@ -59,7 +59,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Arc, Circle
 
-exit_flag = False  # Control variable for the visualization loop
 current_mode = 'Local Mode'  # Initial mode
 current_throttle = 0
 current_steer = 0
@@ -104,20 +103,20 @@ def update_mode(mode):
     global current_mode
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
 
-def update_visualization():
+def update_visualization(throttle, steer, mode):
     global current_throttle, current_steer
+    current_throttle = throttle
+    current_steer = steer
+    update_mode(mode)  # Update mode based on input
+
     fig = plt.figure(figsize=(12, 5))  # Adjust the figure size
     ax1 = fig.add_subplot(121)  # Steer speedometer on the left
     ax2 = fig.add_subplot(122)  # Throttle speedometer on the right
     mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])  # Mode indicator at the bottom
 
     plt.ion()
-    
-    while not exit_flag:
-        # Update current throttle and steer values
-        current_throttle = np.random.randint(0, 221)  # Throttle between 0 and 220
-        current_steer = np.random.randint(0, 181)      # Steer between 0 and 180
-        
+
+    while True:  # Infinite loop to keep the visualization active
         # Draw the speedometers
         create_speedometer(ax1, current_steer, 'Steer', 180)  # First speedometer
         create_speedometer(ax2, current_throttle, 'Throttle', 220)  # Second speedometer
@@ -127,5 +126,5 @@ def update_visualization():
 
         plt.pause(0.1)  # Pause to allow the plot to update
 
-# Run the visualization update function
-update_visualization()
+# Example usage: Update visualization with some values
+update_visualization(150, 90, 1)  # Example with Cloud Mode
