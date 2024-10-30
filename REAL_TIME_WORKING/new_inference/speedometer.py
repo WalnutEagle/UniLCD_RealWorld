@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from matplotlib.patches import Arc
 def draw_speedometer(throttle, steer, mode):
 
     fig, ax = plt.subplots(figsize=(6, 6))
