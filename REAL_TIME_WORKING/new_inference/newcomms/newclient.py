@@ -44,6 +44,7 @@ def receive_response(client_socket):
     try:
         data_length, addr = client_socket.recvfrom(4)
         data_length = int.from_bytes(data_length, 'big')
+        logging.info(f"Reciving data of lenght:{data_length} from {addr}")
         data = b""
         while len(data) < data_length:
             packet, _ = client_socket.recvfrom(1400) 
