@@ -191,7 +191,7 @@ def main():
     print(f"Connect to I2C Bus:{bus_number}")
     initialize_lidar(bus)
     server_2_soc = start_server()
-
+    conn, addr = server_2_soc.accept()
     power_mode = get_power_mode(bus)
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
@@ -240,7 +240,7 @@ def main():
                     with torch.no_grad():
                         prediction = model(depth_img)
                         print(prediction.shape)
-                    output = server_loop(server_2_soc, prediction)
+                    output = server_loop(server_2_soc,conn, addr, prediction)
                     # print(f"The type is {type(output)} thanks")
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=1:

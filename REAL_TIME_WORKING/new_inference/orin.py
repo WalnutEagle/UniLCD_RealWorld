@@ -54,23 +54,23 @@ def send_response(conn, response):
         logging.error(f"Error sending response: {e}")
 
 # Main server loop function for processing data
-def server_loop(server_socket, data):
+def server_loop(server_socket, conn, addr, data):
     try:
-        i=1
-        while i<2:
-            conn, addr = server_socket.accept()
-            logging.info(f"Connection from {addr}")
+        # i=1
+        # while i<2:
+        # conn, addr = server_socket.accept()
+        logging.info(f"Connection from {addr}")
 
 
-            # tensor_data = torch.rand(1, 32, 150, 150) 
-            tensor_data = data
-            send_response(conn, tensor_data)
-            # logging.info("Initial tensor data sent to client.")
-            received_data = receive_data(conn)
-            print(receive_data)
-            i+=2
+        # tensor_data = torch.rand(1, 32, 150, 150) 
+        tensor_data = data
+        send_response(conn, tensor_data)
+        # logging.info("Initial tensor data sent to client.")
+        received_data = receive_data(conn)
+        print(receive_data)
+        # i+=2
 
-            conn.close()
+            # conn.close()
         
     except Exception as e:
         logging.error(f"Server error: {e}")
