@@ -316,6 +316,7 @@ def main():
                     create_speedometer(ax1, mapped_steer, 'Steer', 180)
                     create_speedometer(ax2, mapped_throttle, 'Throttle', 220)
                     draw_mode_indicator(mode_ax) 
+                    plt.pause(0.001)
 
                 frame_count += 1
                 if exit_flag:
