@@ -13,25 +13,22 @@ PORT = 8083              # Server's port
 
 # Function to connect to the server
 def connect_to_server():
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    client_socket.settimeout(20) 
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.settimeout(20)
+    client_socket.connect((HOST, PORT))  # Connect to the server
     return client_socket
 
 # Function to send data (text or tensor) to the server
-def send_data(client_socket, data, timeout=20):
+def send_data(client_socket, data):
     serialized_data = pickle.dumps(data)
     data_length = len(serialized_data)
     start_time = time.time()
     
     try:
-        client_socket.sendto(data_length.to_bytes(4, 'big'), (HOST, PORT))
-        client_socket.sendto(serialized_data, (HOST, PORT))
+        client_socket.sendall(data_length.to_bytes(4, 'big'))  # Send length
+        client_socket.sendall(serialized_data)  # Send data
         
         elapsed_time = time.time() - start_time
-        if elapsed_time > timeout:
-            logging.error("Sending data timed out.")
-            return False
-
         logging.info("Data sent successfully in %.2f seconds.", elapsed_time)
         return True
     except Exception as e:
@@ -41,29 +38,27 @@ def send_data(client_socket, data, timeout=20):
 # Function to receive response from the server
 def receive_response(client_socket):
     try:
-        # First receive the length of the data
-        data_length, addr = client_socket.recvfrom(4)
-        data_length = int.from_bytes(data_length, 'big')
-        logging.info(f"Receiving data of length: {data_length} from {addr}")
+        data_length_bytes = client_socket.recv(4)  # Receive length of the data
+        if not data_length_bytes:
+            return None
 
-        # Now receive the actual data
+        data_length = int.from_bytes(data_length_bytes, 'big')
+        logging.info(f"Receiving data of length: {data_length}...")
+
         data = b""
         while len(data) < data_length:
-            part = client_socket.recv(4096)  # Receive data in chunks
-            if not part:
+            packet = client_socket.recv(4096)  # Receive data in chunks
+            if not packet:
                 break
-            data += part
+            data += packet
 
         if len(data) != data_length:
             logging.error(f"Received {len(data)} bytes, expected {data_length} bytes.")
             return None
-
-        response = pickle.loads(data)  # Deserialize the received data
+        
+        response = pickle.loads(data)
         logging.info("Response received successfully.")
         return response
-    except socket.timeout:
-        logging.error("Receiving data timed out.")
-        return None
     except Exception as e:
         logging.error(f"Error receiving response: {e}")
         return None
@@ -71,7 +66,7 @@ def receive_response(client_socket):
 # Main client communication loop
 def client_loop(client_socket):
     while True:
-        choice = 'n'
+        choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
 
         if choice == 't':
             text_message = input("Enter your text message: ")
@@ -81,15 +76,12 @@ def client_loop(client_socket):
                     logging.info("Server response: %s", response)
 
         elif choice == 'n':
-            tensor_data = torch.rand(2, 2)  # Adjust size as needed
-            start = time.time()
+            tensor_data = torch.rand(2, 2) 
             logging.info(f"Sending PyTorch tensor: \n{tensor_data}")
             if send_data(client_socket, tensor_data):
-                t1 = time.time()
                 response = receive_response(client_socket)
                 if response is not None:
                     logging.info("Server response: %s", response)
-                logging.info(f"Received data in: {(time.time()-t1)*1000:.2f} milliseconds.")
 
         elif choice == 'q':
             logging.info("Closing connection...")

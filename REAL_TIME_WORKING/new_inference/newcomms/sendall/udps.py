@@ -12,46 +12,49 @@ TIMEOUT = 20  # Timeout in seconds
 
 # Function to start the server
 def start_server():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, PORT))
+    server_socket.listen(1)  # Listen for incoming connections
     server_socket.settimeout(TIMEOUT)  # Set timeout for the socket
     logging.info(f"Server listening on {HOST}:{PORT}...")
     return server_socket
 
-# Function to receive data in chunks with timeout handling
-def receive_data(server_socket):
+# Function to receive data from a client
+def receive_data(conn):
     try:
-        data_length, addr = server_socket.recvfrom(4)  # Receive length of data
-        logging.info(f"Receiving data from {addr}...")
-        data_length = int.from_bytes(data_length, 'big')
+        data_length_bytes = conn.recv(4)  # Receive length of data
+        if not data_length_bytes:
+            return None
+        
+        data_length = int.from_bytes(data_length_bytes, 'big')
+        logging.info(f"Receiving data of length: {data_length}...")
+        
         data = b""
         while len(data) < data_length:
-            packet, _ = server_socket.recvfrom(4096)  # Receive data in chunks
+            packet = conn.recv(4096)  # Receive data in chunks
+            if not packet:
+                break
             data += packet
+            
         received_data = pickle.loads(data)
-        logging.info(f"Data received: {received_data} from {addr}")
-        return received_data, addr
-    except socket.timeout:
-        logging.warning("Timeout occurred while receiving data.")
+        logging.info(f"Data received: {received_data} from client.")
+        return received_data
     except Exception as e:
         logging.error(f"Error receiving data: {e}")
-    return None, None
+    return None
 
-# Function to send data like TCP (without chunking)
-def send_response(server_socket, response, addr):
+# Function to send data back to the client
+def send_response(conn, response):
     try:
-        # Serialize the response tensor
         data = pickle.dumps(response, protocol=pickle.HIGHEST_PROTOCOL)
+        data_length = len(data)
 
         # Send the length of the data first
-        data_length = len(data)
-        server_socket.sendto(data_length.to_bytes(4, 'big'), addr)
+        conn.sendall(data_length.to_bytes(4, 'big'))  # Send length as bytes
 
-        # Send the entire serialized data
-        server_socket.sendto(data, addr)  # Send all at once
+        # Send the actual data
+        conn.sendall(data)
         logging.info("Response sent successfully.")
-    except socket.timeout:
-        logging.warning("Timeout occurred while sending data.")
     except Exception as e:
         logging.error(f"Error sending response: {e}")
 
@@ -59,26 +62,31 @@ def send_response(server_socket, response, addr):
 def server_loop(server_socket):
     try:
         while True:
-            received_data, addr = receive_data(server_socket)      
+            conn, addr = server_socket.accept()  # Accept a new connection
+            logging.info(f"Connection from {addr}")
+            
+            received_data = receive_data(conn)      
             if received_data is None:
+                conn.close()
                 continue  # Skip the loop iteration if there was an error
 
             # Handle text or tensor data
             if isinstance(received_data, str):
                 logging.info(f"Received text message: {received_data} from {addr}")
-                send_response(server_socket, "Text received!", addr)
+                send_response(conn, "Text received!")
             elif isinstance(received_data, torch.Tensor):
                 start_time = time.time()
                 logging.info(f"Received PyTorch tensor data: \n{received_data} from {addr}")
                 elapsed_time = (time.time() - start_time) * 1000
                 logging.info(f"It took {elapsed_time:.2f} milliseconds.")
                 
-                # Create an example tensor response
-                tensor_data = torch.randn(1, 32, 150, 150)  # Example tensor response
-                send_response(server_socket, tensor_data, addr)  # Send the tensor response
+                tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor response
+                send_response(conn, tensor_data)
             else:
                 logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
-                send_response(server_socket, "Unknown data type received!", addr)
+                send_response(conn, "Unknown data type received!")
+
+            conn.close()  # Close the connection after handling
     except Exception as e:
         logging.error(f"Server error: {e}")
     finally:
