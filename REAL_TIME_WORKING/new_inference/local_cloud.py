@@ -295,10 +295,10 @@ def main():
                         throttle = prediction[0, 1].item()
                     elif distance_to_obstacle >100:
                         mode = 1
-                        time.sleep(random)
+                        # time.sleep(random)
                         with torch.no_grad():
                             prediction = model_local(depth_img)
-                        output = server_loop(server_2_soc, conn, addr, prediction)
+                        output = server_loop(server_2_soc, conn, addr, pred)
                         steering = prediction[0, 0].item()
                         throttle = prediction[0, 1].item()
                         # steering = output[0][0]
