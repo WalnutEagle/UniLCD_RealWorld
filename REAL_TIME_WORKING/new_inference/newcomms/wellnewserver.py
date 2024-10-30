@@ -40,7 +40,7 @@ def receive_data(server_socket):
 # Function to send data with length prefix and timeout handling
 def send_response(server_socket, response, addr):
     try:
-        data = pickle.dumps(response)
+        data = pickle.dumps(response, protocol=pickle.HIGHEST_PROTOCOL)
         data_length = len(data)
 
         # Send the length of the data first
