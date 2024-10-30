@@ -227,6 +227,7 @@ def main():
                     s = time.time()
                     with torch.no_grad():
                         prediction = model(depth_img)
+                        print(prediction)
                     steering = prediction[0, 0].item()
                     throttle = prediction[0, 1].item()
 
