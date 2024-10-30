@@ -198,9 +198,9 @@ def main():
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
     model_local = load_model(model_path)
     # print(addr)
-    model = load_model1(model_path)
+    model_cloud = load_model1(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
+    model_cloud.to(device)
     model_local.to(device)
     print(device)
 
@@ -240,13 +240,13 @@ def main():
                     s = time.time()
                     if distance_to_obstacle <100:
                         with torch.no_grad():
-                            prediction = model(depth_img)
+                            prediction = model_local(depth_img)
                         steering = prediction[0, 0].item()
                         throttle = prediction[0, 1].item()
                     elif distance_to_obstacle >100:
                         mode = 1
                         with torch.no_grad():
-                            prediction = model(depth_img)
+                            prediction = model_cloud(depth_img)
                         output = server_loop(server_2_soc,conn,addr ,prediction)
                         steering = output[0][0]
                         throttle = output[0][1]
