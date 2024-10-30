@@ -51,7 +51,7 @@ def receive_response(client_socket):
                 packet, _ = client_socket.recvfrom(1400) 
                 data += packet
             except socket.timeout:
-                logging.error("Timed out while waiting for packet.")
+                logging.info("Timed out while waiting for packet.")
                 return None  # Return if a timeout occurs
 
         if len(data) != data_length:
