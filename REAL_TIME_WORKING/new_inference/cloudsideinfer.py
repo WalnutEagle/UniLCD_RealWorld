@@ -1,5 +1,5 @@
 from cloudsidemodel import CustomRegNetY002
-from newcomms.newclient import connect_to_server, send_data, receive_response
+from nerc import connect_to_server, send_data, receive_response, client_loop
 import torch
 import numpy as np
 import torch.nn as nn
@@ -21,7 +21,8 @@ def load_model(model_path):
     model.eval()  # Set the model to evaluation mode
     return model
 
-def inferr(device, data):
+def inferr(data):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     data.to(device)
     with torch.no_grad():
         prediction = model(data)
@@ -36,17 +37,15 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
-    socket_1 = connect_to_server()
-    send_data(socket_1, '', timeout=5)
     try:
         while True:
+            socket_1 = connect_to_server()
             response = receive_response(socket_1)
             if response is not None:
-                tensord = inferr(device, response)
+                tensord = inferr(response)
                 print(tensord)
                 send_data(socket_1, tensord)
             else :
-                send_data(socket_1, None, timeout=5 )
                 print('Trying again as didnt get anything')
     except KeyboardInterrupt:
         print('Bye')

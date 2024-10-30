@@ -27,7 +27,7 @@ from torch.utils.data import Dataset
 
 from cloud_model import CustomRegNetY002
 from missing import check_dataset, find_missing_files
-from newcomms.wellnewserver import start_server, send_response, receive_data
+from orin import start_server, server_loop
 
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
@@ -191,8 +191,7 @@ def main():
     print(f"Connect to I2C Bus:{bus_number}")
     initialize_lidar(bus)
     server_2_soc = start_server()
-    received_data, addr = receive_data(server_2_soc)
-    print(addr)
+
     power_mode = get_power_mode(bus)
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
@@ -241,15 +240,7 @@ def main():
                     with torch.no_grad():
                         prediction = model(depth_img)
                         print(prediction.shape)
-                    try:
-                        while True:
-                            send_response(server_2_soc, prediction, addr)
-                            res, newaddr = receive_data(server_2_soc)
-                            if res is not None:
-                                print(res)
-                                break
-                    except Exception as e:
-                        print('there was a error')
+                    output = server_loop(server_2_soc, prediction)
                     # # print(res)
                     # steering = res[0, 0].item()
                     # throttle = res[0, 1].item()
