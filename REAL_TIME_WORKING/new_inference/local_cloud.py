@@ -260,7 +260,7 @@ def main():
         max_disparity = 255 
         while not exit_flag:
             check_keys()
-            random_number = round(random.uniform(0.04, 0.3), 2)
+            random_number = round(random.uniform(0, 0.1), 2)
             start_time = time.time()
             start_measurement(bus)
             if wait_for_measurement(bus):
@@ -288,14 +288,14 @@ def main():
 
                 if do_infer:
                     s = time.time()
-                    if distance_to_obstacle >100:
+                    if distance_to_obstacle <100:
                         with torch.no_grad():
                             prediction = model_local(depth_img)
                         steering = prediction[0, 0].item()
                         throttle = prediction[0, 1].item()
-                    elif distance_to_obstacle <100:
+                    elif distance_to_obstacle >100:
                         mode = 1
-                        # time.sleep(random)
+                        time.sleep(random)
                         with torch.no_grad():
                             prediction = model_local(depth_img)
                         output = server_loop(server_2_soc, conn, addr, prediction)
