@@ -8,21 +8,20 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 HOST = '0.0.0.0'  
 PORT = 8083  
-TIMEOUT = 20  # Timeout in seconds
+TIMEOUT = 20  
 
 # Function to start the server
 def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, PORT))
-    server_socket.listen(1)  # Listen for incoming connections
-    server_socket.settimeout(TIMEOUT)  # Set timeout for the socket
+    server_socket.listen(1)  
+    # server_socket.settimeout(TIMEOUT)  
     # logging.info(f"Server listening on {HOST}:{PORT}...")
     return server_socket
 
-# Function to receive data from a client
 def receive_data(conn):
     try:
-        data_length_bytes = conn.recv(4)  # Receive length of data
+        data_length_bytes = conn.recv(4)  
         if not data_length_bytes:
             return None
         
@@ -31,7 +30,7 @@ def receive_data(conn):
         
         data = b""
         while len(data) < data_length:
-            packet = conn.recv(4096)  # Receive data in chunks
+            packet = conn.recv(4096)  
             if not packet:
                 break
             data += packet
@@ -48,11 +47,7 @@ def send_response(conn, response):
     try:
         data = pickle.dumps(response, protocol=pickle.HIGHEST_PROTOCOL)
         data_length = len(data)
-
-        # Send the length of the data first
-        conn.sendall(data_length.to_bytes(4, 'big'))  # Send length as bytes
-
-        # Send the actual data
+        conn.sendall(data_length.to_bytes(4, 'big')) 
         conn.sendall(data)
         logging.info("Response sent successfully.")
     except Exception as e:
@@ -63,16 +58,14 @@ def server_loop(server_socket, data):
     try:
         i=1
         while i<2:
-            conn, addr = server_socket.accept()  # Accept a new connection
+            conn, addr = server_socket.accept()
             logging.info(f"Connection from {addr}")
 
-            # Send initial data to the client first
-            # tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor to send
+
+            # tensor_data = torch.rand(1, 32, 150, 150) 
             tensor_data = data
             send_response(conn, tensor_data)
             # logging.info("Initial tensor data sent to client.")
-
-            # Now receive data from the client
             received_data = receive_data(conn)
             print(receive_data)
             i+=2

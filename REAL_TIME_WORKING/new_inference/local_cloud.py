@@ -28,7 +28,7 @@ from torch.utils.data import Dataset
 from cloud_model import CustomRegNetY002
 from missing import check_dataset, find_missing_files
 from orin import start_server, server_loop
-
+from merger import load_model
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
@@ -39,8 +39,8 @@ kit.servo[1].set_pulse_width_range(1000, 2000)
 throttle = 0.0
 steer = 0.0
 do_infer = False
-create_new_directory = False
-exit_flag = False  
+exit_flag = False 
+
 
 LIDAR_ADDR = 0x62
 REG_SYSRANGE_START = 0x00
@@ -50,17 +50,15 @@ REG_RESULT_HIGH_BYTE = 0x11
 REG_HIGH_ACCURACY_MODE = 0xEB
 REG_POWER_MODE = 0xE2
 
-def load_model(model_path):
-    checkpoint = torch.load(model_path)  # Load the entire checkpoint
-    model = CustomRegNetY002()  # Initialize your model
-    # state_dict = checkpoint
-    # Strip 'module.' from the keys if the model was saved with Data Parallelism
+def load_model1(model_path):
+    checkpoint = torch.load(model_path)
+    model = CustomRegNetY002() 
     state_dict = checkpoint['model_state_dict']
     if list(state_dict.keys())[0].startswith('module.'):
-        state_dict = {k[7:]: v for k, v in state_dict.items()}  # Remove 'module.' prefix
+        state_dict = {k[7:]: v for k, v in state_dict.items()}
 
-    model.load_state_dict(state_dict)  # Load only the model state dict
-    model.eval()  # Set the model to evaluation mode
+    model.load_state_dict(state_dict) 
+    model.eval()
     return model
 
 def initialize_lidar(bus):
@@ -196,13 +194,14 @@ def main():
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
     model_path = "/home/h2x/Desktop/REAL_TIME_WORKING/Overftmodels/Depth/overfit8_900.pth"
-    
+    model_local = load_model(model_path)
     # print(addr)
-    model = load_model(model_path)
+    model = load_model1(model_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
+    model_local.to(device)
     print(device)
-    
+
     with dai.Device(pipeline) as device:
         q_rgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
         q_disparity = device.getOutputQueue(name="disparity", maxSize=4, blocking=False)
@@ -237,18 +236,27 @@ def main():
 
                 if do_infer:
                     s = time.time()
-                    with torch.no_grad():
-                        prediction = model(depth_img)
-                        print(prediction.shape)
-                    output = server_loop(server_2_soc, prediction)
-                    # print(f"The type is {type(output)} thanks")
+                    if distance_to_obstacle <100:
+                        mode = 'Local'
+                        with torch.no_grad():
+                            prediction = model(depth_img)
+                        steering = prediction[0, 0].item()
+                        throttle = prediction[0, 1].item()
+                    elif distance_to_obstacle >100:
+                        mode = 'Cloud'
+                        with torch.no_grad():
+                            prediction = model(depth_img)
+                        output = server_loop(server_2_soc, prediction)
+                        steering = output[0][0]
+                        throttle = output[0][1]
+
                     print(f"Total Time: {time.time() - s:.5f}")
-                    if distance_to_obstacle<=1:
+                    if distance_to_obstacle<=20:
                         mapped_steer = map_value_steer(0.0)
                         mapped_throttle = map_value_throttle(0.0)
                     else :
-                        mapped_steer = map_value_steer(output[0][0])
-                        mapped_throttle = map_value_throttle(output[0][1])
+                        mapped_steer = map_value_steer(steering)
+                        mapped_throttle = map_value_throttle(throttle)
                     if mapped_throttle > 99.0:
                         mapped_throttle = 99.0
                     elif mapped_throttle <0.0:
@@ -267,6 +275,7 @@ def main():
                     kit.servo[0].angle = mapped_steer
 
     cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
     main()

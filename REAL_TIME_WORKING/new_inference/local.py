@@ -235,11 +235,11 @@ def main():
                     # update_visualization(steering, throttle)
 
                     print(f"Total Time: {time.time() - s:.5f}")
-                    if distance_to_obstacle<=100:
+                    if distance_to_obstacle<=20:
                         mapped_steer = map_value_steer(0.0)
                         mapped_throttle = map_value_throttle(0.0)
                     else :
-                        mapped_steer = map_value_steer(steer)
+                        mapped_steer = map_value_steer(steering)
                         mapped_throttle = map_value_throttle(throttle)
                     if mapped_throttle > 99.0:
                         mapped_throttle = 99.0

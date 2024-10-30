@@ -15,33 +15,32 @@ if __name__=='__main__':
 
 import socket
 import pickle
-import torch  # For PyTorch tensor handling
+import torch 
 import time
 import logging
 
-# Configure logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Server configuration
-HOST = '128.197.164.42'  # Server's IP address
-PORT = 8083              # Server's port
+HOST = '128.197.164.42' 
+PORT = 8083             
 
 # Function to connect to the server
 def connect_to_server():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.settimeout(20)
-    client_socket.connect((HOST, PORT))  # Connect to the server
+    # client_socket.settimeout(20)
+    client_socket.connect((HOST, PORT))  
     return client_socket
 
-# Function to send data (text or tensor) to the server
 def send_data(client_socket, data):
     serialized_data = pickle.dumps(data)
     data_length = len(serialized_data)
     start_time = time.time()
     
     try:
-        client_socket.sendall(data_length.to_bytes(4, 'big'))  # Send length
-        client_socket.sendall(serialized_data)  # Send data
+        client_socket.sendall(data_length.to_bytes(4, 'big'))
+        client_socket.sendall(serialized_data)  
         
         elapsed_time = time.time() - start_time
         logging.info("Data sent successfully in %.2f seconds.", elapsed_time)
@@ -53,7 +52,7 @@ def send_data(client_socket, data):
 # Function to receive response from the server
 def receive_response(client_socket):
     try:
-        data_length_bytes = client_socket.recv(4)  # Receive length of the data
+        data_length_bytes = client_socket.recv(4) 
         if not data_length_bytes:
             return None
 
@@ -62,7 +61,7 @@ def receive_response(client_socket):
 
         data = b""
         while len(data) < data_length:
-            packet = client_socket.recv(4096)  # Receive data in chunks
+            packet = client_socket.recv(4096) 
             if not packet:
                 break
             data += packet
