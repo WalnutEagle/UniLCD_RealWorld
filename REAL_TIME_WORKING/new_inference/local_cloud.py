@@ -170,6 +170,7 @@ def create_speedometer(ax, current_value, title, max_value):
 
 def draw_mode_indicator(ax, current_mode):
     mode_color = 'green' if current_mode == 'Local Mode' else 'yellow'
+    print(mode_color, current_mode)
     ax.clear()
     ax.add_patch(plt.Rectangle((0.3,0.3), 0.5, 0.5, color=mode_color))  
     ax.text(0.55, 0.55, current_mode, fontsize=10, va='center', ha='center')
@@ -180,6 +181,7 @@ def draw_mode_indicator(ax, current_mode):
 def update_mode(mode):
     global current_mode
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
+    print(current_mode)
     return current_mode
 
 
