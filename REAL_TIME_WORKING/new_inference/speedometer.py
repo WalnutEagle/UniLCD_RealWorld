@@ -29,7 +29,7 @@ def create_speedometer(ax, current_value, title, max_value):
 def draw_mode_indicator(ax):
     mode_color = 'green' if current_mode == 'Local Mode' else 'yellow'
     ax.clear()
-    ax.add_patch(plt.Rectangle((0.4,0.4), 0.5, 0.5, color=mode_color))  
+    ax.add_patch(plt.Rectangle((0.2,0.3), 0.5, 0.5, color=mode_color))  
     ax.text(0.48, 0.48, current_mode, fontsize=10, va='center', ha='center')
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
