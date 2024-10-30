@@ -73,23 +73,24 @@ def server_loop(server_socket):
 
             # Now receive data from the client
             received_data = receive_data(conn)
+            print(receive_data)
 
-            if received_data is None:
-                logging.warning("No data received, closing connection.")
-                conn.close()
-                continue  # Skip to the next iteration if there was an error
+            # if received_data is None:
+            #     logging.warning("No data received, closing connection.")
+            #     conn.close()
+            #     continue  # Skip to the next iteration if there was an error
 
-            # Handle received data
-            if isinstance(received_data, str):
-                logging.info(f"Received text message: {received_data} from {addr}")
-                send_response(conn, "Text received!")
-            elif isinstance(received_data, torch.Tensor):
-                logging.info(f"Received PyTorch tensor data: \n{received_data} from {addr}")
-                tensor_response = torch.rand(1, 32, 150, 150)  # Another example tensor response
-                send_response(conn, tensor_response)
-            else:
-                logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
-                send_response(conn, "Unknown data type received!")
+            # # Handle received data
+            # if isinstance(received_data, str):
+            #     logging.info(f"Received text message: {received_data} from {addr}")
+            #     send_response(conn, "Text received!")
+            # elif isinstance(received_data, torch.Tensor):
+            #     logging.info(f"Received PyTorch tensor data: \n{received_data} from {addr}")
+            #     tensor_response = torch.rand(1, 32, 150, 150)  # Another example tensor response
+            #     send_response(conn, tensor_response)
+            # else:
+            #     logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
+            #     send_response(conn, "Unknown data type received!")
             i+=2
 
             conn.close()  # Close the connection after handling

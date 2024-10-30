@@ -90,12 +90,13 @@ def client_loop():
             logging.info(f"Initial data received from server: {initial_data}")
 
             # Send data back to the server
-            tensor_data = torch.rand(2, 2)  # Example tensor data
+            tensor_data = torch.rand(2, 2)
+            send_data(client_socket, tensor_data)  # Example tensor data
             logging.info(f"Sending PyTorch tensor: \n{tensor_data}")
-            if send_data(client_socket, tensor_data):
-                response = receive_response(client_socket)
-                if response is not None:
-                    logging.info("Server response: %s", response)
+            # if send_data(client_socket, tensor_data):
+            #     response = receive_response(client_socket)
+            #     if response is not None:
+            #         logging.info("Server response: %s", response)
 
         else:
             logging.warning("No initial data received from server, closing connection.")
