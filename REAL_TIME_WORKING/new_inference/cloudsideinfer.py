@@ -1,5 +1,5 @@
 from cloudsidemodel import CustomRegNetY002
-from nerc import connect_to_server, send_data, receive_response, client_loop
+from nerc import connect_to_server, send_data, receive_response
 import torch
 import numpy as np
 import torch.nn as nn
