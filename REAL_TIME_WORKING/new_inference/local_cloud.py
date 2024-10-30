@@ -180,7 +180,10 @@ def draw_mode_indicator(ax, current_mode):
 
 def update_mode(mode):
     global current_mode
-    current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
+    if mode == 1:
+        current_mode = 'Cloud Mode'
+    elif mode ==0:
+        current_mode = 'Local Mode'
     print(current_mode)
     return current_mode
 
@@ -225,7 +228,7 @@ def configure_depthai_pipeline():
     return pipeline, depth
 
 def main():
-    global throttle, steer, do_infer, mode, exit_flag
+    global throttle, steer, do_infer, mode, exit_flag, current_mode
     bus_number = 1
     frame_count = 0
     distance_to_obstacle = 0
@@ -294,6 +297,7 @@ def main():
                 if do_infer:
                     s = time.time()
                     if distance_to_obstacle >20:
+                        mode = 0
                         with torch.no_grad():
                             prediction = model_local(depth_img)
                         steering = prediction[0, 0].item()
