@@ -14,7 +14,7 @@ PORT = 8083              # Server's port
 # Function to connect to the server
 def connect_to_server():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    client_socket.settimeout(5) 
+    client_socket.settimeout(10) 
     return client_socket
 
 # Function to send data (text or tensor) to the server
