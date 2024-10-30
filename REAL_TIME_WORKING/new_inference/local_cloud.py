@@ -189,7 +189,7 @@ def main():
     print(f"Connect to I2C Bus:{bus_number}")
     initialize_lidar(bus)
     server_2_soc = start_server()
-
+    conn, addr = server_2_soc.accept()
     power_mode = get_power_mode(bus)
     high_accuracy_mode = get_high_accuracy_mode(bus)
 
@@ -246,7 +246,7 @@ def main():
                         mode = 'Cloud'
                         with torch.no_grad():
                             prediction = model(depth_img)
-                        output = server_loop(server_2_soc, prediction)
+                        output = server_loop(server_2_soc,conn,addr ,prediction)
                         steering = output[0][0]
                         throttle = output[0][1]
 
