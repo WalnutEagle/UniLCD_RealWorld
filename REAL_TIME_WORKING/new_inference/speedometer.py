@@ -49,17 +49,17 @@ def update_visualization(throttle, steer, mode):
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
     mode_ax = fig.add_axes([0.4, 0.05, 0.2, 0.1])
-
+    
     plt.ion()
-
+    return ax1, ax2, mode_ax
     # while True:  
  
-    create_speedometer(ax1, current_steer, 'Steer', 180) 
-    create_speedometer(ax2, current_throttle, 'Throttle', 220) 
-    
-    # Draw the mode indicator
-    draw_mode_indicator(mode_ax)
+    #     create_speedometer(ax1, current_steer, 'Steer', 180) 
+    #     create_speedometer(ax2, current_throttle, 'Throttle', 220) 
+        
+    #     # Draw the mode indicator
+    #     draw_mode_indicator(mode_ax)
 
-    plt.pause(0.1) 
+    #     plt.pause(0.1) 
 
 # update_visualization(150, 90, 1) 

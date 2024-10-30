@@ -29,7 +29,7 @@ from cloud_model import CustomRegNetY002
 from missing import check_dataset, find_missing_files
 from orin import start_server, server_loop
 from merger import load_model
-from speedometer import update_visualization
+from speedometer import update_visualization, draw_mode_indicator, create_speedometer
 
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
@@ -184,6 +184,9 @@ def main():
     bus_number = 1
     frame_count = 0
     distance_to_obstacle = 0
+    mapped_steer = map_value_steer(steer)
+    mapped_throttle = map_value_throttle(throttle)
+    ax1, ax2, mode_ax = update_visualization(mapped_steer, mapped_throttle, mode)
 
     pipeline, depth = configure_depthai_pipeline()
 
@@ -265,7 +268,9 @@ def main():
                     print(f"steer {mapped_steer}, throttle {mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
-                    update_visualization(mapped_steer, mapped_throttle, mode)
+                    create_speedometer(ax1, mapped_steer, 'Steer', 180)
+                    create_speedometer(ax2, mapped_throttle, 'Throttle', 220)
+                    draw_mode_indicator(mode_ax) 
 
                 frame_count += 1
                 if exit_flag:
