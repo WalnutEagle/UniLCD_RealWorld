@@ -1,4 +1,4 @@
-from newserver import send_response, receive_data, start_server
+from wellnewserver import send_response, receive_data, start_server
 import torch
 
 # Start the server

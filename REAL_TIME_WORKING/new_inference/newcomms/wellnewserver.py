@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 HOST = '0.0.0.0'  
 PORT = 8083  
-TIMEOUT = 5  # Timeout in seconds
+TIMEOUT = 15  # Timeout in seconds
 
 # Function to start the server
 def start_server():
