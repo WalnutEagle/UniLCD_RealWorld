@@ -48,7 +48,7 @@ def receive_response(client_socket):
         data = b""
         while len(data) < data_length:
             try:
-                packet, _ = client_socket.recvfrom(1400) 
+                packet, _ = client_socket.recvfrom(1000) 
                 data += packet
             except socket.timeout:
                 logging.info("Timed out while waiting for packet.")
