@@ -41,7 +41,7 @@ throttle = 0.0
 steer = 0.0
 do_infer = False
 exit_flag = False 
-mode = 'Local Mode'
+current_mode = 'Local Mode'
 
 LIDAR_ADDR = 0x62
 REG_SYSRANGE_START = 0x00
@@ -179,6 +179,7 @@ def draw_mode_indicator(ax):
 def update_mode(mode):
     global current_mode
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
+
 
 
 def configure_depthai_pipeline():
