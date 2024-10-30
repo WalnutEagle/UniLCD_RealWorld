@@ -74,7 +74,7 @@ def server_loop(server_socket):
                 elapsed_time = (time.time() - start_time) * 1000
                 logging.info(f"It took {elapsed_time:.2f} milliseconds.")
                 
-                tensor_data = torch.rand(1, 4, 150, 130)  # Example tensor response
+                tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor response
                 send_response(server_socket, tensor_data, addr)
             else:
                 logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
