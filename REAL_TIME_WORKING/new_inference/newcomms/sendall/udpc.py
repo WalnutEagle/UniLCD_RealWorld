@@ -67,7 +67,7 @@ def receive_response(client_socket):
 def client_loop():
     while True:
         client_socket = connect_to_server()
-        choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
+        choice = 'n'
 
         if choice == 't':
             text_message = input("Enter your text message: ")
