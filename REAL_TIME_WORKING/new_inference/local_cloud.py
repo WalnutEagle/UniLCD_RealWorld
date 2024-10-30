@@ -42,7 +42,7 @@ throttle = 0.0
 steer = 0.0
 do_infer = False
 exit_flag = False 
-
+mode = 'Local Mode'
 
 LIDAR_ADDR = 0x62
 REG_SYSRANGE_START = 0x00
@@ -180,7 +180,7 @@ def configure_depthai_pipeline():
     return pipeline, depth
 
 def main():
-    global throttle, steer, do_infer, create_new_directory, exit_flag
+    global throttle, steer, do_infer, mode, exit_flag
     bus_number = 1
     frame_count = 0
     distance_to_obstacle = 0
@@ -265,6 +265,7 @@ def main():
                     print(f"steer {mapped_steer}, throttle {mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
+                    update_visualization(mapped_steer, mapped_throttle, mode)
 
                 frame_count += 1
                 if exit_flag:
