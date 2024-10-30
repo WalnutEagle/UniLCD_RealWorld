@@ -47,8 +47,16 @@ def receive_response(client_socket):
         logging.info(f"Reciving data of lenght:{data_length} from {addr}")
         data = b""
         while len(data) < data_length:
-            packet, _ = client_socket.recvfrom(1400) 
-            data += packet
+            try:
+                packet, _ = client_socket.recvfrom(1400) 
+                data += packet
+            except socket.timeout:
+                logging.error("Timed out while waiting for packet.")
+                return None  # Return if a timeout occurs
+
+        if len(data) != data_length:
+            logging.error(f"Received {len(data)} bytes, expected {data_length} bytes.")
+            return None
         response = pickle.loads(data)
         logging.info("Response received successfully.")
         return response
