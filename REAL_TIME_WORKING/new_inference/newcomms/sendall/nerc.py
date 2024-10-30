@@ -107,5 +107,5 @@ def client_loop():
     logging.info("Socket closed.")
 
 # Usage example:
-if __name__ == "__main__":
-    client_loop()
+# if __name__ == "__main__":
+#     client_loop()
