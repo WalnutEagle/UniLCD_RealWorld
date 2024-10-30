@@ -168,7 +168,7 @@ def create_speedometer(ax, current_value, title, max_value):
 
     ax.text(0, -0.25, title, ha='center', va='center', fontsize=14, fontweight='bold')
 
-def draw_mode_indicator(ax):
+def draw_mode_indicator(ax, current_mode):
     mode_color = 'green' if current_mode == 'Local Mode' else 'yellow'
     ax.clear()
     ax.add_patch(plt.Rectangle((0.3,0.3), 0.5, 0.5, color=mode_color))  
@@ -180,6 +180,7 @@ def draw_mode_indicator(ax):
 def update_mode(mode):
     global current_mode
     current_mode = 'Cloud Mode' if mode == 1 else 'Local Mode'
+    return current_mode
 
 
 
@@ -320,10 +321,10 @@ def main():
                     print(f"steer {mapped_steer}, throttle {mapped_throttle}")
                     kit.servo[0].angle = mapped_steer
                     kit.servo[1].angle = mapped_throttle
-                    update_mode(mode)
+                    currmode = update_mode(mode)
                     create_speedometer(ax1, mapped_steer, 'Steer', 180)
                     create_speedometer(ax2, mapped_throttle, 'Throttle', 220)
-                    draw_mode_indicator(mode_ax) 
+                    draw_mode_indicator(mode_ax, currmode) 
                     plt.pause(0.001)
 
                 frame_count += 1
