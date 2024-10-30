@@ -37,9 +37,10 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     print(device)
+    socket_1 = connect_to_server()
     try:
         while True:
-            socket_1 = connect_to_server()
+            
             response = receive_response(socket_1)
             if response is not None:
                 tensord = inferr(response)
