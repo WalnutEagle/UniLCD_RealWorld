@@ -78,10 +78,11 @@ def server_loop(server_socket, data):
             i+=2
 
             conn.close()
-        return receive_data  # Close the connection after handling
+        
     except Exception as e:
         logging.error(f"Server error: {e}")
     finally:
+        return received_data 
         # server_socket.close()
         logging.info("Socket closed.")
 
