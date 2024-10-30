@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+message TensorMessage {
+    bytes tensor_data = 1;  // For serialized tensor data
+}
+
+message TextMessage {
+    string text = 1;        // For string messages
+}
+
+message Message {
+    oneof message_type {
+        TextMessage text_message = 1;
+        TensorMessage tensor_message = 2;
+    }
+}
