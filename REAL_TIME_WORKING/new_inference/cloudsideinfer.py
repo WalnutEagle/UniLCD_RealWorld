@@ -46,8 +46,6 @@ if __name__ == '__main__':
                 tensord = inferr(response)
                 print(tensord)
                 send_data(socket_1, tensord)
-            else :
-                print('Trying again as didnt get anything')
     except KeyboardInterrupt:
         print('Bye')
         socket_1.close()
