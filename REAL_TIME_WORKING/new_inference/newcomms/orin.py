@@ -1,15 +1,15 @@
-from wellnewserver import send_response, receive_data, start_server
+from sendall.udps import send_response, receive_data, start_server
 import torch
 
 # Start the server
 server_2_soc = start_server()  # Renamed from 'socket' to 'server_2_soc'
 data = torch.rand(1, 32, 150, 150)  # Sample tensor data
-received_data, addr = receive_data(server_2_soc)
+conn, addr = server_2_soc.accept()
 print(addr)
 try:
     while True:
-        send_response(server_2_soc, data, addr)
-        res, addr = receive_data(server_2_soc)
+        send_response(server_2_soc, data)
+        res = receive_data(server_2_soc)
         print(res)
         
 except KeyboardInterrupt:
