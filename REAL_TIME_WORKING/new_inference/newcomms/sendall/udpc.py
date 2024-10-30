@@ -64,7 +64,7 @@ def receive_response(client_socket):
         return None
 
 # Main client communication loop
-def client_loop(client_socket):
+def client_loop():
     while True:
         client_socket = connect_to_server()
         choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
@@ -93,4 +93,4 @@ def client_loop(client_socket):
 
 # Usage example:
 if __name__ == "__main__":
-    client_loop(client_socket)
+    client_loop()
