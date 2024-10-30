@@ -241,24 +241,24 @@ def main():
                         prediction = model(depth_img)
                         print(prediction.shape)
                     output = server_loop(server_2_soc, prediction)
+                    print(output.type)
                     # # print(res)
                     # steering = res[0, 0].item()
                     # throttle = res[0, 1].item()
-
-                    # print(f"Total Time: {time.time() - s:.5f}")
-                    # if distance_to_obstacle<=100:
-                    #     mapped_steer = map_value_steer(0.0)
-                    #     mapped_throttle = map_value_throttle(0.0)
-                    # else :
-                    #     mapped_steer = map_value_steer(steering)
-                    #     mapped_throttle = map_value_throttle(throttle)
-                    # if mapped_throttle > 99.0:
-                    #     mapped_throttle = 99.0
-                    # elif mapped_throttle <0.0:
-                    #     mapped_throttle = 0.0
-                    # print(f"steer {mapped_steer}, throttle {mapped_throttle}")
-                    # kit.servo[0].angle = mapped_steer
-                    # kit.servo[1].angle = mapped_throttle
+                    print(f"Total Time: {time.time() - s:.5f}")
+                    if distance_to_obstacle<=100:
+                        mapped_steer = map_value_steer(0.0)
+                        mapped_throttle = map_value_throttle(0.0)
+                    else :
+                        mapped_steer = map_value_steer(output[0][0])
+                        mapped_throttle = map_value_throttle(output[0][1])
+                    if mapped_throttle > 99.0:
+                        mapped_throttle = 99.0
+                    elif mapped_throttle <0.0:
+                        mapped_throttle = 0.0
+                    print(f"steer {mapped_steer}, throttle {mapped_throttle}")
+                    kit.servo[0].angle = mapped_steer
+                    kit.servo[1].angle = mapped_throttle
 
                 frame_count += 1
                 if exit_flag:
