@@ -85,6 +85,9 @@ def server_loop(server_socket, conn, addr, data):
 # Usage example:
 if __name__ == "__main__":
     tensor_data = torch.rand(1, 32, 150, 150)
+    print('1 done')
     server_socket = start_server()
+    print('2 done')
     conn, addr = server_socket.accept()
+    print('3 done')
     server_loop(server_socket, conn, addr, tensor_data)
