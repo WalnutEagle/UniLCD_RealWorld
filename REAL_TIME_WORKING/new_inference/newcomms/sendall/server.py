@@ -6,7 +6,7 @@ HOST = '0.0.0.0'  # Listen on all interfaces
 PORT = 8083
 
 # Create a sample tensor
-tensor = torch.randn(1, 152, 1500, 1500)
+tensor = torch.randn(1, 32, 150, 150)
 print(tensor)
 
 # Serialization Verification
