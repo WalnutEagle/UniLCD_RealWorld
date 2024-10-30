@@ -82,7 +82,7 @@ def client_loop():
             if send_data(client_socket, tensor_data):
                 response = receive_response(client_socket)
                 if response is not None:
-                    logging.info("Server response: %s", response)
+                    logging.info("Server response: %s", response.type)
 
         elif choice == 'q':
             logging.info("Closing connection...")
