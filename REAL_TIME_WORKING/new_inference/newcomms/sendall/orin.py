@@ -59,7 +59,7 @@ def send_response(conn, response):
         logging.error(f"Error sending response: {e}")
 
 # Main server loop function for processing data
-def server_loop(server_socket):
+def server_loop(server_socket, data):
     try:
         i=1
         while i<2:
@@ -67,30 +67,14 @@ def server_loop(server_socket):
             logging.info(f"Connection from {addr}")
 
             # Send initial data to the client first
-            tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor to send
+            # tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor to send
+            tensor_data = data
             send_response(conn, tensor_data)
             logging.info("Initial tensor data sent to client.")
 
             # Now receive data from the client
             received_data = receive_data(conn)
             print(receive_data)
-
-            # if received_data is None:
-            #     logging.warning("No data received, closing connection.")
-            #     conn.close()
-            #     continue  # Skip to the next iteration if there was an error
-
-            # # Handle received data
-            # if isinstance(received_data, str):
-            #     logging.info(f"Received text message: {received_data} from {addr}")
-            #     send_response(conn, "Text received!")
-            # elif isinstance(received_data, torch.Tensor):
-            #     logging.info(f"Received PyTorch tensor data: \n{received_data} from {addr}")
-            #     tensor_response = torch.rand(1, 32, 150, 150)  # Another example tensor response
-            #     send_response(conn, tensor_response)
-            # else:
-            #     logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
-            #     send_response(conn, "Unknown data type received!")
             i+=2
 
             conn.close()  # Close the connection after handling
@@ -99,6 +83,7 @@ def server_loop(server_socket):
     finally:
         server_socket.close()
         logging.info("Socket closed.")
+    return receive_data
 
 # Usage example:
 # if __name__ == "__main__":
