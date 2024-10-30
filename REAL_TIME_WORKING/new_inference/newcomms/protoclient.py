@@ -1,8 +1,8 @@
 import socket
-import pickle
 import torch  # For PyTorch tensor handling
 import time
 import logging
+import message_pb2  # Import the generated protobuf classes
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -14,18 +14,25 @@ PORT = 8083              # Server's port
 # Function to connect to the server
 def connect_to_server():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    client_socket.settimeout(20) 
+    client_socket.settimeout(20)
     return client_socket
 
 # Function to send data (text or tensor) to the server
 def send_data(client_socket, data, timeout=20):
-    serialized_data = pickle.dumps(data)
+    message = message_pb2.Message()
+
+    # Determine if the data is text or tensor
+    if isinstance(data, str):
+        message.text_message.text = data
+    elif isinstance(data, torch.Tensor):
+        message.tensor_message.tensor_data = data.numpy().tobytes()  # Convert tensor to bytes
+
+    serialized_data = message.SerializeToString()
     data_length = len(serialized_data)
     start_time = time.time()
     
     try:
         client_socket.sendto(data_length.to_bytes(4, 'big'), (HOST, PORT))
-        
         client_socket.sendto(serialized_data, (HOST, PORT))
         
         elapsed_time = time.time() - start_time
@@ -44,11 +51,11 @@ def receive_response(client_socket):
     try:
         data_length, addr = client_socket.recvfrom(4)
         data_length = int.from_bytes(data_length, 'big')
-        logging.info(f"Reciving data of lenght:{data_length} from {addr}")
+        logging.info(f"Receiving data of length: {data_length} from {addr}")
         data = b""
         while len(data) < data_length:
             try:
-                packet, _ = client_socket.recvfrom(1000) 
+                packet, _ = client_socket.recvfrom(1000)
                 data += packet
             except socket.timeout:
                 logging.info("Timed out while waiting for packet.")
@@ -56,7 +63,10 @@ def receive_response(client_socket):
         if len(data) != data_length:
             logging.error(f"Received {len(data)} bytes, expected {data_length} bytes.")
             return None
-        response = pickle.loads(data)
+
+        # Deserialize the protobuf message
+        response = message_pb2.Message()
+        response.ParseFromString(data)
         logging.info("Response received successfully.")
         return response
     except socket.timeout:
@@ -69,7 +79,7 @@ def receive_response(client_socket):
 # Main client communication loop
 def client_loop(client_socket):
     while True:
-        choice = 'n'
+        choice = input("Enter 't' for text, 'n' for tensor, 'q' to quit: ")
 
         if choice == 't':
             text_message = input("Enter your text message: ")
@@ -79,15 +89,14 @@ def client_loop(client_socket):
                     logging.info("Server response: %s", response)
 
         elif choice == 'n':
-            tensor_data = torch.rand(2, 2) 
+            tensor_data = torch.rand(2, 2)
             start = time.time()
             logging.info(f"Sending PyTorch tensor: \n{tensor_data}")
             if send_data(client_socket, tensor_data):
-                t1 = time.time()
                 response = receive_response(client_socket)
                 if response is not None:
                     logging.info("Server response: %s", response)
-                logging.info(f"Received data in: {(time.time()-t1)*1000:.2f} milliseconds.")
+                logging.info(f"Received data in: {(time.time() - start) * 1000:.2f} milliseconds.")
 
         elif choice == 'q':
             logging.info("Closing connection...")
@@ -100,7 +109,3 @@ def client_loop(client_socket):
 if __name__ == "__main__":
     client_socket = connect_to_server()
     client_loop(client_socket)
-
-
-
-

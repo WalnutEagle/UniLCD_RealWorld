@@ -1,8 +1,8 @@
 import socket
-import pickle
 import torch  # For PyTorch tensor handling
 import time
 import logging
+import message_pb2  # Import the generated protobuf classes
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -28,9 +28,13 @@ def receive_data(server_socket):
         while len(data) < data_length:
             packet, _ = server_socket.recvfrom(4096)  # Receive data in chunks
             data += packet
-        received_data = pickle.loads(data)
-        logging.info(f"Data received: {received_data} from {addr}")
-        return received_data, addr
+        
+        # Deserialize protobuf message
+        message = message_pb2.Message()
+        message.ParseFromString(data)
+        
+        logging.info(f"Data received: {message} from {addr}")
+        return message, addr
     except socket.timeout:
         logging.warning("Timeout occurred while receiving data.")
     except Exception as e:
@@ -40,7 +44,7 @@ def receive_data(server_socket):
 # Function to send data with length prefix and timeout handling
 def send_response(server_socket, response, addr):
     try:
-        data = pickle.dumps(response)
+        data = response.SerializeToString()
         data_length = len(data)
 
         # Send the length of the data first
@@ -60,25 +64,29 @@ def send_response(server_socket, response, addr):
 def server_loop(server_socket):
     try:
         while True:
-            received_data, addr = receive_data(server_socket)      
-            if received_data is None:
+            message, addr = receive_data(server_socket)      
+            if message is None:
                 continue  # Skip the loop iteration if there was an error
 
             # Handle text or tensor data
-            if isinstance(received_data, str):
-                logging.info(f"Received text message: {received_data} from {addr}")
-                send_response(server_socket, "Text received!", addr)
-            elif isinstance(received_data, torch.Tensor):
-                start_time = time.time()
-                logging.info(f"Received PyTorch tensor data: \n{received_data} from {addr}")
-                elapsed_time = (time.time() - start_time) * 1000
-                logging.info(f"It took {elapsed_time:.2f} milliseconds.")
-                
+            if message.HasField('text_message'):
+                text_received = message.text_message.text
+                logging.info(f"Received text message: {text_received} from {addr}")
+                response = message_pb2.Message()
+                response.text_message.text = "Text received!"
+                send_response(server_socket, response, addr)
+            elif message.HasField('tensor_message'):
                 tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor response
-                send_response(server_socket, tensor_data, addr)
+                tensor_bytes = tensor_data.numpy().tobytes()  # Convert tensor to bytes
+                response = message_pb2.Message()
+                response.tensor_message.tensor_data = tensor_bytes
+                logging.info(f"Received tensor data from {addr}. Sending tensor response.")
+                send_response(server_socket, response, addr)
             else:
-                logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
-                send_response(server_socket, "Unknown data type received!", addr)
+                logging.warning(f"Received unknown data type from {addr}")
+                response = message_pb2.Message()
+                response.text_message.text = "Unknown data type received!"
+                send_response(server_socket, response, addr)
     except Exception as e:
         logging.error(f"Server error: {e}")
     finally:
@@ -89,7 +97,3 @@ def server_loop(server_socket):
 if __name__ == "__main__":
     server_socket = start_server()
     server_loop(server_socket)
-
-
-
-
