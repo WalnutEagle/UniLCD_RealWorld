@@ -294,7 +294,7 @@ def main():
                         mode = 1
                         with torch.no_grad():
                             prediction = model_cloud(depth_img)
-                        output = server_loop(server_2_soc,conn,addr ,prediction)
+                        output = server_loop(server_2_soc, conn, addr, prediction)
                         steering = output[0][0]
                         throttle = output[0][1]
 
