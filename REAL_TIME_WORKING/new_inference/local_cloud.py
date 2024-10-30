@@ -288,12 +288,12 @@ def main():
 
                 if do_infer:
                     s = time.time()
-                    if distance_to_obstacle <100:
+                    if distance_to_obstacle >100:
                         with torch.no_grad():
                             prediction = model_local(depth_img)
                         steering = prediction[0, 0].item()
                         throttle = prediction[0, 1].item()
-                    elif distance_to_obstacle >100:
+                    elif distance_to_obstacle <100:
                         mode = 1
                         time.sleep(random_number)
                         with torch.no_grad():
