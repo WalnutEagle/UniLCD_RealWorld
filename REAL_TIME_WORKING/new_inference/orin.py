@@ -16,7 +16,7 @@ def start_server():
     server_socket.bind((HOST, PORT))
     server_socket.listen(1)  # Listen for incoming connections
     server_socket.settimeout(TIMEOUT)  # Set timeout for the socket
-    logging.info(f"Server listening on {HOST}:{PORT}...")
+    # logging.info(f"Server listening on {HOST}:{PORT}...")
     return server_socket
 
 # Function to receive data from a client
@@ -27,7 +27,7 @@ def receive_data(conn):
             return None
         
         data_length = int.from_bytes(data_length_bytes, 'big')
-        logging.info(f"Receiving data of length: {data_length}...")
+        # logging.info(f"Receiving data of length: {data_length}...")
         
         data = b""
         while len(data) < data_length:
@@ -37,7 +37,7 @@ def receive_data(conn):
             data += packet
             
         received_data = pickle.loads(data)
-        logging.info(f"Data received: {received_data} from client.")
+        # logging.info(f"Data received: {received_data} from client.")
         return received_data
     except Exception as e:
         logging.error(f"Error receiving data: {e}")
@@ -70,20 +70,20 @@ def server_loop(server_socket, data):
             # tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor to send
             tensor_data = data
             send_response(conn, tensor_data)
-            logging.info("Initial tensor data sent to client.")
+            # logging.info("Initial tensor data sent to client.")
 
             # Now receive data from the client
             received_data = receive_data(conn)
             print(receive_data)
             i+=2
 
-            conn.close()  # Close the connection after handling
+            conn.close()
+        return receive_data  # Close the connection after handling
     except Exception as e:
         logging.error(f"Server error: {e}")
     finally:
         # server_socket.close()
         logging.info("Socket closed.")
-    return receive_data
 
 # Usage example:
 # if __name__ == "__main__":
