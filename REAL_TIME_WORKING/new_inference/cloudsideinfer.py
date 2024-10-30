@@ -38,13 +38,14 @@ if __name__ == '__main__':
     model.to(device)
     print(device)
     socket_1 = connect_to_server()
+    tensord = torch.rand(2,2)
     try:
         while True:
             
             response = receive_response(socket_1)
             if response is not None:
-                tensord = inferr(response)
-                print(tensord)
+                # tensord = inferr(response)
+                # print(tensord)
                 send_data(socket_1, tensord)
     except KeyboardInterrupt:
         print('Bye')

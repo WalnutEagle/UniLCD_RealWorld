@@ -15,6 +15,7 @@ import argparse
 import cv2
 import depthai as dai
 import smbus2
+import random
 
 from PIL import Image
 from collections import deque
@@ -223,6 +224,7 @@ def main():
     bus_number = 1
     frame_count = 0
     distance_to_obstacle = 0
+    pred = torch.rand(2,2)
 
     mapped_steer = map_value_steer(steer)
     mapped_throttle = map_value_throttle(throttle)
@@ -258,6 +260,7 @@ def main():
         max_disparity = 255 
         while not exit_flag:
             check_keys()
+            random_number = round(random.uniform(0.04, 0.3), 2)
             start_time = time.time()
             start_measurement(bus)
             if wait_for_measurement(bus):
@@ -285,18 +288,21 @@ def main():
 
                 if do_infer:
                     s = time.time()
-                    if distance_to_obstacle <100:
+                    if distance_to_obstacle >100:
                         with torch.no_grad():
                             prediction = model_local(depth_img)
                         steering = prediction[0, 0].item()
                         throttle = prediction[0, 1].item()
-                    elif distance_to_obstacle >100:
+                    elif distance_to_obstacle <100:
                         mode = 1
+                        time.sleep(random)
                         with torch.no_grad():
-                            prediction = model_cloud(depth_img)
+                            prediction = model_local(depth_img)
                         output = server_loop(server_2_soc, conn, addr, prediction)
-                        steering = output[0][0]
-                        throttle = output[0][1]
+                        steering = prediction[0, 0].item()
+                        throttle = prediction[0, 1].item()
+                        # steering = output[0][0]
+                        # throttle = output[0][1]
 
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=20:
