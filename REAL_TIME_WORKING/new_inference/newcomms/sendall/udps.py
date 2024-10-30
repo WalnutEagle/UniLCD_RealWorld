@@ -86,7 +86,7 @@ def server_loop(server_socket):
                 logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
                 send_response(conn, "Unknown data type received!")
 
-            conn.close()  # Close the connection after handling
+              # Close the connection after handling
     except Exception as e:
         logging.error(f"Server error: {e}")
     finally:
