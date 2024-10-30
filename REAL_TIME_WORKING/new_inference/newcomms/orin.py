@@ -4,10 +4,11 @@ import torch
 # Start the server
 server_2_soc = start_server()  # Renamed from 'socket' to 'server_2_soc'
 data = torch.rand(1, 32, 150, 150)  # Sample tensor data
-conn, addr = server_2_soc.accept()
+
 print(addr)
 try:
     while True:
+        conn, addr = server_2_soc.accept()
         send_response(server_2_soc, data)
         res = receive_data(server_2_soc)
         print(res)

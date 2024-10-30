@@ -1,9 +1,10 @@
 from sendall.udpc import receive_response, send_data, connect_to_server
 import torch
 
-socket_1 = connect_to_server()
+
 try:
     while True:
+        socket_1 = connect_to_server()
         tensord = torch.rand(2, 2)
         response = receive_response(socket_1)
         send_data(socket_1, tensord)
