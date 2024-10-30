@@ -61,7 +61,8 @@ def send_response(conn, response):
 # Main server loop function for processing data
 def server_loop(server_socket):
     try:
-        while True:
+        i=1
+        while i<2:
             conn, addr = server_socket.accept()  # Accept a new connection
             logging.info(f"Connection from {addr}")
 
@@ -89,6 +90,7 @@ def server_loop(server_socket):
             else:
                 logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
                 send_response(conn, "Unknown data type received!")
+            i+=2
 
             conn.close()  # Close the connection after handling
     except Exception as e:

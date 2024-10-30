@@ -80,7 +80,8 @@ def receive_response(client_socket):
 
 # Main client communication loop
 def client_loop():
-    while True:
+    i=1
+    while i<2:
         client_socket = connect_to_server()
 
         # Receive data from the server first
@@ -99,6 +100,7 @@ def client_loop():
         else:
             logging.warning("No initial data received from server, closing connection.")
             break
+        i+=2
 
     client_socket.close()
     logging.info("Socket closed.")
