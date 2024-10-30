@@ -1,23 +1,19 @@
 import socket
 import pickle
-import torch  # For PyTorch tensor handling
+import torch  
 import time
 import logging
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Server configuration
-HOST = '128.197.164.42'  # Server's IP address
-PORT = 8083              # Server's port
+HOST = '128.197.164.42'  
+PORT = 8083             
 
-# Function to connect to the server
 def connect_to_server():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     client_socket.settimeout(20) 
     return client_socket
 
-# Function to send data (text or tensor) to the server
 def send_data(client_socket, data, timeout=20):
     serialized_data = pickle.dumps(data)
     data_length = len(serialized_data)
@@ -38,8 +34,7 @@ def send_data(client_socket, data, timeout=20):
     except Exception as e:
         logging.error(f"Error sending data: {e}")
         return False
-
-# Function to receive response from the server in chunks
+    
 def receive_response(client_socket):
     try:
         data_length, addr = client_socket.recvfrom(4)
@@ -96,7 +91,6 @@ def client_loop(client_socket):
     client_socket.close()
     logging.info("Socket closed.")
 
-# Usage example:
 if __name__ == "__main__":
     client_socket = connect_to_server()
     client_loop(client_socket)

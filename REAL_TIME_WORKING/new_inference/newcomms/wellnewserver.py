@@ -1,32 +1,29 @@
 import socket
 import pickle
-import torch  # For PyTorch tensor handling
+import torch  
 import time
 import logging
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 HOST = '0.0.0.0'  
 PORT = 8083  
-TIMEOUT = 20  # Timeout in seconds
+TIMEOUT = 10
 
-# Function to start the server
 def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server_socket.bind((HOST, PORT))
-    server_socket.settimeout(TIMEOUT)  # Set timeout for the socket
+    server_socket.settimeout(TIMEOUT)
     logging.info(f"Server listening on {HOST}:{PORT}...")
     return server_socket
 
-# Function to receive data in chunks with timeout handling
 def receive_data(server_socket):
     try:
-        data_length, addr = server_socket.recvfrom(4)  # Receive length of data
+        data_length, addr = server_socket.recvfrom(4)  
         logging.info(f"Receiving data from {addr}...")
         data_length = int.from_bytes(data_length, 'big')
         data = b""
         while len(data) < data_length:
-            packet, _ = server_socket.recvfrom(4096)  # Receive data in chunks
+            packet, _ = server_socket.recvfrom(4096)  
             data += packet
         received_data = pickle.loads(data)
         logging.info(f"Data received: {received_data} from {addr}")
@@ -37,34 +34,27 @@ def receive_data(server_socket):
         logging.error(f"Error receiving data: {e}")
     return None, None
 
-# Function to send data with length prefix and timeout handling
 def send_response(server_socket, response, addr):
     try:
         data = pickle.dumps(response, protocol=pickle.HIGHEST_PROTOCOL)
         data_length = len(data)
-
-        # Send the length of the data first
         server_socket.sendto(data_length.to_bytes(4, 'big'), addr)
-
-        # Split data into smaller chunks if it's too large
-        chunk_size = 1000  # Set an appropriate chunk size
+        chunk_size = 1000 
         for i in range(0, data_length, chunk_size):
-            server_socket.sendto(data[i:i + chunk_size], addr)  # Send each chunk
+            server_socket.sendto(data[i:i + chunk_size], addr) 
         logging.info("Response sent successfully.")
     except socket.timeout:
         logging.warning("Timeout occurred while sending data.")
     except Exception as e:
         logging.error(f"Error sending response: {e}")
 
-# Main server loop function for processing data
 def server_loop(server_socket):
     try:
         while True:
             received_data, addr = receive_data(server_socket)      
             if received_data is None:
-                continue  # Skip the loop iteration if there was an error
+                continue 
 
-            # Handle text or tensor data
             if isinstance(received_data, str):
                 logging.info(f"Received text message: {received_data} from {addr}")
                 send_response(server_socket, "Text received!", addr)
@@ -74,7 +64,7 @@ def server_loop(server_socket):
                 elapsed_time = (time.time() - start_time) * 1000
                 logging.info(f"It took {elapsed_time:.2f} milliseconds.")
                 
-                tensor_data = torch.rand(1, 32, 150, 150)  # Example tensor response
+                tensor_data = torch.rand(1, 32, 150, 150)
                 send_response(server_socket, tensor_data, addr)
             else:
                 logging.warning(f"Received unknown data type: {type(received_data)} from {addr}")
