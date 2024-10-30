@@ -64,9 +64,8 @@ def receive_response(client_socket):
         return None
 
 # Main client communication loop
-def client_loop():
+def client_loop(client_socket):
     while True:
-        client_socket = connect_to_server()
         choice = 'n'
 
         if choice == 't':
@@ -93,4 +92,5 @@ def client_loop():
 
 # Usage example:
 if __name__ == "__main__":
-    client_loop()
+    client_socket = connect_to_server()
+    client_loop(client_socket)

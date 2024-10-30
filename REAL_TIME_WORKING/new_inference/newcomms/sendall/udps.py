@@ -66,9 +66,9 @@ def server_loop(server_socket):
             logging.info(f"Connection from {addr}")
             
             received_data = receive_data(conn)      
-            if received_data is None:
-                conn.close()
-                continue  # Skip the loop iteration if there was an error
+            # if received_data is None:
+            #     conn.close()
+            #     continue  # Skip the loop iteration if there was an error
 
             # Handle text or tensor data
             if isinstance(received_data, str):
