@@ -62,4 +62,4 @@ def update_visualization(throttle, steer, mode):
 
         plt.pause(0.1) 
 
-update_visualization(150, 90, 1) 
+# update_visualization(150, 90, 1) 

@@ -29,6 +29,8 @@ from cloud_model import CustomRegNetY002
 from missing import check_dataset, find_missing_files
 from orin import start_server, server_loop
 from merger import load_model
+from speedometer import update_visualization
+
 
 i2c_bus0 = busio.I2C(board.SCL, board.SDA)
 kit = ServoKit(channels=16, i2c=i2c_bus0, address=0x40)
@@ -237,13 +239,12 @@ def main():
                 if do_infer:
                     s = time.time()
                     if distance_to_obstacle <100:
-                        mode = 'Local'
                         with torch.no_grad():
                             prediction = model(depth_img)
                         steering = prediction[0, 0].item()
                         throttle = prediction[0, 1].item()
                     elif distance_to_obstacle >100:
-                        mode = 'Cloud'
+                        mode = 1
                         with torch.no_grad():
                             prediction = model(depth_img)
                         output = server_loop(server_2_soc,conn,addr ,prediction)
