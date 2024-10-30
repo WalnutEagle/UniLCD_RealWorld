@@ -42,6 +42,7 @@ steer = 0.0
 do_infer = False
 exit_flag = False 
 current_mode = 'Local Mode'
+mode = 0
 
 LIDAR_ADDR = 0x62
 REG_SYSRANGE_START = 0x00
