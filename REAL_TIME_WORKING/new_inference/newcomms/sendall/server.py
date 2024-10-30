@@ -7,6 +7,7 @@ PORT = 8083
 
 # Create a sample tensor
 tensor = torch.randn(1, 32, 150, 150)
+print(tensor)
 
 # Serialization Verification
 test_serialized = pickle.dumps(tensor, protocol=pickle.HIGHEST_PROTOCOL)

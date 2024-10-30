@@ -18,7 +18,7 @@ while True:
 
 # Deserialize the tensor
 tensor = pickle.loads(received_data)
-
+print(tensor)
 print("Tensor received successfully.")
 print("Received tensor shape:", tensor.shape)
 client_socket.close()
