@@ -241,7 +241,7 @@ def main():
                         prediction = model(depth_img)
                         print(prediction.shape)
                     output = server_loop(server_2_soc, prediction)
-                    print(type(output))
+                    print(f"The type is {type(output)} thanks")
                     # # print(res)
                     # steering = res[0, 0].item()
                     # throttle = res[0, 1].item()
