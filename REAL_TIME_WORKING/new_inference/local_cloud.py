@@ -241,7 +241,7 @@ def main():
                         prediction = model(depth_img)
                         print(prediction.shape)
                     output = server_loop(server_2_soc, prediction)
-                    # print(f"The type is {type(output)} thanks")
+                    print(f"The type is {type(output)} thanks")
                     print(f"Total Time: {time.time() - s:.5f}")
                     if distance_to_obstacle<=1:
                         mapped_steer = map_value_steer(0.0)
