@@ -5,7 +5,7 @@ import torch
 server_2_soc = start_server()  # Renamed from 'socket' to 'server_2_soc'
 data = torch.rand(1, 32, 150, 150)  # Sample tensor data
 
-print(addr)
+# print(addr)
 try:
     while True:
         conn, addr = server_2_soc.accept()
