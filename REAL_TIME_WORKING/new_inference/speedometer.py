@@ -60,6 +60,6 @@ def update_visualization(throttle, steer, mode):
         # Draw the mode indicator
         draw_mode_indicator(mode_ax)
 
-        plt.pause(0.1) 
+        # plt.pause(0.1) 
 
 update_visualization(150, 90, 1) 
