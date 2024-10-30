@@ -265,6 +265,7 @@ def main():
                     mapped_throttle = map_value_throttle(throttle)
                     kit.servo[1].angle = mapped_throttle
                     kit.servo[0].angle = mapped_steer
+                    conn.close()
 
     cv2.destroyAllWindows()
 
