@@ -3,48 +3,34 @@ import math
 def haversine(lat1, lon1, lat2, lon2):
     # Convert latitude and longitude from degrees to radians
     lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
-    
+
     # Haversine formula
-    dlat = lat2 - lat1
     dlon = lon2 - lon1
+    dlat = lat2 - lat1
     a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
     c = 2 * math.asin(math.sqrt(a))
     
-    # Radius of Earth in kilometers. Use 3956 for miles
-    r = 6371.0
-    return c * r  # Distance in kilometers
+    # Radius of Earth in meters (mean radius)
+    r = 6371000
+    return c * r
 
-def calculate_odometry(gps_data):
-    previous_lat = None
-    previous_lon = None
+def calculate_total_distance(gps_data):
     total_distance = 0.0
 
-    for data in gps_data:
-        # Extract latitude and longitude from NMEA sentence
-        # Assuming data is structured and includes the required information
-        # For demonstration, we'll use hardcoded values
-        lat = data['latitude']
-        lon = data['longitude']
-
-        if previous_lat is not None and previous_lon is not None:
-            # Calculate distance from previous point
-            distance = haversine(previous_lat, previous_lon, lat, lon)
-            total_distance += distance
-            print(f"Moved {distance:.4f} km. Total distance: {total_distance:.4f} km")
-
-        # Update previous coordinates
-        previous_lat = lat
-        previous_lon = lon
+    for i in range(1, len(gps_data)):
+        lat1, lon1 = gps_data[i - 1]
+        lat2, lon2 = gps_data[i]
+        total_distance += haversine(lat1, lon1, lat2, lon2)
 
     return total_distance
 
-# Example GPS data (replace with real data parsing logic)
+# Example GPS data (latitude, longitude) every second
 gps_data = [
-    {'latitude': 37.7749, 'longitude': -122.4194},  # Point 1
-    {'latitude': 37.7750, 'longitude': -122.4195},  # Point 2
-    {'latitude': 37.7751, 'longitude': -122.4196},  # Point 3
+    (37.7749, -122.4194),  # Point 1 (San Francisco)
+    (37.7750, -122.4195),  # Point 2
+    (37.7751, -122.4196),  # Point 3
+    # Add more points as needed
 ]
 
-if __name__ == "__main__":
-    total_distance = calculate_odometry(gps_data)
-    print(f"Total distance traveled: {total_distance:.4f} km")
+total_distance = calculate_total_distance(gps_data)
+print(f"Total distance traveled: {total_distance:.2f} meters")
