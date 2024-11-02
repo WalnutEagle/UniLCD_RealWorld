@@ -15,7 +15,7 @@ try:
     # Receive data from the server
     while True:
         # Here, we receive up to 1024 bytes of data
-        data = client_socket.recv(1024)
+        data = client_socket.recv(4096)
         if not data:
             break  # Exit if there's no more data
         print(f"Received: {data.decode('utf-8')}")
