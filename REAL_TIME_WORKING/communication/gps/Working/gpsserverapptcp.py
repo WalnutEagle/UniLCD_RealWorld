@@ -2,7 +2,7 @@ import socket
 
 # Define the server address and port
 server_ip = '10.239.28.208'
-server_port = 8080
+server_port = 8083
 
 # Create a socket object
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
