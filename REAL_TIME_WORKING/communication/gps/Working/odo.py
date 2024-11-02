@@ -23,44 +23,50 @@ prev_lon = None
 total_distance = 0.0  # in meters
 current_x, current_y = 0.0, 0.0  # start at (0,0)
 
-# Connect to the server
+# Create and connect the socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((server_ip, server_port))
-print(f"Connected to server {server_ip} on port {server_port}")
-
 try:
+    client_socket.connect((server_ip, server_port))
+    print(f"Connected to server {server_ip} on port {server_port}")
+
     while True:
+        # Receive data
         data = client_socket.recv(4096)
         if not data:
-            break  # If no data, exit loop
+            break  # Exit if there's no more data
 
-        # Try to decode JSON data if received
+        # Decode received data
+        decoded_data = data.decode('utf-8').strip()
+
+        # Parse JSON if possible; otherwise ignore
         try:
-            gps_data = json.loads(data.decode('utf-8'))
+            gps_data = json.loads(decoded_data)
+            if not isinstance(gps_data, dict):  # Check if the parsed data is a dictionary
+                continue  # Ignore if not a JSON object
         except json.JSONDecodeError:
-            continue  # Ignore non-JSON messages
+            continue  # Ignore non-JSON messages like `8080`
 
-        # Extract GPS coordinates, speed, and heading
-        latitude = gps_data['latitude']
-        longitude = gps_data['longitude']
-        heading = gps_data['heading']  # in degrees
-        speed_kmh = gps_data['speed']  # already in km/h
+        # Extract GPS data fields
+        latitude = gps_data.get('latitude')
+        longitude = gps_data.get('longitude')
+        heading = gps_data.get('heading')  # in degrees
+        speed_kmh = gps_data.get('speed')  # already in km/h
 
-        # Calculate distance traveled if there was a previous location
+        # Calculate distance if previous location is available
         if prev_lat is not None and prev_lon is not None:
             distance = haversine(prev_lat, prev_lon, latitude, longitude)
-            total_distance += distance  # Update total distance
+            total_distance += distance
 
             # Convert distance and heading to x and y coordinates
             rad_heading = math.radians(heading)
             delta_x = distance * math.cos(rad_heading)
             delta_y = distance * math.sin(rad_heading)
 
-            # Update current position
+            # Update current x and y position
             current_x += delta_x
             current_y += delta_y
 
-            # Print updates
+            # Display data
             print(f"New position (lat, lon): ({latitude}, {longitude})")
             print(f"Distance travelled in last update: {distance:.2f} meters")
             print(f"Total distance travelled: {total_distance:.2f} meters")
@@ -68,7 +74,7 @@ try:
             print(f"Speed: {speed_kmh:.2f} km/h")
             print(f"Heading: {heading:.2f} degrees\n")
         
-        # Update previous latitude and longitude
+        # Update previous coordinates
         prev_lat, prev_lon = latitude, longitude
 
 except Exception as e:
