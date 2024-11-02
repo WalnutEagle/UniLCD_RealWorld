@@ -89,7 +89,7 @@ def start_udp_server():
 
     gps_data = []  # List to store GPS coordinates
     total_distance = 0.0  # Variable to track total distance traveled
-    movement_threshold = 1.0  # Threshold in meters
+    movement_threshold = 0.5  # Threshold in meters
 
     while True:
         # Wait for a message
