@@ -152,7 +152,7 @@ total_distance = 0.0  # in meters
 current_x, current_y = 0.0, 0.0  # start at (0,0)
 
 # Define thresholds
-SPEED_THRESHOLD = 2  # Minimum speed in km/h to consider a valid movement
+SPEED_THRESHOLD = 2.0  # Minimum speed in km/h to consider a valid movement
 DISTANCE_THRESHOLD = 1.0  # Minimum distance in meters to update position
 
 # Create and connect the socket
@@ -200,6 +200,8 @@ try:
                         total_distance += distance
 
                         # Update current x and y position using last known heading
+                        print(last_speed)
+                        print('Working on as the last speed is less than the threshold')
                         rad_heading = math.radians(last_heading) if 'last_heading' in locals() else 0
                         delta_x = distance * math.cos(rad_heading)
                         delta_y = distance * math.sin(rad_heading)
