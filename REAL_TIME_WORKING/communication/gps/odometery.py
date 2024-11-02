@@ -44,12 +44,15 @@ def parse_nmea_data(data):
 
     latitude, longitude, speed = None, None, None
 
-    if nmea_sentence.startswith('$GNRMC'):
-        parts = nmea_sentence.split(',')
-        if len(parts) > 5:
-            latitude = float(parts[3]) * (1 if parts[4] == 'N' else -1)  # N/S indicator
-            longitude = float(parts[5]) * (1 if parts[6] == 'E' else -1)  # E/W indicator
-            speed = float(parts[7]) * 1.852  # Speed in knots to km/h (1 knot = 1.852 km/h)
+    try:
+        if nmea_sentence.startswith('$GNRMC'):
+            parts = nmea_sentence.split(',')
+            if len(parts) > 5:
+                latitude = float(parts[3]) * (1 if parts[4] == 'N' else -1)  # N/S indicator
+                longitude = float(parts[5]) * (1 if parts[6] == 'E' else -1)  # E/W indicator
+                speed = float(parts[7]) * 1.852  # Speed in knots to km/h (1 knot = 1.852 km/h)
+    except ValueError :
+        pass
 
     return latitude, longitude, speed
 
