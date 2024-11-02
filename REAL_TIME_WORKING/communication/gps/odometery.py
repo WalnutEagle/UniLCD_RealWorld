@@ -88,11 +88,12 @@ def start_udp_server():
     print(f"Listening for UDP packets on {server_address[0]}:{server_address[1]}...")
 
     gps_data = []  # List to store GPS coordinates
+    total_distance = 0.0  # Variable to track total distance traveled
 
     while True:
         # Wait for a message
         data, address = sock.recvfrom(4096)  # Buffer size is 4096 bytes
-        # print(f"Received {data} from {address}")
+        print(f"Received {data} from {address}")
 
         # Parse the NMEA data
         latitude, longitude, speed = parse_nmea_data(data)
@@ -101,10 +102,14 @@ def start_udp_server():
             gps_data.append((latitude, longitude))
             print(f"Latitude: {latitude}, Longitude: {longitude}, Speed: {speed:.2f} km/h")
 
-            # Optional: Calculate distance after receiving a certain number of points
+            # Calculate distance since last point and total distance
             if len(gps_data) > 1:
+                last_lat, last_lon = gps_data[-2]
+                recent_distance = haversine(last_lat, last_lon, latitude, longitude)
                 total_distance = calculate_total_distance(gps_data)
+                print(f"Distance traveled in last change: {recent_distance:.2f} meters")
                 print(f"Total distance traveled: {total_distance:.2f} meters")
 
 if __name__ == "__main__":
     start_udp_server()
+
