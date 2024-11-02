@@ -152,7 +152,7 @@ total_distance = 0.0  # in meters
 current_x, current_y = 0.0, 0.0  # start at (0,0)
 
 # Define thresholds
-SPEED_THRESHOLD = 2.0  # Minimum speed in km/h to consider a valid movement
+SPEED_THRESHOLD = 0.0  # Minimum speed in km/h to consider a valid movement
 DISTANCE_THRESHOLD = 1.0  # Minimum distance in meters to update position
 
 # Create and connect the socket
