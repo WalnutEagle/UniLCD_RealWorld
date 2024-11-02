@@ -93,7 +93,7 @@ def start_udp_server():
     while True:
         # Wait for a message
         data, address = sock.recvfrom(4096)  # Buffer size is 4096 bytes
-        print(f"Received {data} from {address}")
+        # print(f"Received {data} from {address}")
 
         # Parse the NMEA data
         latitude, longitude, speed = parse_nmea_data(data)
