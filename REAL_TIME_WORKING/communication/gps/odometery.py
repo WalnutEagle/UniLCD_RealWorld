@@ -309,6 +309,8 @@ try:
                     # Only consider valid movements based on speed and distance thresholds
                     if 'last_speed' in locals() and last_speed >= SPEED_THRESHOLD and distance >= DISTANCE_THRESHOLD:
                         total_distance += distance
+                        print(last_speed)
+                        print('this is somehow working')
 
                         # Update current x and y position using last known heading
                         rad_heading = math.radians(last_heading) if 'last_heading' in locals() else 0
