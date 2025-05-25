@@ -1,4 +1,3 @@
-This README is important for you adwait :)
 The garmin is for the Lidar.
 The HCSR04 is for Ultrasonic sensor.
 The Main_Script is the main data Collection script.
